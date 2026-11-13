@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OneStep.Api/OneStep.Api.csproj" />
+    <Project Path="src/OneStep.Application/OneStep.Application.csproj" />
+    <Project Path="src/OneStep.Domain/OneStep.Domain.csproj" />
+    <Project Path="src/OneStep.Infrastructure/OneStep.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OneStep.UnitTests/OneStep.UnitTests.csproj" />
+  </Folder>
+</Solution>
