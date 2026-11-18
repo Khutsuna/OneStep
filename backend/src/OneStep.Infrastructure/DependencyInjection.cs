@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +23,11 @@ public static class DependencyInjection
     {
         // ---------- Database ----------
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("Default")));
+            options.UseSqlServer(configuration.GetConnectionString("Default"))
+                // EF warns that Product's soft-delete filter can hide a product from rows that point to it
+                // (order lines, reviews...). That is intended: deleted products disappear from the shop.
+                .ConfigureWarnings(warnings => warnings.Ignore(
+                    CoreEventId.PossibleIncorrectRequiredNavigationWithQueryFilterInteractionWarning)));
 
         // When a service asks for IAppDbContext, give it the AppDbContext of the current request.
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());

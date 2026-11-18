@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using OneStep.Api.Middleware;
 using OneStep.Api.OpenApi;
 using OneStep.Api.Services;
@@ -26,7 +27,9 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddControllers();
+// Enums travel as text in JSON ("role": "Admin" instead of "role": 2).
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 builder.Services.AddHealthChecks();
 
@@ -42,8 +45,10 @@ var app = builder.Build();
 
 // ---------- Request pipeline (what happens to every request, in this order) ----------
 
-app.UseExceptionHandler();           // first, so it catches errors from everything after it
+// Order matters: the request logger wraps the exception handler,
+// so it logs the FINAL status code (e.g. 404), not the raw exception.
 app.UseSerilogRequestLogging();      // one log line per request: method, path, status, time
+app.UseExceptionHandler();           // turns exceptions into ProblemDetails responses
 
 if (app.Environment.IsDevelopment())
 {
