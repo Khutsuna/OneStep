@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OneStep.Application.Features.DeliveryMethods;
+using OneStep.Application.Features.Auth;
+
 
 namespace OneStep.Application;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
     {
         // Scoped = one instance per HTTP request.
         services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

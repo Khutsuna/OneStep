@@ -1,5 +1,8 @@
 using OneStep.Api.Middleware;
+using OneStep.Api.OpenApi;
+using OneStep.Api.Services;
 using OneStep.Application;
+using OneStep.Application.Abstractions;
 using OneStep.Infrastructure;
 using Serilog;
 
@@ -11,16 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Its settings are in appsettings.json under "Serilog".
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 
-// Each layer registers its own services.
+// Each layer registers its own services (database, JWT, policies are in AddInfrastructure).
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// The logged-in user, read from the JWT of the current request.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // Error handling: every error becomes the same ProblemDetails JSON shape.
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();       // builds the API description (OpenAPI) that Swagger UI shows
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 builder.Services.AddHealthChecks();
 
 // CORS: the Angular app runs on another port (a different "origin"), so the browser
@@ -45,12 +52,14 @@ if (app.Environment.IsDevelopment())
     {
         options.SwaggerEndpoint("/openapi/v1.json", "OneStep API v1");
         options.DocumentTitle = "OneStep API";
+        options.EnablePersistAuthorization();   // keep the token after a page refresh
     });
 }
 
 app.UseHttpsRedirection();
 app.UseCors(FrontendCorsPolicy);
-app.UseAuthorization();
+app.UseAuthentication();             // 1. who are you? (reads and validates the JWT)
+app.UseAuthorization();              // 2. are you allowed? (checks [Authorize] and policies)
 
 app.MapControllers();
 app.MapHealthChecks("/health");
