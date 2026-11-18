@@ -1,0 +1,22 @@
+@startuml C4_L1_SystemContext
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+title System Context - OneStep E-commerce Platform
+
+Person(customer, "Customer", "Browses, buys and tracks orders")
+Person(manager, "Store Manager", "Runs catalogue, stock, orders and campaigns")
+Person(admin, "Administrator", "Everything a manager does, plus users and roles")
+
+System(shop, "OneStep E-commerce Platform", "Lets customers find and buy products and staff run the store")
+
+System_Ext(email, "Email System", "Delivers transactional emails")
+System_Ext(payment, "Payment Provider (optional)", "Processes card payments")
+
+Rel(customer, shop, "Browses products, places and tracks orders using")
+Rel(manager, shop, "Manages products, stock, orders and campaigns using")
+Rel(admin, shop, "Manages users, roles and the store using")
+Rel(shop, email, "Sends password-reset and order emails using")
+Rel(email, customer, "Delivers emails to")
+Rel(shop, payment, "Takes card payments using (optional)")
+
+SHOW_LEGEND()
+@enduml

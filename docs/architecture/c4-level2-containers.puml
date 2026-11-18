@@ -1,0 +1,31 @@
+@startuml C4_L2_Containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+title Containers - OneStep E-commerce Platform
+
+Person(customer, "Customer", "Shops and tracks orders")
+Person(manager, "Store Manager", "Runs the store")
+Person(admin, "Administrator", "Runs the store and manages users")
+
+System_Boundary(shop, "OneStep E-commerce Platform") {
+  Container(spa, "Single-Page Application", "Angular 22, TypeScript, Angular Material", "Storefront, account area and admin panel in the browser")
+  Container(api, "Web API", "ASP.NET Core 10, C#", "REST/JSON API: business rules, JWT auth, Swagger; serves images")
+  ContainerDb(db, "Database", "Microsoft SQL Server 2025", "Users, catalogue, carts, orders, campaigns; analytics views and procedures")
+  Container(files, "Image Storage", "Local file system (/uploads)", "Product, category and campaign images")
+}
+
+System_Ext(email, "Email System", "SMTP; Mailpit in development")
+System_Ext(payment, "Payment Provider (optional)", "Stripe, test mode")
+
+Rel(customer, spa, "Uses", "HTTPS")
+Rel(manager, spa, "Uses", "HTTPS")
+Rel(admin, spa, "Uses", "HTTPS")
+Rel(spa, api, "Makes API calls and loads images from", "JSON/HTTPS, JWT")
+Rel(api, db, "Reads from and writes to", "SQL/TCP via EF Core")
+Rel(api, files, "Saves and reads image files", "File I/O")
+Rel(api, email, "Sends emails using", "SMTP")
+Rel(api, payment, "Creates checkout sessions (optional)", "JSON/HTTPS")
+Rel(payment, api, "Reports payment results (optional)", "HTTPS webhook")
+Rel(email, customer, "Delivers emails to")
+
+SHOW_LEGEND()
+@enduml
