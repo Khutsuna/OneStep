@@ -3,6 +3,7 @@ using OneStep.Application.Abstractions;
 
 using OneStep.Domain.Common;
 using OneStep.Domain.Entities;
+using OneStep.Domain.ReadModels;
 
 namespace OneStep.Infrastructure.Persistence;
 
@@ -34,6 +35,9 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<CampaignProduct> CampaignProducts => Set<CampaignProduct>();
     public DbSet<CampaignCategory> CampaignCategories => Set<CampaignCategory>();
     public DbSet<Notification> Notifications => Set<Notification>();
+
+    // Read-only: mapped to the SQL view dbo.vw_ProductCatalog
+    public DbSet<ProductCatalogEntry> ProductCatalog => Set<ProductCatalogEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

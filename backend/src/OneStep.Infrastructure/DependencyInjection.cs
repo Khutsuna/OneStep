@@ -9,6 +9,7 @@ using OneStep.Application.Abstractions;
 using OneStep.Application.Common;
 using OneStep.Infrastructure.Auth;
 using OneStep.Infrastructure.Persistence;
+using OneStep.Infrastructure.Storage;
 
 namespace OneStep.Infrastructure;
 
@@ -31,6 +32,9 @@ public static class DependencyInjection
 
         // When a service asks for IAppDbContext, give it the AppDbContext of the current request.
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
+        // ---------- File storage (product images) ----------
+        services.AddSingleton<IFileStorage, LocalFileStorage>();
 
         // ---------- Authentication (who are you?) ----------
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();

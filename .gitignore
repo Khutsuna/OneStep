@@ -483,3 +483,7 @@ $RECYCLE.BIN/
 
 # Serilog log files
 logs/
+
+# Uploaded images (keep the folder itself)
+backend/src/OneStep.Api/wwwroot/uploads/*
+!backend/src/OneStep.Api/wwwroot/uploads/.gitkeep

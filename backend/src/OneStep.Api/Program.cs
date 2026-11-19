@@ -62,6 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();                // serves wwwroot, including uploaded images under /uploads
 app.UseCors(FrontendCorsPolicy);
 app.UseAuthentication();             // 1. who are you? (reads and validates the JWT)
 app.UseAuthorization();              // 2. are you allowed? (checks [Authorize] and policies)
