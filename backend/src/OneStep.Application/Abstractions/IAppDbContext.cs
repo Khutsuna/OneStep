@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OneStep.Domain.Entities;
+using OneStep.Domain.ReadModels;
 
 namespace OneStep.Application.Abstractions;
 
@@ -33,6 +34,9 @@ public interface IAppDbContext
     DbSet<CampaignProduct> CampaignProducts { get; }
     DbSet<CampaignCategory> CampaignCategories { get; }
     DbSet<Notification> Notifications { get; }
+
+    /// <summary>Read-only rows from the SQL view dbo.vw_ProductCatalog.</summary>
+    DbSet<ProductCatalogEntry> ProductCatalog { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
