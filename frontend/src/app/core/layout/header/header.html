@@ -1,0 +1,68 @@
+<header class="bar">
+  <div class="bar-inner">
+    <a class="logo" routerLink="/" aria-label="OneStep home">
+      <span class="mark" aria-hidden="true"><span></span><span></span></span>
+      <span class="wordmark">OneStep</span>
+    </a>
+
+    <form class="search" role="search" (ngSubmit)="search()">
+      <label class="visually-hidden" for="site-search">Search products</label>
+      <input
+        id="site-search"
+        name="search"
+        type="search"
+        placeholder="Search phones, laptops, headphones…"
+        autocomplete="off"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+      <button type="submit" aria-label="Search">
+        <mat-icon aria-hidden="true">search</mat-icon>
+      </button>
+    </form>
+
+    <nav class="account" aria-label="Account">
+      @if (auth.isLoggedIn()) {
+        <button matButton class="account-button" [matMenuTriggerFor]="accountMenu">
+          <mat-icon aria-hidden="true">person</mat-icon>
+          {{ auth.firstName() }}
+        </button>
+        <mat-menu #accountMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon aria-hidden="true">logout</mat-icon>
+            Log out
+          </button>
+        </mat-menu>
+      } @else {
+        <a matButton class="account-button" routerLink="/login">
+          <mat-icon aria-hidden="true">login</mat-icon>
+          Log in
+        </a>
+      }
+    </nav>
+  </div>
+</header>
+
+<nav class="categories" aria-label="Categories">
+  <div class="categories-inner">
+    <a class="category-link" routerLink="/products">All products</a>
+    @for (category of categories.tree(); track category.id) {
+      <button class="category-link" [matMenuTriggerFor]="subMenu">
+        <mat-icon aria-hidden="true">{{ categoryIcon(category.slug) }}</mat-icon>
+        {{ category.name }}
+        <mat-icon class="chevron" aria-hidden="true">expand_more</mat-icon>
+      </button>
+      <mat-menu #subMenu="matMenu">
+        <a mat-menu-item routerLink="/products" [queryParams]="{ categoryId: category.id }">
+          All {{ category.name }}
+        </a>
+        @for (child of category.children; track child.id) {
+          <a mat-menu-item routerLink="/products" [queryParams]="{ categoryId: child.id }">
+            <mat-icon aria-hidden="true">{{ categoryIcon(child.slug) }}</mat-icon>
+            {{ child.name }}
+          </a>
+        }
+      </mat-menu>
+    }
+  </div>
+</nav>

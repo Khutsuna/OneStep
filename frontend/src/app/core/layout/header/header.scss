@@ -1,0 +1,162 @@
+@use '@angular/material' as mat;
+@use 'breakpoints' as bp;
+
+.bar {
+  background: var(--os-ink);
+  color: #fff;
+}
+
+.bar-inner {
+  max-width: var(--os-page-width);
+  margin: 0 auto;
+  padding: 10px var(--os-gutter);
+  display: grid;
+  // Phone: logo + account on the first row, search full-width below.
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'logo account'
+    'search search';
+  align-items: center;
+  gap: 10px 16px;
+
+  @include bp.from(bp.$md) {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: 'logo search account';
+    gap: 24px;
+    padding-block: 14px;
+  }
+}
+
+.logo {
+  grid-area: logo;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+}
+
+// The stair mark: two marigold steps.
+.mark {
+  display: inline-grid;
+  grid-template-columns: 9px 9px;
+  align-items: end;
+  gap: 2px;
+  height: 22px;
+
+  span {
+    background: var(--os-step);
+    border-radius: 2px;
+  }
+
+  span:first-child {
+    height: 11px;
+  }
+
+  span:last-child {
+    height: 22px;
+  }
+}
+
+.wordmark {
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.search {
+  grid-area: search;
+  display: flex;
+  max-width: 640px;
+  width: 100%;
+  justify-self: center;
+  background: #fff;
+  border-radius: var(--os-radius-sm);
+  overflow: hidden;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    padding: 11px 14px;
+    font: inherit;
+    color: var(--os-ink);
+    outline: none;
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px var(--os-step);
+  }
+
+  button {
+    border: 0;
+    background: var(--os-step);
+    color: var(--os-ink);
+    padding: 0 16px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+}
+
+.account {
+  grid-area: account;
+  justify-self: end;
+}
+
+.account {
+  // Material's text button is navy by default; on the navy bar it must be white.
+  @include mat.button-overrides(
+    (
+      text-label-text-color: #fff,
+      text-state-layer-color: #fff,
+    )
+  );
+}
+
+.categories {
+  background: var(--os-surface);
+  border-bottom: 1px solid var(--os-line);
+}
+
+.categories-inner {
+  max-width: var(--os-page-width);
+  margin: 0 auto;
+  padding: 0 var(--os-gutter);
+  display: flex;
+  gap: 4px;
+  // On phones the category bar scrolls sideways instead of wrapping.
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 12px 10px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--os-ink);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+
+  &:hover {
+    border-bottom-color: var(--os-step);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .chevron {
+    color: var(--os-muted);
+  }
+}

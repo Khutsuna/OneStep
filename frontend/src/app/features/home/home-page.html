@@ -1,0 +1,56 @@
+<section class="hero">
+  <div class="hero-inner">
+    <div class="intro">
+      <h1>Find it in one step.</h1>
+      <p>Phones, laptops, audio and accessories from Apple, Samsung, Sony and more, delivered across Georgia.</p>
+      <a class="cta" routerLink="/products">Browse all products</a>
+    </div>
+
+    <!-- The four main categories rise like stairs on wide screens. -->
+    <nav class="steps" aria-label="Shop by category">
+      @for (category of categories.tree(); track category.id) {
+        <a class="step" routerLink="/products" [queryParams]="{ categoryId: category.id }">
+          <mat-icon aria-hidden="true">{{ categoryIcon(category.slug) }}</mat-icon>
+          <span class="step-name">{{ category.name }}</span>
+          <span class="step-count">{{ category.productCount }} products</span>
+        </a>
+      }
+    </nav>
+  </div>
+</section>
+
+<div class="page">
+  <section aria-labelledby="newest-title">
+    <div class="section-head">
+      <h2 id="newest-title" class="section-title">New arrivals</h2>
+      <a routerLink="/products">See all</a>
+    </div>
+    @if (newest(); as products) {
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    } @else {
+      <div class="product-grid" aria-busy="true">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="skeleton"></div>
+        }
+      </div>
+    }
+  </section>
+
+  <section aria-labelledby="rated-title" class="rated">
+    <div class="section-head">
+      <h2 id="rated-title" class="section-title">Customers' favourites</h2>
+      <a routerLink="/products" [queryParams]="{ sort: 'Rating' }">See all</a>
+    </div>
+    @if (topRated(); as products) {
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    }
+  </section>
+</div>

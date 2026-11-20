@@ -1,0 +1,93 @@
+<div class="panel-head">
+  <h2>Filters</h2>
+  @if (hasActiveFilters()) {
+    <button matButton (click)="clearAll()">Clear all</button>
+  }
+  <button matIconButton class="close" aria-label="Close filters" (click)="closed.emit()">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<section class="group" aria-labelledby="f-category">
+  <h3 id="f-category">Category</h3>
+  <ul class="category-list">
+    <li>
+      <button class="category" [class.active]="query().categoryId === null" (click)="selectCategory(null)">
+        All categories
+      </button>
+    </li>
+    @for (parent of categories(); track parent.id) {
+      <li>
+        <button class="category" [class.active]="query().categoryId === parent.id" (click)="selectCategory(parent.id)">
+          {{ parent.name }}
+        </button>
+        <ul>
+          @for (child of parent.children; track child.id) {
+            <li>
+              <button class="category child" [class.active]="query().categoryId === child.id" (click)="selectCategory(child.id)">
+                {{ child.name }} <span class="count">{{ child.productCount }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="group" aria-labelledby="f-price">
+  <h3 id="f-price">Price, ₾</h3>
+  <form class="price" (ngSubmit)="applyPrice()">
+    <label>
+      <span class="visually-hidden">Minimum price</span>
+      <input type="number" name="min" min="0" inputmode="numeric"
+             [placeholder]="filters()?.minPrice ?? 'From'"
+             [ngModel]="minPrice()" (ngModelChange)="minPrice.set($event)" />
+    </label>
+    <span aria-hidden="true">–</span>
+    <label>
+      <span class="visually-hidden">Maximum price</span>
+      <input type="number" name="max" min="0" inputmode="numeric"
+             [placeholder]="filters()?.maxPrice ?? 'To'"
+             [ngModel]="maxPrice()" (ngModelChange)="maxPrice.set($event)" />
+    </label>
+    <button matButton="outlined" type="submit">Apply</button>
+  </form>
+</section>
+
+<section class="group">
+  <mat-slide-toggle [checked]="query().inStock" (change)="changed.emit({ inStock: $event.checked })">
+    In stock only
+  </mat-slide-toggle>
+</section>
+
+@if (filters(); as options) {
+  @if (options.brands.length) {
+    <section class="group" aria-labelledby="f-brand">
+      <h3 id="f-brand">Brand</h3>
+      @for (brand of options.brands; track brand.id) {
+        <mat-checkbox class="brand"
+                      [checked]="query().brandIds.includes(brand.id)"
+                      (change)="toggleBrand(brand.id, $event.checked)">
+          {{ brand.name }} <span class="count">{{ brand.productCount }}</span>
+        </mat-checkbox>
+      }
+    </section>
+  }
+
+  @for (attribute of options.attributes; track attribute.name) {
+    <section class="group" [attr.aria-label]="attribute.name">
+      <h3>{{ attribute.name }}</h3>
+      <div class="chips">
+        @for (value of attribute.values; track value) {
+          <button class="chip"
+                  [class.selected]="isAttributeSelected(attribute.name, value)"
+                  [attr.aria-pressed]="isAttributeSelected(attribute.name, value)"
+                  (click)="toggleAttribute(attribute.name, value)">
+            {{ value }}
+          </button>
+        }
+      </div>
+    </section>
+  }
+}

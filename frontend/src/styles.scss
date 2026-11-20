@@ -1,39 +1,155 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Global styles: the Angular Material theme, OneStep's design tokens and a few utilities.
 @use '@angular/material' as mat;
+
+// ---------- Design tokens (one place for every colour, radius and width) ----------
+:root {
+  --os-ink: #14213d;          // navy: header, headings, main text
+  --os-ink-soft: #2b3a5c;
+  --os-paper: #f5f6f8;        // page background
+  --os-surface: #ffffff;      // cards, panels
+  --os-line: #dde1e8;         // borders and dividers
+  --os-muted: #5b6476;        // secondary text
+  --os-step: #f2b632;         // marigold accent: the "step" in OneStep, used sparingly
+  --os-sale: #c8243b;         // discounts only
+  --os-stock: #12805c;        // "in stock"
+  --os-photo: #eceff3;        // background behind product photos
+
+  --os-radius-sm: 6px;
+  --os-radius-lg: 14px;
+  --os-page-width: 1240px;
+  --os-gutter: 16px;
+}
 
 html {
   height: 100%;
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$blue-palette,
+        tertiary: mat.$orange-palette,
       ),
-      typography: Roboto,
+      typography: (
+        plain-family: Onest,
+        brand-family: Onest,
+        bold-weight: 700,
+        medium-weight: 600,
+        regular-weight: 400,
+      ),
       density: 0,
+    )
+  );
+
+  // Pull Material's colours towards OneStep's navy so buttons and inputs match the brand.
+  @include mat.theme-overrides(
+    (
+      primary: #14213d,
+      on-primary: #ffffff,
+      primary-container: #e3e8f3,
+      on-primary-container: #14213d,
+      surface: #f5f6f8,
+      surface-container-lowest: #ffffff,
+      outline-variant: #dde1e8,
+    )
+  );
+
+  // Same corner radius as the rest of OneStep, instead of Material's round "pill" buttons.
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 6px,
+      outlined-container-shape: 6px,
+      text-container-shape: 6px,
+      protected-container-shape: 6px,
+      tonal-container-shape: 6px,
+    )
+  );
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: 6px,
     )
   );
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
-  height: 100%;
+  min-height: 100%;
+  background: var(--os-paper);
+  color: var(--os-ink);
+  font-family: Onest, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
-/* You can add global styles to this file, and also import other style files */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  color: var(--os-ink);
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+// Visible keyboard focus everywhere (accessibility).
+:focus-visible {
+  outline: 3px solid var(--os-step);
+  outline-offset: 2px;
+}
+
+// Material Symbols: filled variant for stars and similar icons.
+.icon-filled {
+  font-variation-settings: 'FILL' 1;
+}
+
+// ---------- Layout helpers ----------
+.page {
+  width: 100%;
+  max-width: var(--os-page-width);
+  margin: 0 auto;
+  padding: 24px var(--os-gutter) 56px;
+}
+
+.section-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+// Product grid: as many columns as fit, each at least 200px wide.
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
