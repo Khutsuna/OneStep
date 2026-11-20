@@ -1,0 +1,134 @@
+@use 'breakpoints' as bp;
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--os-muted);
+  margin-bottom: 8px;
+
+  a {
+    color: var(--os-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--os-ink);
+      text-decoration: underline;
+    }
+  }
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+}
+
+.total {
+  color: var(--os-muted);
+}
+
+.layout {
+  display: grid;
+  gap: 24px;
+
+  @include bp.from(bp.$md) {
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+// Phones and tablets: the filters slide in from the left over the page.
+.filters {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(340px, 88vw);
+  z-index: 20;
+  background: var(--os-surface);
+  padding: 16px;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 200ms ease;
+
+  &.open {
+    transform: none;
+  }
+
+  // Desktop: a normal sidebar that stays visible while scrolling.
+  @include bp.from(bp.$md) {
+    position: static;
+    width: auto;
+    overflow: visible;
+    transform: none;
+    transition: none;
+    background: transparent;
+    padding: 0;
+    z-index: auto;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  background: rgb(20 33 61 / 45%);
+
+  @include bp.from(bp.$md) {
+    display: none;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.filters-button {
+  @include bp.from(bp.$md) {
+    visibility: hidden;
+  }
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--os-step);
+  color: var(--os-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.sort {
+  width: 210px;
+}
+
+.product-grid {
+  margin-top: 8px;
+  transition: opacity 150ms ease;
+
+  &.dimmed {
+    opacity: 0.55;
+  }
+}
+
+mat-paginator {
+  margin-top: 24px;
+  background: transparent;
+}

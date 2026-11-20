@@ -1,0 +1,103 @@
+<div class="page">
+  @if (product(); as product) {
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a>
+      @for (category of breadcrumb(); track category.id) {
+        <span aria-hidden="true">/</span>
+        <a routerLink="/products" [queryParams]="{ categoryId: category.id }">{{ category.name }}</a>
+      }
+    </nav>
+
+    <article class="product">
+      <div class="gallery">
+        @if (product.images.length) {
+          <app-product-image
+            class="main-photo"
+            [url]="product.images[selectedImage()].url"
+            [alt]="product.images[selectedImage()].altText ?? product.name"
+          />
+          @if (product.images.length > 1) {
+            <div class="thumbs" role="list" aria-label="More photos">
+              @for (image of product.images; track image.id; let i = $index) {
+                <button
+                  role="listitem"
+                  class="thumb"
+                  [class.selected]="i === selectedImage()"
+                  [attr.aria-label]="'Show photo ' + (i + 1)"
+                  (click)="selectedImage.set(i)"
+                >
+                  <img [src]="mediaUrl(image.url)" alt="" />
+                </button>
+              }
+            </div>
+          }
+        } @else {
+          <app-product-image class="main-photo" [alt]="product.name" [icon]="icon()" />
+        }
+      </div>
+
+      <div class="info">
+        @if (product.brandName) {
+          <a class="brand" routerLink="/products" [queryParams]="{ brand: product.brandId }">{{ product.brandName }}</a>
+        }
+        <h1>{{ product.name }}</h1>
+        <app-rating-stars [rating]="product.averageRating" [count]="product.reviewCount" />
+
+        <div class="buy-box">
+          @if (product.campaignName) {
+            <span class="campaign">{{ product.campaignName }}</span>
+          }
+          <app-price-tag size="large" [price]="product.price" [finalPrice]="product.finalPrice" />
+          <p class="vat">Price includes 18% VAT at checkout. Delivery calculated at checkout.</p>
+
+          <p class="stock" [class.out]="!product.inStock" [class.low]="product.inStock && product.stockQuantity <= product.lowStockThreshold">
+            <mat-icon aria-hidden="true">{{ product.inStock ? 'check_circle' : 'block' }}</mat-icon>
+            {{ stockText() }}
+          </p>
+        </div>
+
+        @if (product.attributes.length) {
+          <section aria-labelledby="specs-title">
+            <h2 id="specs-title">Specifications</h2>
+            <dl class="specs">
+              @for (attribute of product.attributes; track attribute.attributeId) {
+                <div>
+                  <dt>{{ attribute.name }}</dt>
+                  <dd>{{ attribute.value }}</dd>
+                </div>
+              }
+              <div>
+                <dt>Product code</dt>
+                <dd>{{ product.sku }}</dd>
+              </div>
+            </dl>
+          </section>
+        }
+      </div>
+    </article>
+
+    <section class="description" aria-labelledby="about-title">
+      <h2 id="about-title">About this product</h2>
+      <p>{{ product.description }}</p>
+      <p class="added">In our catalogue since {{ product.createdAt | date: 'longDate' }}</p>
+    </section>
+
+    @if (similar().length) {
+      <section aria-labelledby="similar-title" class="similar">
+        <h2 id="similar-title" class="section-title">You might also like</h2>
+        <div class="product-grid">
+          @for (item of similar(); track item.id) {
+            <app-product-card [product]="item" />
+          }
+        </div>
+      </section>
+    }
+  } @else if (notFound()) {
+    <app-empty-state icon="inventory_2" title="This product isn't available"
+                     message="It may have been removed, or the link is wrong.">
+      <a routerLink="/products">Browse all products</a>
+    </app-empty-state>
+  } @else {
+    <div class="loading" aria-busy="true" aria-label="Loading product"></div>
+  }
+</div>

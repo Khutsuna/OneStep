@@ -1,0 +1,16 @@
+// Mobile-first breakpoints. Write the phone layout first, then add these for bigger screens.
+$sm: 600px;   // large phones, small tablets
+$md: 960px;   // tablets, small laptops
+$lg: 1280px;  // desktops
+
+@mixin from($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin below($width) {
+  @media (max-width: ($width - 1px)) {
+    @content;
+  }
+}

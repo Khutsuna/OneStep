@@ -1,0 +1,137 @@
+@use 'breakpoints' as bp;
+
+.hero {
+  background: var(--os-surface);
+  border-bottom: 1px solid var(--os-line);
+}
+
+.hero-inner {
+  max-width: var(--os-page-width);
+  margin: 0 auto;
+  padding: 32px var(--os-gutter) 0;
+  display: grid;
+  gap: 28px;
+
+  @include bp.from(bp.$md) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: end;
+    padding-top: 56px;
+  }
+}
+
+.intro {
+  padding-bottom: 8px;
+
+  @include bp.from(bp.$md) {
+    padding-bottom: 48px;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  p {
+    color: var(--os-muted);
+    font-size: 1.0625rem;
+    max-width: 38ch;
+    margin: 16px 0 24px;
+  }
+}
+
+.cta {
+  display: inline-block;
+  background: var(--os-ink);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: var(--os-radius-sm);
+
+  &:hover {
+    background: var(--os-ink-soft);
+  }
+}
+
+// Category "stairs": each tile is taller than the one before it.
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding-bottom: 24px;
+
+  @include bp.from(bp.$sm) {
+    grid-template-columns: repeat(4, 1fr);
+    align-items: end;
+    padding-bottom: 0;
+  }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 16px;
+  min-height: 120px;
+  background: var(--os-paper);
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius-lg);
+  color: var(--os-ink);
+  text-decoration: none;
+
+  @include bp.from(bp.$sm) {
+    border-bottom: 0;
+    border-radius: var(--os-radius-lg) var(--os-radius-lg) 0 0;
+
+    &:nth-child(1) { min-height: 150px; }
+    &:nth-child(2) { min-height: 190px; }
+    &:nth-child(3) { min-height: 230px; }
+    &:nth-child(4) { min-height: 270px; }
+  }
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    margin-bottom: auto;
+  }
+
+  &:hover {
+    background: var(--os-step);
+    border-color: var(--os-step);
+  }
+}
+
+.step-name {
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.step-count {
+  font-size: 0.8125rem;
+  color: var(--os-muted);
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 16px;
+
+  a {
+    font-weight: 600;
+  }
+}
+
+.rated {
+  margin-top: 40px;
+}
+
+.skeleton {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--os-radius-lg);
+  background: var(--os-photo);
+}

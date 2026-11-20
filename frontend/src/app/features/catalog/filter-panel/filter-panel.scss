@@ -1,0 +1,125 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: block;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-right: auto;
+  }
+}
+
+// The close button is only needed when the panel slides in on small screens.
+.close {
+  @include bp.from(bp.$md) {
+    display: none;
+  }
+}
+
+.group {
+  padding: 14px 0;
+  border-top: 1px solid var(--os-line);
+
+  h3 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+}
+
+.category-list,
+.category-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.category {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--os-ink);
+  padding: 5px 8px;
+  border-radius: var(--os-radius-sm);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+
+  &.child {
+    padding-left: 20px;
+  }
+
+  &:hover {
+    background: var(--os-paper);
+  }
+
+  &.active {
+    background: var(--os-ink);
+    color: #fff;
+
+    .count {
+      color: #c9d1e3;
+    }
+  }
+}
+
+.count {
+  color: var(--os-muted);
+  font-size: 0.8125rem;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  label {
+    flex: 1;
+    min-width: 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--os-line);
+    border-radius: var(--os-radius-sm);
+    font: inherit;
+  }
+}
+
+.brand {
+  display: block;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  border: 1px solid var(--os-line);
+  background: var(--os-surface);
+  color: var(--os-ink);
+  font: inherit;
+  font-size: 0.8125rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &.selected {
+    background: var(--os-ink);
+    border-color: var(--os-ink);
+    color: #fff;
+  }
+}
