@@ -7,6 +7,9 @@ using OneStep.Application.Features.Brands;
 using OneStep.Application.Features.Categories;
 using OneStep.Application.Features.Pricing;
 using OneStep.Application.Features.Products;
+using OneStep.Application.Features.Addresses;
+using OneStep.Application.Features.Cart;
+using OneStep.Application.Features.Orders;
 
 
 namespace OneStep.Application;
@@ -31,6 +34,11 @@ public static class DependencyInjection
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductImageService, ProductImageService>();
+
+        // Shopping
+        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<IAddressService, AddressService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }
