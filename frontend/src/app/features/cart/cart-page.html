@@ -1,0 +1,70 @@
+<div class="page">
+  <h1 class="title">Your cart</h1>
+
+  @if (cart.cart() === null) {
+    <div class="loading" aria-busy="true" aria-label="Loading your cart"></div>
+  } @else if (cart.isEmpty()) {
+    <app-empty-state icon="shopping_cart" title="Your cart is empty"
+                     message="Add something you like and it will wait for you here.">
+      <a matButton="filled" routerLink="/products">Browse products</a>
+    </app-empty-state>
+  } @else {
+    <div class="layout">
+      <ul class="items" aria-label="Products in your cart">
+        @for (item of cart.items(); track item.id) {
+          <li class="item">
+            <a class="photo" [routerLink]="['/products', item.productId]" tabindex="-1" aria-hidden="true">
+              <app-product-image [url]="item.imageUrl" [alt]="item.name" />
+            </a>
+
+            <div class="details">
+              <a class="name" [routerLink]="['/products', item.productId]">{{ item.name }}</a>
+              <div class="unit">
+                <span [class.sale]="item.unitFinalPrice < item.unitPrice">
+                  {{ item.unitFinalPrice | currency: 'GEL' : 'symbol-narrow' }}
+                </span>
+                @if (item.unitFinalPrice < item.unitPrice) {
+                  <span class="old">{{ item.unitPrice | currency: 'GEL' : 'symbol-narrow' }}</span>
+                }
+                <span class="each">each</span>
+              </div>
+              @if (item.stockQuantity <= 5) {
+                <span class="low">Only {{ item.stockQuantity }} left</span>
+              }
+            </div>
+
+            <div class="controls">
+              <app-quantity-stepper
+                [value]="item.quantity"
+                [max]="item.stockQuantity"
+                [label]="item.name"
+                [disabled]="busyItemId() === item.id"
+                (changed)="changeQuantity(item, $event)"
+              />
+              <button matButton class="remove" [disabled]="busyItemId() === item.id" (click)="remove(item)">
+                <mat-icon aria-hidden="true">delete</mat-icon>
+                Remove
+              </button>
+            </div>
+
+            <span class="line-total">{{ item.lineTotal | currency: 'GEL' : 'symbol-narrow' }}</span>
+          </li>
+        }
+      </ul>
+
+      <aside class="summary" aria-labelledby="summary-title">
+        <h2 id="summary-title">Order summary</h2>
+        <dl>
+          <div><dt>Items ({{ cart.itemCount() }})</dt><dd>{{ cart.cart()!.subtotal | currency: 'GEL' : 'symbol-narrow' }}</dd></div>
+          @if (cart.cart()!.discountTotal > 0) {
+            <div class="discount"><dt>Discounts</dt><dd>−{{ cart.cart()!.discountTotal | currency: 'GEL' : 'symbol-narrow' }}</dd></div>
+          }
+          <div class="total"><dt>Subtotal</dt><dd>{{ cart.cart()!.total | currency: 'GEL' : 'symbol-narrow' }}</dd></div>
+        </dl>
+        <p class="note">Delivery and 18% VAT are added at checkout.</p>
+        <a matButton="filled" class="checkout" routerLink="/checkout">Go to checkout</a>
+        <a class="continue" routerLink="/products">Continue shopping</a>
+      </aside>
+    </div>
+  }
+</div>

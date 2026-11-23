@@ -1,0 +1,170 @@
+<div class="page">
+  @if (order(); as order) {
+    <a class="back" routerLink="/account/orders">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ auth.isStaff() ? 'All orders' : 'My orders' }}
+    </a>
+
+    @if (placed() && order.status !== 'Cancelled') {
+      <div class="thanks" role="status">
+        <mat-icon aria-hidden="true">check_circle</mat-icon>
+        <div>
+          <strong>Thank you, your order is placed.</strong>
+          <span>We'll keep this page updated as it moves along.</span>
+        </div>
+      </div>
+    }
+
+    <header class="head">
+      <div>
+        <h1>Order #{{ order.id }}</h1>
+        <p class="muted">Placed {{ order.createdAt | date: 'd MMMM y, HH:mm' }}</p>
+      </div>
+      <app-order-status-chip [status]="order.status" />
+    </header>
+
+    <div class="layout">
+      <div class="main">
+        <section class="card">
+          @if (order.status === 'Cancelled') {
+            <p class="cancelled">
+              <mat-icon aria-hidden="true">block</mat-icon>
+              This order was cancelled. The products went back to stock.
+            </p>
+          } @else {
+            <app-order-tracker [order]="order" />
+          }
+        </section>
+
+        <!-- Customer: pay by card (test mode) -->
+        @if (order.canPay) {
+          <section class="card pay" aria-labelledby="pay-title">
+            <h2 id="pay-title">Pay by card</h2>
+            <p class="muted">
+              Test mode: this simulates a card payment, and no real money is charged.
+            </p>
+            <div class="test-card" aria-hidden="true">
+              <span>4242 4242 4242 4242</span>
+              <span>12/30 · 123</span>
+            </div>
+            <button matButton="filled" class="pay-button" [disabled]="busy()" (click)="pay()">
+              {{ busy() ? 'Paying…' : 'Pay ' + (order.totals.totalAmount | currency: 'GEL' : 'symbol-narrow') }}
+            </button>
+          </section>
+        }
+
+        <!-- Staff: move the order along -->
+        @if (auth.isStaff() && moveTo().length) {
+          <section class="card" aria-labelledby="staff-title">
+            <h2 id="staff-title">Update status</h2>
+            <mat-form-field class="full">
+              <mat-label>Note for the history (optional)</mat-label>
+              <input matInput maxlength="300" [ngModel]="statusNote()" (ngModelChange)="statusNote.set($event)" />
+            </mat-form-field>
+            <div class="actions">
+              @for (status of moveTo(); track status) {
+                <button matButton="filled" [disabled]="busy()" (click)="changeStatus(status)">
+                  Mark as {{ stepLabels[status].toLowerCase() }}
+                </button>
+              }
+            </div>
+          </section>
+        }
+
+        <section class="card" aria-labelledby="items-title">
+          <h2 id="items-title">Items</h2>
+          <ul class="items">
+            @for (item of order.items; track item.productId) {
+              <li>
+                <app-product-image class="photo" [url]="item.imageUrl" [alt]="item.productName" />
+                <div class="item-info">
+                  <a [routerLink]="['/products', item.productId]">{{ item.productName }}</a>
+                  <span class="muted">
+                    {{ item.quantity }} × {{ item.unitPrice - item.unitDiscount | currency: 'GEL' : 'symbol-narrow' }}
+                    @if (item.unitDiscount > 0) {
+                      <s>{{ item.unitPrice | currency: 'GEL' : 'symbol-narrow' }}</s>
+                    }
+                  </span>
+                </div>
+                <span class="line-total">{{ item.lineTotal | currency: 'GEL' : 'symbol-narrow' }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <section class="card" aria-labelledby="history-title">
+          <h2 id="history-title">History</h2>
+          <ol class="history">
+            @for (step of order.history; track $index) {
+              <li>
+                <span class="when">{{ step.changedAt | date: 'd MMM y, HH:mm' }}</span>
+                <span>
+                  <strong>{{ stepLabels[step.toStatus] }}</strong>
+                  @if (step.note) {
+                    — {{ step.note }}
+                  }
+                  @if (auth.isStaff() && step.changedBy) {
+                    <span class="muted">({{ step.changedBy }})</span>
+                  }
+                </span>
+              </li>
+            }
+          </ol>
+        </section>
+      </div>
+
+      <aside class="side">
+        <section class="card" aria-labelledby="totals-title">
+          <h2 id="totals-title">Payment</h2>
+          <app-totals-table [totals]="order.totals" />
+          <p class="muted small">
+            {{ order.paymentMethod === 'Card' ? 'Card' : 'Cash on delivery' }}
+            @if (order.paidAt) {
+              · paid {{ order.paidAt | date: 'd MMM, HH:mm' }}
+            }
+          </p>
+        </section>
+
+        <section class="card" aria-labelledby="delivery-title">
+          <h2 id="delivery-title">Delivery</h2>
+          <p class="strong">{{ order.deliveryMethodName }}</p>
+          <address>
+            {{ order.shippingAddress.recipientName }}<br />
+            {{ order.shippingAddress.line1 }}<br />
+            @if (order.shippingAddress.line2) {
+              {{ order.shippingAddress.line2 }}<br />
+            }
+            {{ order.shippingAddress.city }}@if (order.shippingAddress.postalCode) {, {{ order.shippingAddress.postalCode }}}<br />
+            {{ order.shippingAddress.phone }}
+          </address>
+          @if (order.customerNote) {
+            <p class="muted small">Note: {{ order.customerNote }}</p>
+          }
+          @if (auth.isStaff()) {
+            <p class="muted small">Customer: {{ order.customerName }} ({{ order.customerEmail }})</p>
+          }
+        </section>
+
+        @if (order.canCancel) {
+          @if (confirmingCancel()) {
+            <div class="confirm" role="alertdialog" aria-labelledby="confirm-title">
+              <p id="confirm-title"><strong>Cancel this order?</strong> The products go back to stock.</p>
+              <div class="actions">
+                <button matButton="filled" class="danger" [disabled]="busy()" (click)="cancel()">Yes, cancel order</button>
+                <button matButton="outlined" (click)="confirmingCancel.set(false)">Keep order</button>
+              </div>
+            </div>
+          } @else {
+            <button matButton="outlined" class="cancel" (click)="confirmingCancel.set(true)">Cancel order</button>
+          }
+        }
+      </aside>
+    </div>
+  } @else if (notFound()) {
+    <app-empty-state icon="receipt_long" title="Order not found" message="It doesn't exist, or it belongs to another account.">
+      <a matButton="filled" routerLink="/account/orders">See my orders</a>
+    </app-empty-state>
+  } @else {
+    <div class="loading" aria-busy="true" aria-label="Loading order"></div>
+  }
+</div>

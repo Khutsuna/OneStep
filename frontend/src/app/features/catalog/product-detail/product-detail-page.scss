@@ -137,6 +137,37 @@
   }
 }
 
+.buy {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+
+  app-quantity-stepper {
+    flex: none;
+  }
+
+  .add {
+    flex: 1;
+    height: 48px;
+  }
+
+  // The stepper is 38px tall; make it match the button.
+  ::ng-deep app-quantity-stepper button {
+    height: 46px;
+  }
+}
+
+.in-cart {
+  margin: 10px 0 0;
+  font-size: 0.875rem;
+  color: var(--os-muted);
+
+  a {
+    color: var(--os-ink);
+    font-weight: 600;
+  }
+}
+
 .specs {
   margin: 0;
 

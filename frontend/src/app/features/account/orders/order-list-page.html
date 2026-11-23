@@ -1,0 +1,56 @@
+<div class="page">
+  <h1 class="title">{{ auth.isStaff() ? 'Orders' : 'My orders' }}</h1>
+
+  <div class="filters" role="group" aria-label="Filter by status">
+    @for (status of statuses; track status) {
+      <button
+        class="filter"
+        [class.active]="query().status === status"
+        [attr.aria-pressed]="query().status === status"
+        (click)="setStatus(status)"
+      >
+        {{ status ? statusLabels[status] : 'All' }}
+      </button>
+    }
+  </div>
+
+  @if (state().result; as result) {
+    @if (result.items.length) {
+      <ul class="orders">
+        @for (order of result.items; track order.id) {
+          <li>
+            <a class="order" [routerLink]="['/account/orders', order.id]">
+              <span class="number">Order #{{ order.id }}</span>
+              <span class="date">{{ order.createdAt | date: 'd MMM y, HH:mm' }}</span>
+              @if (auth.isStaff()) {
+                <span class="customer">{{ order.customerName }}</span>
+              }
+              <app-order-status-chip class="status" [status]="order.status" />
+              <span class="count">{{ order.itemCount }} {{ order.itemCount === 1 ? 'item' : 'items' }}</span>
+              <span class="total">{{ order.totalAmount | currency: 'GEL' : 'symbol-narrow' }}</span>
+              <mat-icon class="chevron" aria-hidden="true">chevron_right</mat-icon>
+            </a>
+          </li>
+        }
+      </ul>
+
+      @if (result.totalPages > 1) {
+        <nav class="pager" aria-label="Pages">
+          <button matButton="outlined" [disabled]="result.page <= 1" (click)="goToPage(result.page - 1)">Previous</button>
+          <span>Page {{ result.page }} of {{ result.totalPages }}</span>
+          <button matButton="outlined" [disabled]="result.page >= result.totalPages" (click)="goToPage(result.page + 1)">Next</button>
+        </nav>
+      }
+    } @else if (query().status) {
+      <app-empty-state icon="filter_alt_off" title="No orders with this status" />
+    } @else {
+      <app-empty-state icon="receipt_long" title="No orders yet" message="When you place an order, you can follow it here.">
+        <a matButton="filled" routerLink="/products">Start shopping</a>
+      </app-empty-state>
+    }
+  } @else if (state().failed) {
+    <app-empty-state icon="cloud_off" title="We couldn't load your orders" message="Please refresh the page." />
+  } @else {
+    <div class="loading" aria-busy="true" aria-label="Loading orders"></div>
+  }
+</div>

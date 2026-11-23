@@ -26,6 +26,7 @@ export const AuthStore = signalStore(
     isLoggedIn: computed(() => !!token() && !!expiresAt() && new Date(expiresAt()!) > new Date()),
     isStaff: computed(() => user()?.role === 'Admin' || user()?.role === 'StoreManager'),
     isAdmin: computed(() => user()?.role === 'Admin'),
+    isCustomer: computed(() => user()?.role === 'Customer'),
     firstName: computed(() => user()?.firstName ?? ''),
   })),
 
