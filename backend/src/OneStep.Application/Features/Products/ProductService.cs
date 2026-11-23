@@ -3,6 +3,7 @@ using OneStep.Application.Abstractions;
 using OneStep.Application.Common;
 using OneStep.Application.Common.Exceptions;
 using OneStep.Application.Features.Categories;
+using OneStep.Application.Features.Inventory;
 using OneStep.Application.Features.Pricing;
 using OneStep.Domain.Entities;
 using OneStep.Domain.Enums;
@@ -389,31 +390,13 @@ public class ProductService : IProductService
         }
     }
 
-    /// <summary>
-    /// Creates a staff notification when stock drops to or below the threshold.
-    /// Only when it crosses the line, so staff don't get a new alert on every edit.
-    /// </summary>
+    /// <summary>Adds a staff notification when stock crosses the low-stock line (rule in StockAlerts).</summary>
     private void AddStockNotificationIfNeeded(Product product, int previousQuantity)
     {
-        if (product.StockQuantity == 0 && previousQuantity > 0)
+        var notification = StockAlerts.CreateIfNeeded(product, previousQuantity);
+        if (notification is not null)
         {
-            _db.Notifications.Add(new Notification
-            {
-                Type = NotificationType.OutOfStock,
-                Message = $"{product.Name} is out of stock.",
-                Product = product
-            });
-        }
-        else if (product.StockQuantity > 0
-                 && product.StockQuantity <= product.LowStockThreshold
-                 && previousQuantity > product.LowStockThreshold)
-        {
-            _db.Notifications.Add(new Notification
-            {
-                Type = NotificationType.LowStock,
-                Message = $"{product.Name} is low on stock ({product.StockQuantity} left).",
-                Product = product
-            });
+            _db.Notifications.Add(notification);
         }
     }
 }

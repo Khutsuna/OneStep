@@ -22,12 +22,24 @@
     </form>
 
     <nav class="account" aria-label="Account">
+      <!-- Guests see the cart too: clicking it asks them to log in first. Staff accounts can't shop. -->
+      @if (!auth.isStaff()) {
+        <a matIconButton class="cart-button" routerLink="/cart"
+           [attr.aria-label]="'Cart, ' + cart.itemCount() + (cart.itemCount() === 1 ? ' item' : ' items')">
+          <mat-icon aria-hidden="true" [matBadge]="cart.itemCount()" [matBadgeHidden]="cart.itemCount() === 0">shopping_cart</mat-icon>
+        </a>
+      }
+
       @if (auth.isLoggedIn()) {
         <button matButton class="account-button" [matMenuTriggerFor]="accountMenu">
           <mat-icon aria-hidden="true">person</mat-icon>
           {{ auth.firstName() }}
         </button>
         <mat-menu #accountMenu="matMenu" xPosition="before">
+          <a mat-menu-item routerLink="/account/orders">
+            <mat-icon aria-hidden="true">receipt_long</mat-icon>
+            {{ auth.isStaff() ? 'Orders' : 'My orders' }}
+          </a>
           <button mat-menu-item (click)="logout()">
             <mat-icon aria-hidden="true">logout</mat-icon>
             Log out

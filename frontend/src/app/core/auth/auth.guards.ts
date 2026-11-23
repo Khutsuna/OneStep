@@ -23,3 +23,12 @@ export const staffGuard: CanActivateFn = (_route, state) => {
   }
   return auth.isStaff() ? true : inject(Router).createUrlTree(['/']);
 };
+
+/** Only for customers (the cart and checkout). Staff accounts can't shop, so they go home. */
+export const customerGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthStore);
+  if (!auth.isLoggedIn()) {
+    return inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+  return auth.isCustomer() ? true : inject(Router).createUrlTree(['/']);
+};

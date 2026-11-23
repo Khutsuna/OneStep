@@ -1,0 +1,139 @@
+@use 'breakpoints' as bp;
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+
+.filter {
+  flex: none;
+  padding: 6px 14px;
+  border: 1px solid var(--os-line);
+  border-radius: 999px;
+  background: var(--os-surface);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--os-ink);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--os-ink-soft);
+  }
+
+  &.active {
+    background: var(--os-ink);
+    border-color: var(--os-ink);
+    color: #fff;
+  }
+}
+
+.orders {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--os-surface);
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius-lg);
+  overflow: hidden;
+
+  li + li {
+    border-top: 1px solid var(--os-line);
+  }
+}
+
+// Phone: two short rows. Desktop: one row with aligned columns.
+.order {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'number status chevron'
+    'date total chevron'
+    'customer count chevron';
+  gap: 2px 12px;
+  align-items: center;
+  padding: 14px 16px;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--os-paper);
+  }
+
+  @include bp.from(bp.$md) {
+    grid-template-columns: 120px 170px minmax(0, 1fr) 150px 80px 120px 24px;
+    grid-template-areas: 'number date customer status count total chevron';
+  }
+}
+
+.number {
+  grid-area: number;
+  font-weight: 700;
+}
+
+.date {
+  grid-area: date;
+  color: var(--os-muted);
+  font-size: 0.875rem;
+}
+
+.customer {
+  grid-area: customer;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  grid-area: status;
+  justify-self: start;
+
+  @media (max-width: 959px) {
+    justify-self: end;
+  }
+}
+
+.count {
+  grid-area: count;
+  color: var(--os-muted);
+  font-size: 0.875rem;
+  justify-self: end;
+}
+
+.total {
+  grid-area: total;
+  justify-self: end;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  grid-area: chevron;
+  color: var(--os-muted);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  color: var(--os-muted);
+}
+
+.loading {
+  height: 320px;
+  border-radius: var(--os-radius-lg);
+  background: var(--os-photo);
+}

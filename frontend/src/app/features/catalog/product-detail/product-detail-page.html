@@ -48,12 +48,33 @@
             <span class="campaign">{{ product.campaignName }}</span>
           }
           <app-price-tag size="large" [price]="product.price" [finalPrice]="product.finalPrice" />
-          <p class="vat">Price includes 18% VAT at checkout. Delivery calculated at checkout.</p>
+          <p class="vat">18% VAT and delivery are added at checkout.</p>
 
           <p class="stock" [class.out]="!product.inStock" [class.low]="product.inStock && product.stockQuantity <= product.lowStockThreshold">
             <mat-icon aria-hidden="true">{{ product.inStock ? 'check_circle' : 'block' }}</mat-icon>
             {{ stockText() }}
           </p>
+
+          <!-- Staff accounts can't shop, so they don't see the button. -->
+          @if (product.inStock && !auth.isStaff()) {
+            <div class="buy">
+              <app-quantity-stepper
+                [value]="quantity()"
+                [max]="product.stockQuantity"
+                [label]="product.name"
+                (changed)="quantity.set($event)"
+              />
+              <button matButton="filled" class="add" [disabled]="adding()" (click)="addToCart(product)">
+                <mat-icon aria-hidden="true">add_shopping_cart</mat-icon>
+                {{ adding() ? 'Adding…' : 'Add to cart' }}
+              </button>
+            </div>
+            @if (inCart() > 0) {
+              <p class="in-cart">
+                You have {{ inCart() }} in your cart. <a routerLink="/cart">View cart</a>
+              </p>
+            }
+          }
         </div>
 
         @if (product.attributes.length) {

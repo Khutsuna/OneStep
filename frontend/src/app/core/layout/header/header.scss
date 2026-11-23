@@ -103,6 +103,13 @@
 .account {
   grid-area: account;
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cart-button {
+  color: #fff;
 }
 
 .account {
@@ -111,6 +118,19 @@
     (
       text-label-text-color: #fff,
       text-state-layer-color: #fff,
+    )
+  );
+  @include mat.icon-button-overrides(
+    (
+      icon-color: #fff,
+      state-layer-color: #fff,
+    )
+  );
+  // The number on the cart: marigold, like the logo.
+  @include mat.badge-overrides(
+    (
+      background-color: var(--os-step),
+      text-color: var(--os-ink),
     )
   );
 }
