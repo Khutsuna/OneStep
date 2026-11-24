@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,8 @@ import { PagedResult } from '../../../core/models/common.models';
 import { OrderStatus, OrderSummary } from '../../../core/models/shop.models';
 import { OrdersApi } from '../../../core/shop/orders.api';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
-import { ORDER_STATUS_LABELS, OrderStatusChip } from '../../../shared/ui/order-status/order-status-chip';
+import { OrderStatusChip, statusKey } from '../../../shared/ui/order-status/order-status-chip';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 interface ListState {
   result: PagedResult<OrderSummary> | null;
@@ -26,7 +27,7 @@ interface ListState {
  */
 @Component({
   selector: 'app-order-list-page',
-  imports: [CurrencyPipe, DatePipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, EmptyState, OrderStatusChip],
+  imports: [I18N, CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, EmptyState, OrderStatusChip],
   templateUrl: './order-list-page.html',
   styleUrl: './order-list-page.scss',
 })
@@ -35,7 +36,7 @@ export class OrderListPage {
   private readonly api = inject(OrdersApi);
 
   protected readonly statuses: (OrderStatus | null)[] = [null, 'Pending', 'Paid', 'Shipped', 'Delivered', 'Cancelled'];
-  protected readonly statusLabels = ORDER_STATUS_LABELS;
+  protected readonly statusKey = statusKey;
 
   /** true inside the admin panel (from the route's data). */
   readonly admin = input(false);

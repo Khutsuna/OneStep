@@ -1,19 +1,19 @@
 <div class="page">
-  <h1 class="title">Checkout</h1>
+  <h1 class="title">{{ 'checkout.title' | t }}</h1>
 
   @if (cart.cart() !== null && cart.isEmpty()) {
-    <app-empty-state icon="shopping_cart" title="Your cart is empty" message="Add a product before checking out.">
-      <a matButton="filled" routerLink="/products">Browse products</a>
+    <app-empty-state icon="shopping_cart" [title]="'cart.empty' | t" [message]="'checkout.emptyHint' | t">
+      <a matButton="filled" routerLink="/products">{{ 'cart.browse' | t }}</a>
     </app-empty-state>
   } @else {
     <div class="layout">
       <div class="steps">
         <!-- 1. Address -->
         <section class="step" aria-labelledby="address-title">
-          <h2 id="address-title"><span class="number" aria-hidden="true">1</span> Delivery address</h2>
+          <h2 id="address-title"><span class="number" aria-hidden="true">1</span> {{ 'checkout.address' | t }}</h2>
 
           @if (addresses() === null) {
-            <p class="muted">Loading your addresses…</p>
+            <p class="muted">{{ 'checkout.loadingAddresses' | t }}</p>
           } @else {
             @if (addresses()!.length) {
               <div class="choices" role="radiogroup" aria-labelledby="address-title">
@@ -24,7 +24,7 @@
                       <span class="heading">
                         <strong>{{ address.label }}</strong>
                         @if (address.isDefault) {
-                          <span class="tag">Default</span>
+                          <span class="tag">{{ 'checkout.default' | t }}</span>
                         }
                       </span>
                       <span class="line">{{ address.recipientName }} · {{ address.phone }}</span>
@@ -39,13 +39,13 @@
 
             @if (addingAddress()) {
               <div class="new-address">
-                <h3>New address</h3>
+                <h3>{{ 'checkout.newAddress' | t }}</h3>
                 <app-address-form (saved)="onAddressSaved($event)" (cancelled)="addingAddress.set(false)" />
               </div>
             } @else {
               <button matButton class="add" (click)="addingAddress.set(true)">
                 <mat-icon aria-hidden="true">add</mat-icon>
-                Add a new address
+                {{ 'checkout.addAddress' | t }}
               </button>
             }
           }
@@ -53,20 +53,20 @@
 
         <!-- 2. Delivery -->
         <section class="step" aria-labelledby="delivery-title">
-          <h2 id="delivery-title"><span class="number" aria-hidden="true">2</span> Delivery</h2>
+          <h2 id="delivery-title"><span class="number" aria-hidden="true">2</span> {{ 'checkout.delivery' | t }}</h2>
           <div class="choices" role="radiogroup" aria-labelledby="delivery-title">
             @for (method of deliveryMethods(); track method.id) {
               <label class="choice" [class.selected]="method.id === deliveryMethodId()">
                 <input type="radio" name="delivery" [checked]="method.id === deliveryMethodId()" (change)="deliveryMethodId.set(method.id)" />
                 <span class="choice-body">
-                  <strong>{{ method.name }}</strong>
+                  <strong>{{ method.name | term }}</strong>
                   <span class="line muted">{{ deliveryNote(method) }}</span>
                   @if (method.freeOverAmount !== null) {
-                    <span class="line muted">Free from {{ method.freeOverAmount | currency: 'GEL' : 'symbol-narrow' : '1.0-0' }}</span>
+                    <span class="line muted">{{ 'checkout.freeFrom' | t: { amount: (method.freeOverAmount | currency: 'GEL' : 'symbol-narrow' : '1.0-0') } }}</span>
                   }
                 </span>
                 <span class="price" [class.free]="deliveryPrice(method) === 0">
-                  {{ deliveryPrice(method) === 0 ? 'Free' : (method.price | currency: 'GEL' : 'symbol-narrow') }}
+                  {{ deliveryPrice(method) === 0 ? ('totals.free' | t) : (method.price | currency: 'GEL' : 'symbol-narrow') }}
                 </span>
               </label>
             }
@@ -75,35 +75,35 @@
 
         <!-- 3. Payment -->
         <section class="step" aria-labelledby="payment-title">
-          <h2 id="payment-title"><span class="number" aria-hidden="true">3</span> Payment</h2>
+          <h2 id="payment-title"><span class="number" aria-hidden="true">3</span> {{ 'checkout.payment' | t }}</h2>
           <div class="choices" role="radiogroup" aria-labelledby="payment-title">
             <label class="choice" [class.selected]="paymentMethod() === 'Card'">
               <input type="radio" name="payment" [checked]="paymentMethod() === 'Card'" (change)="paymentMethod.set('Card')" />
               <mat-icon aria-hidden="true">credit_card</mat-icon>
               <span class="choice-body">
-                <strong>Card</strong>
-                <span class="line muted">Pay right after placing the order. Test mode: no real money is charged.</span>
+                <strong>{{ 'checkout.card' | t }}</strong>
+                <span class="line muted">{{ 'checkout.cardHint' | t }}</span>
               </span>
             </label>
             <label class="choice" [class.selected]="paymentMethod() === 'CashOnDelivery'">
               <input type="radio" name="payment" [checked]="paymentMethod() === 'CashOnDelivery'" (change)="paymentMethod.set('CashOnDelivery')" />
               <mat-icon aria-hidden="true">payments</mat-icon>
               <span class="choice-body">
-                <strong>Cash on delivery</strong>
-                <span class="line muted">Pay the courier when the parcel arrives.</span>
+                <strong>{{ 'checkout.cash' | t }}</strong>
+                <span class="line muted">{{ 'checkout.cashHint' | t }}</span>
               </span>
             </label>
           </div>
 
           <mat-form-field class="note">
-            <mat-label>Note for the courier (optional)</mat-label>
+            <mat-label>{{ 'checkout.note' | t }}</mat-label>
             <textarea matInput rows="2" maxlength="500" [ngModel]="note()" (ngModelChange)="note.set($event)"></textarea>
           </mat-form-field>
         </section>
       </div>
 
       <aside class="summary" aria-labelledby="summary-title">
-        <h2 id="summary-title">Your order</h2>
+        <h2 id="summary-title">{{ 'checkout.yourOrder' | t }}</h2>
         <ul class="lines">
           @for (item of cart.items(); track item.id) {
             <li>
@@ -117,7 +117,7 @@
         @if (totals(); as totals) {
           <app-totals-table [totals]="totals" />
         } @else {
-          <p class="muted">Calculating totals…</p>
+          <p class="muted">{{ 'checkout.calculating' | t }}</p>
         }
 
         @if (errorMessage(); as message) {
@@ -125,12 +125,12 @@
         }
 
         <button matButton="filled" class="place" [disabled]="!canPlace()" (click)="placeOrder()">
-          {{ placing() ? 'Placing your order…' : 'Place order' }}
+          {{ (placing() ? 'checkout.placing' : 'checkout.place') | t }}
         </button>
         @if (!addressId() && addresses() !== null) {
-          <p class="hint">Add a delivery address to continue.</p>
+          <p class="hint">{{ 'checkout.needAddress' | t }}</p>
         }
-        <a class="back" routerLink="/cart">Back to cart</a>
+        <a class="back" routerLink="/cart">{{ 'checkout.backToCart' | t }}</a>
       </aside>
     </div>
   }

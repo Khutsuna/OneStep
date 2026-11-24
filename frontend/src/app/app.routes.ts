@@ -6,6 +6,7 @@ import { Shell } from './core/layout/shell/shell';
  * Every page is lazy-loaded (loadComponent): its code is downloaded only when you open it,
  * so the first page loads faster.
  */
+// Titles are translation keys; TranslatedTitleStrategy shows them in the current language.
 export const routes: Routes = [
   // The admin panel has its own layout (no shop header), so it sits outside the Shell.
   // It must come first: the Shell's '**' (page not found) would otherwise catch /admin.
@@ -16,48 +17,48 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'Dashboard — OneStep Admin',
+        title: 'title.dashboard',
         loadComponent: () => import('./features/admin/dashboard/dashboard-page').then((m) => m.DashboardPage),
       },
       {
         path: 'orders',
-        title: 'Orders — OneStep Admin',
+        title: 'title.adminOrders',
         data: { admin: true },
         loadComponent: () =>
           import('./features/account/orders/order-list-page').then((m) => m.OrderListPage),
       },
       {
         path: 'orders/:id',
-        title: 'Order — OneStep Admin',
+        title: 'title.order',
         data: { admin: true },
         loadComponent: () =>
           import('./features/account/orders/order-detail-page').then((m) => m.OrderDetailPage),
       },
       {
         path: 'products',
-        title: 'Products — OneStep Admin',
+        title: 'title.adminProducts',
         loadComponent: () =>
           import('./features/admin/products/admin-products-page').then((m) => m.AdminProductsPage),
       },
       {
         path: 'products/new',
-        title: 'New product — OneStep Admin',
+        title: 'title.newProduct',
         loadComponent: () => import('./features/admin/products/product-edit-page').then((m) => m.ProductEditPage),
       },
       {
         path: 'products/:id',
-        title: 'Edit product — OneStep Admin',
+        title: 'title.editProduct',
         loadComponent: () => import('./features/admin/products/product-edit-page').then((m) => m.ProductEditPage),
       },
       {
         path: 'campaigns',
-        title: 'Campaigns — OneStep Admin',
+        title: 'title.campaigns',
         loadComponent: () =>
           import('./features/admin/campaigns/admin-campaigns-page').then((m) => m.AdminCampaignsPage),
       },
       {
         path: 'users',
-        title: 'Users — OneStep Admin',
+        title: 'title.users',
         canActivate: [adminGuard],
         loadComponent: () => import('./features/admin/users/admin-users-page').then((m) => m.AdminUsersPage),
       },
@@ -69,12 +70,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'OneStep — electronics in Georgia',
+        title: 'title.default',
         loadComponent: () => import('./features/home/home-page').then((m) => m.HomePage),
       },
       {
         path: 'products',
-        title: 'Products — OneStep',
+        title: 'title.products',
         loadComponent: () =>
           import('./features/catalog/product-list/product-list-page').then((m) => m.ProductListPage),
       },
@@ -85,55 +86,55 @@ export const routes: Routes = [
       },
       {
         path: 'cart',
-        title: 'Your cart — OneStep',
+        title: 'title.cart',
         canActivate: [customerGuard],
         loadComponent: () => import('./features/cart/cart-page').then((m) => m.CartPage),
       },
       {
         path: 'checkout',
-        title: 'Checkout — OneStep',
+        title: 'title.checkout',
         canActivate: [customerGuard],
         loadComponent: () => import('./features/checkout/checkout-page').then((m) => m.CheckoutPage),
       },
       {
         path: 'account',
-        title: 'My account — OneStep',
+        title: 'title.account',
         canActivate: [authGuard],
         loadComponent: () => import('./features/account/profile/profile-page').then((m) => m.ProfilePage),
       },
       {
         path: 'account/wishlist',
-        title: 'Wishlist — OneStep',
+        title: 'title.wishlist',
         canActivate: [customerGuard],
         loadComponent: () => import('./features/account/wishlist/wishlist-page').then((m) => m.WishlistPage),
       },
       {
         path: 'account/orders',
-        title: 'My orders — OneStep',
+        title: 'title.myOrders',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/account/orders/order-list-page').then((m) => m.OrderListPage),
       },
       {
         path: 'account/orders/:id',
-        title: 'Order — OneStep',
+        title: 'title.order',
         canActivate: [authGuard],
         loadComponent: () =>
           import('./features/account/orders/order-detail-page').then((m) => m.OrderDetailPage),
       },
       {
         path: 'login',
-        title: 'Log in — OneStep',
+        title: 'title.login',
         loadComponent: () => import('./features/auth/login/login-page').then((m) => m.LoginPage),
       },
       {
         path: 'register',
-        title: 'Create an account — OneStep',
+        title: 'title.register',
         loadComponent: () => import('./features/auth/register/register-page').then((m) => m.RegisterPage),
       },
       {
         path: '**',
-        title: 'Page not found — OneStep',
+        title: 'title.notFound',
         loadComponent: () => import('./features/not-found/not-found-page').then((m) => m.NotFoundPage),
       },
     ],

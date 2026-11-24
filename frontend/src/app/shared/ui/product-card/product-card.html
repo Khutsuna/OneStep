@@ -15,9 +15,9 @@
     <app-price-tag class="price" [price]="product().price" [finalPrice]="product().finalPrice" />
 
     @if (!product().inStock) {
-      <span class="stock out">Out of stock</span>
+      <span class="stock out">{{ 'card.outOfStock' | t }}</span>
     } @else if (product().stockQuantity <= 5) {
-      <span class="stock low">Only {{ product().stockQuantity }} left</span>
+      <span class="stock low">{{ 'card.onlyLeft' | t: { count: product().stockQuantity } }}</span>
     }
   </div>
 </a>

@@ -1,69 +1,121 @@
 @use 'breakpoints' as bp;
 
+// ---------- Hero: full-width navy, big type, category stairs ----------
 .hero {
-  background: var(--os-surface);
-  border-bottom: 1px solid var(--os-line);
+  background: var(--os-ink);
+  color: #fff;
+  overflow: hidden;
 }
 
 .hero-inner {
   max-width: var(--os-page-width);
   margin: 0 auto;
-  padding: 32px var(--os-gutter) 0;
+  padding: 40px var(--os-gutter) 0;
   display: grid;
-  gap: 28px;
+  gap: 32px;
 
   @include bp.from(bp.$md) {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
     align-items: end;
-    padding-top: 56px;
+    padding-top: 72px;
   }
 }
 
 .intro {
-  padding-bottom: 8px;
-
   @include bp.from(bp.$md) {
-    padding-bottom: 48px;
+    padding-bottom: 64px;
   }
 
   h1 {
-    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    color: #fff;
+    font-family: var(--os-display);
+    font-stretch: 115%;
+    font-size: clamp(2.75rem, 7vw, 5rem);
     font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    max-width: 11ch;
   }
+}
 
-  p {
-    color: var(--os-muted);
-    font-size: 1.0625rem;
-    max-width: 38ch;
-    margin: 16px 0 24px;
-  }
+.lead {
+  color: #c3cbdd;
+  font-size: 1.125rem;
+  max-width: 42ch;
+  margin: 20px 0 28px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .cta {
-  display: inline-block;
-  background: var(--os-ink);
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 12px 20px;
+  display: inline-flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 24px;
+  border: 2px solid var(--os-step);
   border-radius: var(--os-radius-sm);
+  background: var(--os-step);
+  color: var(--os-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
 
   &:hover {
-    background: var(--os-ink-soft);
+    background: #ffc94d;
+    border-color: #ffc94d;
+  }
+
+  &.ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgb(255 255 255 / 0.35);
+
+    &:hover {
+      border-color: #fff;
+    }
   }
 }
 
-// Category "stairs": each tile is taller than the one before it.
+.perks {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  color: #c3cbdd;
+  font-size: 0.875rem;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--os-step);
+  }
+}
+
+// Category stairs: four solid blocks, each one a step higher, the last one marigold.
 .steps {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  padding-bottom: 24px;
+  padding-bottom: 28px;
 
   @include bp.from(bp.$sm) {
-    grid-template-columns: repeat(4, 1fr);
+    // minmax(0, 1fr): four equal steps, even when a (Georgian) name is long.
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: end;
     padding-bottom: 0;
   }
@@ -75,59 +127,106 @@
   justify-content: flex-end;
   gap: 2px;
   padding: 16px;
-  min-height: 120px;
-  background: var(--os-paper);
-  border: 1px solid var(--os-line);
+  min-height: 128px;
   border-radius: var(--os-radius-lg);
-  color: var(--os-ink);
+  background: #22335a;
+  color: #fff;
   text-decoration: none;
+  transition: transform 160ms ease, background-color 160ms ease;
+
+  &:nth-child(2) {
+    background: #2b3f6b;
+  }
+
+  &:nth-child(3) {
+    background: #354b7e;
+  }
+
+  &:nth-child(4) {
+    background: var(--os-step);
+    color: var(--os-ink);
+
+    .step-count {
+      color: rgb(16 26 51 / 0.7);
+    }
+  }
 
   @include bp.from(bp.$sm) {
-    border-bottom: 0;
     border-radius: var(--os-radius-lg) var(--os-radius-lg) 0 0;
 
-    &:nth-child(1) { min-height: 150px; }
-    &:nth-child(2) { min-height: 190px; }
-    &:nth-child(3) { min-height: 230px; }
-    &:nth-child(4) { min-height: 270px; }
+    &:nth-child(1) { min-height: 160px; }
+    &:nth-child(2) { min-height: 215px; }
+    &:nth-child(3) { min-height: 270px; }
+    &:nth-child(4) { min-height: 325px; }
   }
 
   mat-icon {
-    font-size: 30px;
-    width: 30px;
-    height: 30px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
     margin-bottom: auto;
   }
 
+  // Hovering a step lifts it, like stepping on it.
   &:hover {
-    background: var(--os-step);
-    border-color: var(--os-step);
+    transform: translateY(-6px);
   }
 }
 
 .step-name {
+  font-family: var(--os-display);
+  font-stretch: 110%;
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: clamp(0.9375rem, 1.4vw, 1.125rem);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .step-count {
   font-size: 0.8125rem;
-  color: var(--os-muted);
+  color: #aeb8cf;
+}
+
+// ---------- Deals band ----------
+.deals {
+  background: #fff4d6;
+  border-bottom: 1px solid #f2dc9c;
+}
+
+.band {
+  max-width: var(--os-page-width);
+  margin: 0 auto;
+  padding: 36px var(--os-gutter) 40px;
 }
 
 .section-head {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-top: 16px;
+  gap: 12px;
+  margin: 8px 0 18px;
+
+  .section-title {
+    margin: 0;
+  }
 
   a {
     font-weight: 600;
+    white-space: nowrap;
   }
 }
 
+.section-note {
+  margin: 4px 0 0;
+  color: var(--os-muted);
+}
+
+.page {
+  padding-top: 32px;
+}
+
 .rated {
-  margin-top: 40px;
+  margin-top: 48px;
 }
 
 .skeleton {

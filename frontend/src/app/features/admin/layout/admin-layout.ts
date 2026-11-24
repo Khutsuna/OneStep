@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,11 +7,13 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { AuthStore } from '../../../core/auth/auth.store';
 import { StaffNotification } from '../../../core/models/admin.models';
 import { NotificationsStore } from './notifications.store';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /** The frame of the admin panel: top bar with alerts, side navigation, and the current admin page. */
 @Component({
   selector: 'app-admin-layout',
-  imports: [DatePipe, RouterLink, RouterLinkActive, RouterOutlet, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [I18N, RouterLink, RouterLinkActive, RouterOutlet, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
   providers: [NotificationsStore],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',
@@ -20,6 +21,7 @@ import { NotificationsStore } from './notifications.store';
 export class AdminLayout {
   protected readonly auth = inject(AuthStore);
   protected readonly notifications = inject(NotificationsStore);
+  protected readonly language = inject(LanguageStore);
   private readonly router = inject(Router);
 
   protected readonly icons: Record<StaffNotification['type'], string> = {

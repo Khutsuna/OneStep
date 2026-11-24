@@ -8,10 +8,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthStore } from '../../auth/auth.store';
 import { CategoryStore, categoryIcon } from '../../catalog/category.store';
 import { CartStore } from '../../shop/cart.store';
+import { LanguageStore } from '../../i18n/language.store';
+import { I18N } from '../../i18n/translate.pipes';
 
 @Component({
   selector: 'app-header',
-  imports: [FormsModule, RouterLink, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [I18N, FormsModule, RouterLink, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
@@ -19,6 +21,7 @@ export class Header {
   protected readonly auth = inject(AuthStore);
   protected readonly categories = inject(CategoryStore);
   protected readonly cart = inject(CartStore);
+  protected readonly language = inject(LanguageStore);
   private readonly router = inject(Router);
 
   protected readonly searchTerm = signal('');

@@ -1,19 +1,15 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { OrderDetails, OrderStatus } from '../../../core/models/shop.models';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { stepKey } from '../../../shared/ui/order-status/order-status-chip';
 
-const STEPS: { status: OrderStatus; label: string }[] = [
-  { status: 'Pending', label: 'Placed' },
-  { status: 'Paid', label: 'Paid' },
-  { status: 'Shipped', label: 'Shipped' },
-  { status: 'Delivered', label: 'Delivered' },
-];
+const STEPS: OrderStatus[] = ['Pending', 'Paid', 'Shipped', 'Delivered'];
 
 /** The four steps of an order (Placed → Paid → Shipped → Delivered), with the date each one happened. */
 @Component({
   selector: 'app-order-tracker',
-  imports: [DatePipe, MatIconModule],
+  imports: [I18N, MatIconModule],
   template: `
     <ol>
       @for (step of steps(); track step.status) {
@@ -23,8 +19,8 @@ const STEPS: { status: OrderStatus; label: string }[] = [
               <mat-icon>check</mat-icon>
             }
           </span>
-          <span class="label">{{ step.label }}</span>
-          <span class="when">{{ step.date ? (step.date | date: 'd MMM, HH:mm') : '' }}</span>
+          <span class="label">{{ step.label | t }}</span>
+          <span class="when">{{ step.date | localDate: 'd MMM, HH:mm' }}</span>
         </li>
       }
     </ol>
@@ -49,12 +45,13 @@ export class OrderTracker {
 
   protected readonly steps = computed(() => {
     const order = this.order();
-    const reached = STEPS.findIndex((s) => s.status === order.status);
-    return STEPS.map((step, index) => ({
-      ...step,
+    const reached = STEPS.indexOf(order.status);
+    return STEPS.map((status, index) => ({
+      status,
+      label: stepKey(status),
       done: index <= reached,
       current: index === reached,
-      date: order.history.find((h) => h.toStatus === step.status)?.changedAt ?? null,
+      date: order.history.find((h) => h.toStatus === status)?.changedAt ?? null,
     }));
   });
 }

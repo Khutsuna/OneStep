@@ -2,23 +2,23 @@
   @if (order(); as order) {
     <a class="back" [routerLink]="admin() ? '/admin/orders' : '/account/orders'">
       <mat-icon aria-hidden="true">arrow_back</mat-icon>
-      {{ admin() ? 'All orders' : 'My orders' }}
+      {{ (admin() ? 'order.allOrders' : 'orders.title') | t }}
     </a>
 
     @if (placed() && order.status !== 'Cancelled') {
       <div class="thanks" role="status">
         <mat-icon aria-hidden="true">check_circle</mat-icon>
         <div>
-          <strong>Thank you, your order is placed.</strong>
-          <span>We'll keep this page updated as it moves along.</span>
+          <strong>{{ 'order.thanks' | t }}</strong>
+          <span>{{ 'order.thanksHint' | t }}</span>
         </div>
       </div>
     }
 
     <header class="head">
       <div>
-        <h1>Order #{{ order.id }}</h1>
-        <p class="muted">Placed {{ order.createdAt | date: 'd MMMM y, HH:mm' }}</p>
+        <h1>{{ 'orders.number' | t: { id: order.id } }}</h1>
+        <p class="muted">{{ 'order.placedOn' | t: { date: (order.createdAt | localDate: 'd MMMM y, HH:mm') } }}</p>
       </div>
       <app-order-status-chip [status]="order.status" />
     </header>
@@ -29,7 +29,7 @@
           @if (order.status === 'Cancelled') {
             <p class="cancelled">
               <mat-icon aria-hidden="true">block</mat-icon>
-              This order was cancelled. The products went back to stock.
+              {{ 'order.cancelledNote' | t }}
             </p>
           } @else {
             <app-order-tracker [order]="order" />
@@ -39,16 +39,16 @@
         <!-- Customer: pay by card (test mode) -->
         @if (order.canPay) {
           <section class="card pay" aria-labelledby="pay-title">
-            <h2 id="pay-title">Pay by card</h2>
+            <h2 id="pay-title">{{ 'order.payTitle' | t }}</h2>
             <p class="muted">
-              Test mode: this simulates a card payment, and no real money is charged.
+              {{ 'order.payHint' | t }}
             </p>
             <div class="test-card" aria-hidden="true">
               <span>4242 4242 4242 4242</span>
               <span>12/30 · 123</span>
             </div>
             <button matButton="filled" class="pay-button" [disabled]="busy()" (click)="pay()">
-              {{ busy() ? 'Paying…' : 'Pay ' + (order.totals.totalAmount | currency: 'GEL' : 'symbol-narrow') }}
+              {{ busy() ? ('order.paying' | t) : ('order.pay' | t: { amount: (order.totals.totalAmount | currency: 'GEL' : 'symbol-narrow') }) }}
             </button>
           </section>
         }
@@ -56,15 +56,15 @@
         <!-- Staff: move the order along -->
         @if (auth.isStaff() && moveTo().length) {
           <section class="card" aria-labelledby="staff-title">
-            <h2 id="staff-title">Update status</h2>
+            <h2 id="staff-title">{{ 'order.updateStatus' | t }}</h2>
             <mat-form-field class="full">
-              <mat-label>Note for the history (optional)</mat-label>
+              <mat-label>{{ 'order.statusNote' | t }}</mat-label>
               <input matInput maxlength="300" [ngModel]="statusNote()" (ngModelChange)="statusNote.set($event)" />
             </mat-form-field>
             <div class="actions">
               @for (status of moveTo(); track status) {
                 <button matButton="filled" [disabled]="busy()" (click)="changeStatus(status)">
-                  Mark as {{ stepLabels[status].toLowerCase() }}
+                  {{ 'order.markAs' | t: { status: (stepKey(status) | t) } }}
                 </button>
               }
             </div>
@@ -72,7 +72,7 @@
         }
 
         <section class="card" aria-labelledby="items-title">
-          <h2 id="items-title">Items</h2>
+          <h2 id="items-title">{{ 'order.items' | t }}</h2>
           <ul class="items">
             @for (item of order.items; track item.productId) {
               <li>
@@ -93,13 +93,13 @@
         </section>
 
         <section class="card" aria-labelledby="history-title">
-          <h2 id="history-title">History</h2>
+          <h2 id="history-title">{{ 'order.history' | t }}</h2>
           <ol class="history">
             @for (step of order.history; track $index) {
               <li>
-                <span class="when">{{ step.changedAt | date: 'd MMM y, HH:mm' }}</span>
+                <span class="when">{{ step.changedAt | localDate: 'd MMM y, HH:mm' }}</span>
                 <span>
-                  <strong>{{ stepLabels[step.toStatus] }}</strong>
+                  <strong>{{ stepKey(step.toStatus) | t }}</strong>
                   @if (step.note) {
                     — {{ step.note }}
                   }
@@ -115,19 +115,19 @@
 
       <aside class="side">
         <section class="card" aria-labelledby="totals-title">
-          <h2 id="totals-title">Payment</h2>
+          <h2 id="totals-title">{{ 'order.paymentTitle' | t }}</h2>
           <app-totals-table [totals]="order.totals" />
           <p class="muted small">
-            {{ order.paymentMethod === 'Card' ? 'Card' : 'Cash on delivery' }}
+            {{ (order.paymentMethod === 'Card' ? 'checkout.card' : 'checkout.cash') | t }}
             @if (order.paidAt) {
-              · paid {{ order.paidAt | date: 'd MMM, HH:mm' }}
+              · {{ 'order.paidAt' | t: { date: (order.paidAt | localDate: 'd MMM, HH:mm') } }}
             }
           </p>
         </section>
 
         <section class="card" aria-labelledby="delivery-title">
-          <h2 id="delivery-title">Delivery</h2>
-          <p class="strong">{{ order.deliveryMethodName }}</p>
+          <h2 id="delivery-title">{{ 'order.deliveryTitle' | t }}</h2>
+          <p class="strong">{{ order.deliveryMethodName | term }}</p>
           <address>
             {{ order.shippingAddress.recipientName }}<br />
             {{ order.shippingAddress.line1 }}<br />
@@ -138,33 +138,33 @@
             {{ order.shippingAddress.phone }}
           </address>
           @if (order.customerNote) {
-            <p class="muted small">Note: {{ order.customerNote }}</p>
+            <p class="muted small">{{ 'order.note' | t: { note: order.customerNote } }}</p>
           }
           @if (auth.isStaff()) {
-            <p class="muted small">Customer: {{ order.customerName }} ({{ order.customerEmail }})</p>
+            <p class="muted small">{{ 'order.customer' | t: { name: order.customerName, email: order.customerEmail } }}</p>
           }
         </section>
 
         @if (order.canCancel) {
           @if (confirmingCancel()) {
             <div class="confirm" role="alertdialog" aria-labelledby="confirm-title">
-              <p id="confirm-title"><strong>Cancel this order?</strong> The products go back to stock.</p>
+              <p id="confirm-title"><strong>{{ 'order.cancelQuestion' | t }}</strong> {{ 'order.cancelHint' | t }}</p>
               <div class="actions">
-                <button matButton="filled" class="danger" [disabled]="busy()" (click)="cancel()">Yes, cancel order</button>
-                <button matButton="outlined" (click)="confirmingCancel.set(false)">Keep order</button>
+                <button matButton="filled" class="danger" [disabled]="busy()" (click)="cancel()">{{ 'order.yesCancel' | t }}</button>
+                <button matButton="outlined" (click)="confirmingCancel.set(false)">{{ 'order.keep' | t }}</button>
               </div>
             </div>
           } @else {
-            <button matButton="outlined" class="cancel" (click)="confirmingCancel.set(true)">Cancel order</button>
+            <button matButton="outlined" class="cancel" (click)="confirmingCancel.set(true)">{{ 'order.cancel' | t }}</button>
           }
         }
       </aside>
     </div>
   } @else if (notFound()) {
-    <app-empty-state icon="receipt_long" title="Order not found" message="It doesn't exist, or it belongs to another account.">
-      <a matButton="filled" [routerLink]="admin() ? '/admin/orders' : '/account/orders'">See all orders</a>
+    <app-empty-state icon="receipt_long" [title]="'order.notFound' | t" [message]="'order.notFoundHint' | t">
+      <a matButton="filled" [routerLink]="admin() ? '/admin/orders' : '/account/orders'">{{ 'order.seeAll' | t }}</a>
     </app-empty-state>
   } @else {
-    <div class="loading" aria-busy="true" aria-label="Loading order"></div>
+    <div class="loading" aria-busy="true" [attr.aria-label]="'order.loading' | t"></div>
   }
 </div>

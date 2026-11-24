@@ -1,17 +1,18 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /** Shows a price in lari. When there is a discount, the old price is crossed out next to it. */
 @Component({
   selector: 'app-price-tag',
-  imports: [CurrencyPipe],
+  imports: [I18N, CurrencyPipe],
   template: `
     <span class="price" [class.large]="size() === 'large'" [class.sale]="hasDiscount()">
       {{ finalPrice() | currency: 'GEL' : 'symbol-narrow' : '1.2-2' }}
     </span>
     @if (hasDiscount()) {
       <span class="old">
-        <span class="visually-hidden">Was</span>
+        <span class="visually-hidden">{{ 'price.was' | t }}</span>
         {{ price() | currency: 'GEL' : 'symbol-narrow' : '1.2-2' }}
       </span>
       <span class="badge">−{{ percentOff() }}%</span>

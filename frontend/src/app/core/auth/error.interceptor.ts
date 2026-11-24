@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthStore } from './auth.store';
+import { LanguageStore } from '../i18n/language.store';
 
 /**
  * Handles errors that every page would otherwise repeat:
@@ -14,6 +15,7 @@ export const errorInterceptor: HttpInterceptorFn = (request, next) => {
   const auth = inject(AuthStore);
   const router = inject(Router);
   const snackBar = inject(MatSnackBar);
+  const i18n = inject(LanguageStore);
 
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -21,16 +23,16 @@ export const errorInterceptor: HttpInterceptorFn = (request, next) => {
 
       if (error.status === 401 && !isAuthCall) {
         auth.logout();
-        snackBar.open('Your session has ended. Please log in again.', 'OK', { duration: 5000 });
+        snackBar.open(i18n.t('errors.session'), i18n.t('common.ok'), { duration: 5000 });
         void router.navigate(['/login'], { queryParams: { returnUrl: router.url } });
       } else if (error.status === 403) {
-        snackBar.open("You don't have access to this.", 'OK', { duration: 5000 });
+        snackBar.open(i18n.t('errors.forbidden'), i18n.t('common.ok'), { duration: 5000 });
       } else if (error.status === 0) {
-        snackBar.open("Can't reach the OneStep server. Check that the API is running.", 'OK', {
+        snackBar.open(i18n.t('errors.offline'), i18n.t('common.ok'), {
           duration: 6000,
         });
       } else if (error.status >= 500) {
-        snackBar.open('Something went wrong on the server. Please try again.', 'OK', {
+        snackBar.open(i18n.t('errors.server'), i18n.t('common.ok'), {
           duration: 5000,
         });
       }

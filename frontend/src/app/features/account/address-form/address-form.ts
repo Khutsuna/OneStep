@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Address } from '../../../core/models/shop.models';
 import { AddressesApi } from '../../../core/shop/addresses.api';
 import { applyServerErrors } from '../../../core/util/form-errors';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /**
  * Add or edit an address. Used at checkout now, and in the address book later.
@@ -15,7 +17,7 @@ import { applyServerErrors } from '../../../core/util/form-errors';
  */
 @Component({
   selector: 'app-address-form',
-  imports: [ReactiveFormsModule, MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
+  imports: [I18N, ReactiveFormsModule, MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule],
   templateUrl: './address-form.html',
   styles: `
     form { display: grid; gap: 4px 12px; grid-template-columns: 1fr 1fr; }
@@ -32,16 +34,17 @@ export class AddressForm {
   readonly cancelled = output<void>();
 
   private readonly api = inject(AddressesApi);
+  private readonly i18n = inject(LanguageStore);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = inject(FormBuilder).nonNullable.group({
-    label: ['Home', [Validators.required, Validators.maxLength(50)]],
+    label: [this.i18n.t('address.defaultLabel'), [Validators.required, Validators.maxLength(50)]],
     recipientName: ['', [Validators.required, Validators.maxLength(150)]],
     phone: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[+0-9 ()-]{6,}$/)]],
     line1: ['', [Validators.required, Validators.maxLength(200)]],
     line2: ['', Validators.maxLength(200)],
-    city: ['Tbilisi', [Validators.required, Validators.maxLength(100)]],
+    city: [this.i18n.t('address.defaultCity'), [Validators.required, Validators.maxLength(100)]],
     region: ['', Validators.maxLength(100)],
     postalCode: ['', Validators.maxLength(20)],
     isDefault: [false],
@@ -89,7 +92,7 @@ export class AddressForm {
       },
       error: (error: HttpErrorResponse) => {
         this.saving.set(false);
-        this.errorMessage.set(applyServerErrors(this.form, error));
+        this.errorMessage.set(applyServerErrors(this.form, error, this.i18n));
       },
     });
   }

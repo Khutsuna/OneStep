@@ -6,6 +6,7 @@ import { PriceTag } from '../price-tag/price-tag';
 import { ProductImage } from '../product-image/product-image';
 import { RatingStars } from '../rating-stars/rating-stars';
 import { WishlistButton } from '../wishlist-button/wishlist-button';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /**
  * Presentational component: it only receives a product through an input and displays it.
@@ -13,7 +14,7 @@ import { WishlistButton } from '../wishlist-button/wishlist-button';
  */
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, PriceTag, ProductImage, RatingStars, WishlistButton],
+  imports: [I18N, RouterLink, PriceTag, ProductImage, RatingStars, WishlistButton],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss',
 })

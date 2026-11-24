@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /**
  * "−  2  +" control. It doesn't change anything itself: it only tells the parent
@@ -7,15 +8,15 @@ import { MatIconModule } from '@angular/material/icon';
  */
 @Component({
   selector: 'app-quantity-stepper',
-  imports: [MatIconModule],
+  imports: [I18N, MatIconModule],
   template: `
     <button type="button" [disabled]="disabled() || value() <= min()" (click)="changed.emit(value() - 1)"
-            [attr.aria-label]="'Decrease quantity of ' + label()">
+            [attr.aria-label]="'stepper.decrease' | t: { name: label() }">
       <mat-icon aria-hidden="true">remove</mat-icon>
     </button>
     <span class="value" aria-live="polite">{{ value() }}</span>
     <button type="button" [disabled]="disabled() || value() >= max()" (click)="changed.emit(value() + 1)"
-            [attr.aria-label]="'Increase quantity of ' + label()">
+            [attr.aria-label]="'stepper.increase' | t: { name: label() }">
       <mat-icon aria-hidden="true">add</mat-icon>
     </button>
   `,

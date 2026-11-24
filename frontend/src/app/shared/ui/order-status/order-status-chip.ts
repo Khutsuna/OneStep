@@ -1,28 +1,19 @@
 import { Component, computed, input } from '@angular/core';
 import { OrderStatus } from '../../../core/models/shop.models';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { TranslationKey } from '../../../core/i18n/en';
 
-/** Customer-friendly words for each order status. Used by the chip and the timeline. */
-export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  Pending: 'Awaiting payment',
-  Paid: 'Paid',
-  Shipped: 'On the way',
-  Delivered: 'Delivered',
-  Cancelled: 'Cancelled',
-};
+/** Translation key of each status's customer-friendly name ("On the way"), e.g. statusKey('Shipped'). */
+export const statusKey = (status: OrderStatus): TranslationKey => `status.${status}`;
 
-/** Words for the history list: what happened at each step. */
-export const ORDER_STEP_LABELS: Record<OrderStatus, string> = {
-  Pending: 'Placed',
-  Paid: 'Paid',
-  Shipped: 'Shipped',
-  Delivered: 'Delivered',
-  Cancelled: 'Cancelled',
-};
+/** Translation key of what happened at each step ("Shipped"), for the history list and staff buttons. */
+export const stepKey = (status: OrderStatus): TranslationKey => `step.${status}`;
 
 /** A small coloured label with an order's status. */
 @Component({
   selector: 'app-order-status-chip',
-  template: `{{ label() }}`,
+  imports: [I18N],
+  template: `{{ label() | t }}`,
   host: { '[class]': 'status().toLowerCase()' },
   styles: `
     :host { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
@@ -35,5 +26,5 @@ export const ORDER_STEP_LABELS: Record<OrderStatus, string> = {
 })
 export class OrderStatusChip {
   readonly status = input.required<OrderStatus>();
-  protected readonly label = computed(() => ORDER_STATUS_LABELS[this.status()]);
+  protected readonly label = computed(() => statusKey(this.status()));
 }

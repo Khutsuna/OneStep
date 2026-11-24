@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -22,6 +21,8 @@ import { QuantityStepper } from '../../../shared/ui/quantity-stepper/quantity-st
 import { WishlistButton } from '../../../shared/ui/wishlist-button/wishlist-button';
 import { ProductReviewsSection } from './reviews/product-reviews';
 import { RatingStars } from '../../../shared/ui/rating-stars/rating-stars';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 interface DetailState {
   product: ProductDetails | null;
@@ -31,8 +32,7 @@ interface DetailState {
 
 @Component({
   selector: 'app-product-detail-page',
-  imports: [
-    DatePipe, RouterLink, MatButtonModule, MatIconModule,
+  imports: [I18N, RouterLink, MatButtonModule, MatIconModule,
     EmptyState, PriceTag, ProductCard, ProductImage, ProductReviewsSection, QuantityStepper, RatingStars, WishlistButton,
   ],
   templateUrl: './product-detail-page.html',
@@ -50,6 +50,7 @@ export class ProductDetailPage {
   private readonly cart = inject(CartStore);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
 
   /** Reloads whenever the id changes, e.g. when you click a similar product. */
   private readonly state = toSignal(
@@ -98,9 +99,9 @@ export class ProductDetailPage {
   protected readonly stockText = computed(() => {
     const product = this.product();
     if (!product) return '';
-    if (!product.inStock) return 'Out of stock';
-    if (product.stockQuantity <= product.lowStockThreshold) return `Only ${product.stockQuantity} left`;
-    return 'In stock';
+    if (!product.inStock) return this.i18n.t('card.outOfStock');
+    if (product.stockQuantity <= product.lowStockThreshold) return this.i18n.t('card.onlyLeft', { count: product.stockQuantity });
+    return this.i18n.t('product.inStock');
   });
 
   constructor() {
@@ -128,7 +129,7 @@ export class ProductDetailPage {
       next: () => {
         this.adding.set(false);
         this.snackBar
-          .open(`${product.name} is in your cart.`, 'View cart', { duration: 4000 })
+          .open(this.i18n.t('product.added', { name: product.name }), this.i18n.t('product.viewCart'), { duration: 4000 })
           .onAction()
           .subscribe(() => void this.router.navigateByUrl('/cart'));
       },
@@ -136,7 +137,7 @@ export class ProductDetailPage {
         this.adding.set(false);
         // 409 = not enough stock; the API says how many are left.
         if (error.status === 409 || error.status === 400) {
-          this.snackBar.open(error.error?.detail ?? "We couldn't add this product.", 'OK', { duration: 5000 });
+          this.snackBar.open(error.error?.detail ?? this.i18n.t('product.addFailed'), this.i18n.t('common.ok'), { duration: 5000 });
         }
       },
     });

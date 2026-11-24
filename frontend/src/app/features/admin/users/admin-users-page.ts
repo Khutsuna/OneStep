@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -13,25 +12,25 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { UserListItem } from '../../../core/models/admin.models';
 import { UserRole } from '../../../core/models/auth.models';
 import { PagedResult } from '../../../core/models/common.models';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
+import { TranslationKey } from '../../../core/i18n/en';
 
 /** Admin only: every account, with its role and whether it can log in. */
 @Component({
   selector: 'app-admin-users-page',
-  imports: [DatePipe, FormsModule, MatButtonModule, MatIconModule, MatSlideToggleModule],
+  imports: [I18N, FormsModule, MatButtonModule, MatIconModule, MatSlideToggleModule],
   templateUrl: './admin-users-page.html',
   styleUrl: './admin-users-page.scss',
 })
 export class AdminUsersPage {
   private readonly api = inject(AdminApi);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
   protected readonly auth = inject(AuthStore);
 
   protected readonly roles: UserRole[] = ['Customer', 'StoreManager', 'Admin'];
-  protected readonly roleLabels: Record<UserRole, string> = {
-    Customer: 'Customer',
-    StoreManager: 'Store manager',
-    Admin: 'Admin',
-  };
+  protected readonly roleKey = (role: UserRole): TranslationKey => `users.role${role}`;
 
   protected readonly search = signal('');
   protected readonly role = signal<UserRole | null>(null);
@@ -80,11 +79,11 @@ export class AdminUsersPage {
   protected update(user: UserListItem, role: UserRole, isActive: boolean): void {
     this.api.updateUser(user.id, role, isActive).subscribe({
       next: (updated) => {
-        this.snackBar.open(`${updated.firstName} ${updated.lastName} saved.`, 'OK', { duration: 3000 });
+        this.snackBar.open(this.i18n.t('users.saved', { name: `${updated.firstName} ${updated.lastName}` }), this.i18n.t('common.ok'), { duration: 3000 });
         this.reload.update((n) => n + 1);
       },
       error: (error: HttpErrorResponse) => {
-        this.snackBar.open(error.error?.detail ?? "The change wasn't saved.", 'OK', { duration: 5000 });
+        this.snackBar.open(error.error?.detail ?? this.i18n.t('users.notSaved'), this.i18n.t('common.ok'), { duration: 5000 });
         this.reload.update((n) => n + 1); // show the real values again
       },
     });

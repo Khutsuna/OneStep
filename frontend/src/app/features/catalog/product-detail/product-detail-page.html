@@ -1,10 +1,10 @@
 <div class="page">
   @if (product(); as product) {
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a routerLink="/">Home</a>
+    <nav class="breadcrumb" [attr.aria-label]="'catalog.breadcrumb' | t">
+      <a routerLink="/">{{ 'catalog.home' | t }}</a>
       @for (category of breadcrumb(); track category.id) {
         <span aria-hidden="true">/</span>
-        <a routerLink="/products" [queryParams]="{ categoryId: category.id }">{{ category.name }}</a>
+        <a routerLink="/products" [queryParams]="{ categoryId: category.id }">{{ category.name | term }}</a>
       }
     </nav>
 
@@ -17,13 +17,13 @@
             [alt]="product.images[selectedImage()].altText ?? product.name"
           />
           @if (product.images.length > 1) {
-            <div class="thumbs" role="list" aria-label="More photos">
+            <div class="thumbs" role="list" [attr.aria-label]="'product.morePhotos' | t">
               @for (image of product.images; track image.id; let i = $index) {
                 <button
                   role="listitem"
                   class="thumb"
                   [class.selected]="i === selectedImage()"
-                  [attr.aria-label]="'Show photo ' + (i + 1)"
+                  [attr.aria-label]="'product.showPhoto' | t: { n: i + 1 }"
                   (click)="selectedImage.set(i)"
                 >
                   <img [src]="mediaUrl(image.url)" alt="" />
@@ -48,7 +48,7 @@
             <span class="campaign">{{ product.campaignName }}</span>
           }
           <app-price-tag size="large" [price]="product.price" [finalPrice]="product.finalPrice" />
-          <p class="vat">18% VAT and delivery are added at checkout.</p>
+          <p class="vat">{{ 'product.vat' | t }}</p>
 
           <p class="stock" [class.out]="!product.inStock" [class.low]="product.inStock && product.stockQuantity <= product.lowStockThreshold">
             <mat-icon aria-hidden="true">{{ product.inStock ? 'check_circle' : 'block' }}</mat-icon>
@@ -66,13 +66,13 @@
               />
               <button matButton="filled" class="add" [disabled]="adding()" (click)="addToCart(product)">
                 <mat-icon aria-hidden="true">add_shopping_cart</mat-icon>
-                {{ adding() ? 'Adding…' : 'Add to cart' }}
+                {{ (adding() ? 'product.adding' : 'product.addToCart') | t }}
               </button>
               <app-wishlist-button [productId]="product.id" [showLabel]="true" />
             </div>
             @if (inCart() > 0) {
               <p class="in-cart">
-                You have {{ inCart() }} in your cart. <a routerLink="/cart">View cart</a>
+                {{ 'product.inCart' | t: { count: inCart() } }} <a routerLink="/cart">{{ 'product.viewCart' | t }}</a>
               </p>
             }
           }
@@ -80,16 +80,16 @@
 
         @if (product.attributes.length) {
           <section aria-labelledby="specs-title">
-            <h2 id="specs-title">Specifications</h2>
+            <h2 id="specs-title">{{ 'product.specs' | t }}</h2>
             <dl class="specs">
               @for (attribute of product.attributes; track attribute.attributeId) {
                 <div>
-                  <dt>{{ attribute.name }}</dt>
-                  <dd>{{ attribute.value }}</dd>
+                  <dt>{{ attribute.name | term }}</dt>
+                  <dd>{{ attribute.value | term }}</dd>
                 </div>
               }
               <div>
-                <dt>Product code</dt>
+                <dt>{{ 'product.code' | t }}</dt>
                 <dd>{{ product.sku }}</dd>
               </div>
             </dl>
@@ -99,19 +99,19 @@
     </article>
 
     <section class="description" aria-labelledby="about-title">
-      <h2 id="about-title">About this product</h2>
+      <h2 id="about-title">{{ 'product.about' | t }}</h2>
       <p>{{ product.description }}</p>
-      <p class="added">In our catalogue since {{ product.createdAt | date: 'longDate' }}</p>
+      <p class="added">{{ 'product.since' | t: { date: (product.createdAt | localDate: 'd MMMM y') } }}</p>
     </section>
 
     <section class="reviews" aria-labelledby="reviews-title">
-      <h2 id="reviews-title" class="section-title">Reviews</h2>
+      <h2 id="reviews-title" class="section-title">{{ 'product.reviews' | t }}</h2>
       <app-product-reviews [productId]="product.id" />
     </section>
 
     @if (similar().length) {
       <section aria-labelledby="similar-title" class="similar">
-        <h2 id="similar-title" class="section-title">You might also like</h2>
+        <h2 id="similar-title" class="section-title">{{ 'product.similar' | t }}</h2>
         <div class="product-grid">
           @for (item of similar(); track item.id) {
             <app-product-card [product]="item" />
@@ -120,11 +120,11 @@
       </section>
     }
   } @else if (notFound()) {
-    <app-empty-state icon="inventory_2" title="This product isn't available"
-                     message="It may have been removed, or the link is wrong.">
-      <a routerLink="/products">Browse all products</a>
+    <app-empty-state icon="inventory_2" [title]="'product.unavailable' | t"
+                     [message]="'product.unavailableHint' | t">
+      <a routerLink="/products">{{ 'home.browse' | t }}</a>
     </app-empty-state>
   } @else {
-    <div class="loading" aria-busy="true" aria-label="Loading product"></div>
+    <div class="loading" aria-busy="true" [attr.aria-label]="'product.loading' | t"></div>
   }
 </div>

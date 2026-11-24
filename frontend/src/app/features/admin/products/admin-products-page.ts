@@ -12,17 +12,20 @@ import { ProductAdminApi } from '../../../core/admin/product-admin.api';
 import { ProductListItem } from '../../../core/models/catalog.models';
 import { PagedResult } from '../../../core/models/common.models';
 import { ProductImage } from '../../../shared/ui/product-image/product-image';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /** Product list for staff: search, inactive products included, quick stock edit. */
 @Component({
   selector: 'app-admin-products-page',
-  imports: [CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, ProductImage],
+  imports: [I18N, CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatIconModule, ProductImage],
   templateUrl: './admin-products-page.html',
   styleUrl: './admin-products-page.scss',
 })
 export class AdminProductsPage {
   private readonly api = inject(ProductAdminApi);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
 
   protected readonly search = signal('');
   protected readonly page = signal(1);
@@ -66,12 +69,12 @@ export class AdminProductsPage {
 
     this.api.updateStock(product.id, value).subscribe({
       next: () => {
-        this.snackBar.open(`Stock of ${product.name} is now ${value}.`, 'OK', { duration: 3000 });
+        this.snackBar.open(this.i18n.t('ap.stockSaved', { name: product.name, count: value }), this.i18n.t('common.ok'), { duration: 3000 });
         this.reload.update((n) => n + 1);
       },
       error: (error: HttpErrorResponse) => {
         input.value = String(product.stockQuantity);
-        this.snackBar.open(error.error?.detail ?? "Stock wasn't saved.", 'OK', { duration: 5000 });
+        this.snackBar.open(error.error?.detail ?? this.i18n.t('ap.stockNotSaved'), this.i18n.t('common.ok'), { duration: 5000 });
       },
     });
   }

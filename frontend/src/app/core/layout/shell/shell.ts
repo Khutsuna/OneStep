@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Footer } from '../footer/footer';
 import { Header } from '../header/header';
+import { I18N } from '../../i18n/translate.pipes';
 
 /** The frame around every shop page: header on top, the current page in the middle, footer below. */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, Header, Footer],
+  imports: [I18N, RouterOutlet, Header, Footer],
   template: `
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{{ 'shell.skip' | t }}</a>
     <app-header />
     <main id="main" tabindex="-1">
       <router-outlet />
