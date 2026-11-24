@@ -1,0 +1,21 @@
+@startuml c4-1-system-context
+!include <C4/C4_Context>
+!include onestep-theme.puml
+
+title OneStep — Level 1: System Context\n<size:12>Who uses the system, and what it connects to</size>
+
+Person(customer, "Customer", "Finds, compares and buys electronics; tracks orders; saves a wishlist; writes reviews")
+Person(manager, "Store Manager", "Runs the catalogue, stock, orders and campaigns")
+Person(admin, "Administrator", "Everything a manager does, plus user accounts and roles")
+
+System(onestep, "OneStep", "Online electronics store: shop, checkout, order tracking and an admin panel")
+
+System_Ext(payment, "Card payment provider", "e.g. Stripe. Today OneStep has a built-in test-mode card payment instead", $tags="planned")
+
+Rel_Down(customer, onestep, "Shops, pays and tracks orders", "Web browser, HTTPS")
+Rel_Down(manager, onestep, "Manages products, stock, orders, campaigns", "Web browser, HTTPS")
+Rel_Down(admin, onestep, "Manages the store and users", "Web browser, HTTPS")
+Rel_Right(onestep, payment, "Would take real card payments", $tags="planned")
+
+SHOW_LEGEND()
+@enduml

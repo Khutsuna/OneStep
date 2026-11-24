@@ -1,0 +1,56 @@
+@startuml c4-3-components-api
+!include <C4/C4_Component>
+!include onestep-theme.puml
+
+title OneStep — Level 3: Components of the Web API\n<size:12>Clean architecture: Api → Application → Domain, and Infrastructure implements Application's interfaces</size>
+
+Container(spa, "Single-page application", "Angular")
+ContainerDb(db, "Database", "SQL Server 2025", $tags="db")
+Container(files, "Image storage", "wwwroot/uploads")
+
+Container_Boundary(api, "Web API (ASP.NET Core 10)") {
+
+  Boundary(apiLayer, "OneStep.Api — the HTTP layer") {
+    Component(pipeline, "Request pipeline", "Middleware", "Serilog request logging, GlobalExceptionHandler (errors → ProblemDetails), CORS, JWT authentication, role policies")
+    Component(controllers, "Controllers", "ASP.NET Core [ApiController]", "Auth, Products, Categories, Brands, Cart, Orders, Addresses, Wishlist, Reviews, Account, Users, Analytics, Notifications, Campaigns. Swagger at /swagger")
+  }
+
+  Boundary(appLayer, "OneStep.Application — the use cases") {
+    Component(catalog, "Catalogue services", "C#", "ProductService (search, filters), CategoryService, PricingService (campaign discounts)")
+    Component(shopping, "Shopping services", "C#", "CartService, OrderService, CheckoutCalculator (shipping + 18% VAT), AddressService, WishlistService, ReviewService")
+    Component(admin, "Admin services", "C#", "AnalyticsService, NotificationService, CampaignService, UserService")
+    Component(auth, "Auth & account services", "C#", "AuthService (register, login), AccountService (profile, password)")
+    Component(abstractions, "Interfaces", "C#", "IAppDbContext, IAnalyticsQueries, ITokenService, IPasswordHasher, IFileStorage, ICurrentUser")
+  }
+
+  Component(domain, "OneStep.Domain", "C#", "22 entities, enums, OrderStatusTransitions (state machine), ShippingAddress value object")
+
+  Boundary(infraLayer, "OneStep.Infrastructure — talks to the outside world") {
+    Component(dbContext, "AppDbContext", "EF Core 10", "Entity configurations, migrations, soft-delete filter, concurrency (RowVersion)")
+    Component(analyticsSql, "SqlAnalyticsQueries", "EF Core raw SQL", "Runs the analytics stored procedures with parameters")
+    Component(security, "JwtTokenService, IdentityPasswordHasher", "JWT, PBKDF2", "Creates signed tokens; hashes and checks passwords")
+    Component(storage, "LocalFileStorage", "File I/O", "Saves photos with random names; blocks path tricks")
+  }
+}
+
+Rel_Down(spa, pipeline, "JSON/HTTPS + JWT")
+Rel_Right(pipeline, controllers, "Passes on checked requests")
+Rel_Down(controllers, catalog, "Calls")
+Rel_Down(controllers, shopping, "Calls")
+Rel_Down(controllers, admin, "Calls")
+Rel_Down(controllers, auth, "Calls")
+Rel(catalog, abstractions, "Uses")
+Rel(shopping, abstractions, "Uses")
+Rel(admin, abstractions, "Uses")
+Rel(auth, abstractions, "Uses")
+Rel(shopping, domain, "Applies rules of")
+Rel_Up(dbContext, abstractions, "Implements")
+Rel_Up(analyticsSql, abstractions, "Implements")
+Rel_Up(security, abstractions, "Implements")
+Rel_Up(storage, abstractions, "Implements")
+Rel_Down(dbContext, db, "SQL")
+Rel_Down(analyticsSql, db, "EXEC procedures")
+Rel_Down(storage, files, "Reads/writes")
+
+SHOW_LEGEND()
+@enduml

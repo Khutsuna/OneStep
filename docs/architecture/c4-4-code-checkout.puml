@@ -1,0 +1,132 @@
+@startuml c4-4-code-checkout
+title OneStep — Level 4: Code of the checkout and order component\n<size:12>The classes behind "Place order" and order tracking</size>
+
+skinparam defaultFontName "Arial"
+skinparam backgroundColor #ffffff
+skinparam classBackgroundColor #ffffff
+skinparam classBorderColor #2d4373
+skinparam classHeaderBackgroundColor #e9edf5
+skinparam classFontColor #14213d
+skinparam classFontStyle bold
+skinparam classAttributeFontColor #14213d
+skinparam stereotypeCBackgroundColor #f2b632
+skinparam stereotypeIBackgroundColor #f2b632
+skinparam stereotypeEBackgroundColor #f2b632
+skinparam ArrowColor #5b6478
+skinparam packageBorderColor #8a93a6
+skinparam packageFontColor #14213d
+left to right direction
+hide empty members
+skinparam nodesep 40
+skinparam ranksep 60
+
+package "OneStep.Api" {
+  class OrdersController <<[ApiController] api/orders>> {
+    +Quote(QuoteRequest) : OrderTotals
+    +Place(PlaceOrderRequest) : 201 OrderDetailsDto
+    +GetOrders(OrderListRequest) : PagedResult
+    +GetById(id) : OrderDetailsDto
+    +ChangeStatus(id, ChangeOrderStatusRequest) : OrderDetailsDto
+    +Pay(id) / Cancel(id) : OrderDetailsDto
+  }
+}
+
+package "OneStep.Application" {
+  interface IOrderService
+  class OrderService {
+    -IAppDbContext _db
+    -IPricingService _pricing
+    -ICurrentUser _currentUser
+    +PlaceOrderAsync(request) : OrderDetailsDto
+    +QuoteAsync(request) : OrderTotals
+    +ChangeStatusAsync(id, request) : OrderDetailsDto
+    +PayAsync(id) / CancelAsync(id)
+    -MoveToStatusAsync(order, status, note)
+  }
+  class CheckoutCalculator <<static>> {
+    +TaxRate = 0.18
+    +Calculate(lines, shippingPrice, freeShippingFrom) : OrderTotals
+  }
+  class StockAlerts <<static>> {
+    +CreateIfNeeded(product, previousQuantity) : Notification?
+  }
+  interface IPricingService {
+    +GetPricesAsync(inputs) : prices with campaign discounts
+  }
+  interface IAppDbContext {
+    Orders, OrderItems, Products, CartItems, Notifications...
+    +SaveChangesAsync() : one transaction
+  }
+  class "CheckoutLine" as CheckoutLine <<record>> {
+    UnitPrice, UnitDiscount, Quantity
+  }
+  class "OrderTotals" as OrderTotals <<record>> {
+    Subtotal, DiscountTotal, ShippingCost, TaxAmount, TotalAmount
+  }
+}
+
+package "OneStep.Domain" {
+  class Order {
+    +UserId : int
+    +Status : OrderStatus
+    +Subtotal, DiscountTotal, ShippingCost, TaxAmount, TotalAmount : decimal
+    +PaymentMethod : PaymentMethod
+    +ShippingAddress : ShippingAddress
+    +PaidAt : DateTime?
+  }
+  class OrderItem {
+    +ProductName, Sku : string  (copied)
+    +UnitPrice, UnitDiscount : decimal  (copied)
+    +Quantity : int
+    +LineTotal : decimal  (computed by SQL)
+  }
+  class OrderStatusHistory {
+    +FromStatus, ToStatus : OrderStatus
+    +ChangedByUserId : int?
+    +Note : string?
+  }
+  class ShippingAddress <<value object>> {
+    RecipientName, Phone, Line1, City, CountryCode...
+  }
+  class Product {
+    +Price : decimal
+    +StockQuantity : int
+    +RowVersion : byte[]  (concurrency)
+  }
+  class OrderStatusTransitions <<static>> {
+    +CanMove(from, to) : bool
+    +NextStatuses(from) : OrderStatus[]
+  }
+  enum OrderStatus {
+    Pending
+    Paid
+    Shipped
+    Delivered
+    Cancelled
+  }
+}
+
+OrdersController -down-> IOrderService : calls
+OrderService ..|> IOrderService
+OrderService --> CheckoutCalculator : totals
+OrderService --> StockAlerts : low-stock alerts
+OrderService --> IPricingService : current prices
+OrderService -down-> IAppDbContext : load & save
+OrderService -down-> OrderStatusTransitions : checks every status change
+CheckoutCalculator ..> CheckoutLine
+CheckoutCalculator ..> OrderTotals
+Order "1" *-- "1..*" OrderItem
+Order "1" *-- "1..*" OrderStatusHistory : tracking timeline
+Order *-- ShippingAddress : snapshot
+Order --> OrderStatus
+OrderItem --> Product
+OrderStatusTransitions ..> OrderStatus
+IAppDbContext -[hidden]down- Order
+
+note bottom of OrderService
+  PlaceOrderAsync: check stock → price the cart → CheckoutCalculator →
+  copy names, prices and address into the order → take stock →
+  first history row → empty the cart → ONE SaveChanges (one transaction).
+  If another customer changed the stock meanwhile, RowVersion → 409 Conflict.
+end note
+@enduml

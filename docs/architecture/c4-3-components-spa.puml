@@ -1,0 +1,48 @@
+@startuml c4-3-components-spa
+!include <C4/C4_Component>
+!include onestep-theme.puml
+
+title OneStep — Level 3: Components of the Angular app\n<size:12>Standalone components, lazy-loaded pages, signal-based state</size>
+
+Person(user, "Customer or staff member")
+Container(api, "Web API", "ASP.NET Core 10")
+
+Container_Boundary(spa, "Single-page application (Angular 22)") {
+  Component(router, "Router and guards", "Angular Router", "Lazy-loaded pages; authGuard, customerGuard, staffGuard, adminGuard")
+
+  Boundary(pages, "Feature pages") {
+    Component(shopPages, "Shop pages", "Standalone components", "Home, catalogue with filters (state in the URL), product page with reviews")
+    Component(checkoutPages, "Cart & checkout", "Standalone components", "Cart, checkout with live totals, order history and tracking")
+    Component(accountPages, "Account pages", "Standalone components", "Profile, password, address book, wishlist")
+    Component(adminPages, "Admin panel", "Standalone components", "Dashboard + sales chart, products & photos, orders, users, campaigns")
+  }
+
+  Boundary(state, "Global state — NgRx Signal Store") {
+    Component(authStore, "AuthStore", "signalStore", "Logged-in user and JWT; saved in localStorage", $tags="store")
+    Component(cartStore, "CartStore", "signalStore", "The cart; header badge; reloads on login", $tags="store")
+    Component(wishlistStore, "WishlistStore", "signalStore", "Saved product ids; optimistic hearts", $tags="store")
+    Component(categoryStore, "CategoryStore", "signalStore", "Category tree, loaded once", $tags="store")
+  }
+
+  Component(apiServices, "API services", "HttpClient", "One service per API area: ProductsApi, CartApi, OrdersApi, AdminApi...")
+  Component(interceptors, "HTTP interceptors", "Functional interceptors", "Adds the JWT to requests; handles 401 (log out) and errors")
+  Component(shared, "Shared UI", "Standalone components", "Product card, price tag, rating stars, quantity stepper, wishlist heart, order status chip")
+}
+
+Rel_Down(user, router, "Opens pages in the browser")
+Rel_Down(router, shopPages, "Loads")
+Rel_Down(router, checkoutPages, "Loads")
+Rel_Down(router, accountPages, "Loads")
+Rel_Down(router, adminPages, "Loads")
+Rel(shopPages, shared, "Use")
+Rel(checkoutPages, cartStore, "Read / update")
+Rel(shopPages, wishlistStore, "Read / update")
+Rel(router, authStore, "Asks: logged in? which role?")
+Rel_Down(cartStore, apiServices, "Calls")
+Rel_Down(wishlistStore, apiServices, "Calls")
+Rel_Down(adminPages, apiServices, "Calls")
+Rel_Right(apiServices, interceptors, "Every request passes through")
+Rel_Down(interceptors, api, "JSON/HTTPS + JWT")
+
+SHOW_LEGEND()
+@enduml

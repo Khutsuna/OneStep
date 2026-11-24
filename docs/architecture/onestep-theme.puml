@@ -1,0 +1,24 @@
+' OneStep colours for the C4 diagrams: navy ink, marigold accent (same as the website).
+' Included by every c4-*.puml file in this folder.
+!$ink = "#14213d"
+!$inkSoft = "#2d4373"
+!$step = "#f2b632"
+!$grey = "#8a93a6"
+
+UpdateElementStyle("person", $bgColor=$ink, $fontColor="#ffffff", $borderColor=$ink)
+UpdateElementStyle("system", $bgColor=$inkSoft, $fontColor="#ffffff", $borderColor=$inkSoft)
+UpdateElementStyle("external_system", $bgColor=$grey, $fontColor="#ffffff", $borderColor=$grey)
+UpdateElementStyle("container", $bgColor=$inkSoft, $fontColor="#ffffff", $borderColor=$inkSoft)
+UpdateElementStyle("component", $bgColor="#ffffff", $fontColor=$ink, $borderColor=$inkSoft)
+UpdateBoundaryStyle($elementName="system", $fontColor=$ink, $borderColor=$ink)
+UpdateBoundaryStyle($elementName="container", $fontColor=$ink, $borderColor=$ink)
+UpdateBoundaryStyle($fontColor=$ink, $borderColor=$grey)
+UpdateRelStyle($lineColor="#5b6478", $textColor="#3b4458")
+
+AddElementTag("db", $bgColor=$ink, $borderColor=$step, $fontColor="#ffffff")
+AddElementTag("store", $bgColor="#fff4d6", $borderColor=$step, $fontColor=$ink)
+AddElementTag("planned", $bgColor="#ffffff", $fontColor=$grey, $borderColor=$grey, $borderStyle=DashedLine(), $legendText="planned, not built yet")
+AddRelTag("planned", $lineColor=$grey, $textColor=$grey, $lineStyle=DashedLine(), $legendText="planned")
+
+skinparam defaultFontName "Arial"
+skinparam backgroundColor #ffffff
