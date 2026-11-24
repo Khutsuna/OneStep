@@ -117,6 +117,19 @@ export class ProductDetailPage {
     });
   }
 
+  /**
+   * A YouTube search for "<brand> <product> review". The brand is added only when the name
+   * doesn't already start with it ("Sony WH-1000XM5" stays as is). encodeURIComponent makes
+   * spaces, quotes and "&" safe inside the URL.
+   */
+  protected youtubeUrl(product: ProductDetails): string {
+    const brand = product.brandName ?? '';
+    const name = brand && !product.name.toLowerCase().startsWith(brand.toLowerCase())
+      ? `${brand} ${product.name}`
+      : product.name;
+    return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} review`)}`;
+  }
+
   protected addToCart(product: ProductDetails): void {
     // Guests log in first and come back to this product.
     if (!this.auth.isLoggedIn()) {

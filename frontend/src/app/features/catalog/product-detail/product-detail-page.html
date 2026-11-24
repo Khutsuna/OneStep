@@ -76,6 +76,14 @@
               </p>
             }
           }
+
+          <!-- Opens a YouTube search for "<product> review" in a new tab. -->
+          <a class="youtube" [href]="youtubeUrl(product)" target="_blank" rel="noopener noreferrer">
+            <mat-icon aria-hidden="true">smart_display</mat-icon>
+            {{ 'product.youtube' | t }}
+            <span class="visually-hidden">{{ 'common.newTab' | t }}</span>
+            <mat-icon class="external" aria-hidden="true">open_in_new</mat-icon>
+          </a>
         </div>
 
         @if (product.attributes.length) {
