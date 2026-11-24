@@ -1,12 +1,20 @@
-<div class="page">
+<div [class.page]="!admin()">
   <h1 class="title">{{ auth.isStaff() ? 'Orders' : 'My orders' }}</h1>
+
+  @if (auth.isStaff()) {
+    <label class="search">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <span class="visually-hidden">Search orders</span>
+      <input type="search" placeholder="Order number, customer name or email" [ngModel]="search()" (ngModelChange)="onSearch($event)" />
+    </label>
+  }
 
   <div class="filters" role="group" aria-label="Filter by status">
     @for (status of statuses; track status) {
       <button
         class="filter"
-        [class.active]="query().status === status"
-        [attr.aria-pressed]="query().status === status"
+        [class.active]="selectedStatus() === status"
+        [attr.aria-pressed]="selectedStatus() === status"
         (click)="setStatus(status)"
       >
         {{ status ? statusLabels[status] : 'All' }}
@@ -19,7 +27,7 @@
       <ul class="orders">
         @for (order of result.items; track order.id) {
           <li>
-            <a class="order" [routerLink]="['/account/orders', order.id]">
+            <a class="order" [routerLink]="[baseUrl(), order.id]">
               <span class="number">Order #{{ order.id }}</span>
               <span class="date">{{ order.createdAt | date: 'd MMM y, HH:mm' }}</span>
               @if (auth.isStaff()) {
@@ -41,8 +49,8 @@
           <button matButton="outlined" [disabled]="result.page >= result.totalPages" (click)="goToPage(result.page + 1)">Next</button>
         </nav>
       }
-    } @else if (query().status) {
-      <app-empty-state icon="filter_alt_off" title="No orders with this status" />
+    } @else if (query().status || query().search) {
+      <app-empty-state icon="filter_alt_off" title="No orders match" message="Try another status or search." />
     } @else {
       <app-empty-state icon="receipt_long" title="No orders yet" message="When you place an order, you can follow it here.">
         <a matButton="filled" routerLink="/products">Start shopping</a>

@@ -1,0 +1,201 @@
+@use '@angular/material' as mat;
+@use 'breakpoints' as bp;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px var(--os-gutter);
+  background: var(--os-ink);
+  color: #fff;
+
+  @include mat.button-overrides(
+    (
+      text-label-text-color: #fff,
+      text-state-layer-color: #fff,
+    )
+  );
+  @include mat.icon-button-overrides(
+    (
+      icon-color: #fff,
+      state-layer-color: #fff,
+    )
+  );
+  @include mat.badge-overrides(
+    (
+      background-color: var(--os-step),
+      text-color: var(--os-ink),
+    )
+  );
+}
+
+.logo {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.mark {
+  display: inline-grid;
+  grid-template-columns: 9px 9px;
+  align-items: end;
+  gap: 2px;
+  height: 22px;
+
+  span {
+    background: var(--os-step);
+    border-radius: 2px;
+  }
+
+  span:first-child {
+    height: 11px;
+  }
+
+  span:last-child {
+    height: 22px;
+  }
+}
+
+.wordmark {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.area {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--os-step);
+  line-height: 1;
+  padding-bottom: 1px;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.label {
+  @include bp.below(bp.$sm) {
+    display: none;
+  }
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  @include bp.from(bp.$md) {
+    flex-direction: row;
+  }
+}
+
+// Phone: the sections scroll sideways under the top bar. Desktop: a sidebar.
+.side {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px var(--os-gutter);
+  background: var(--os-surface);
+  border-bottom: 1px solid var(--os-line);
+  scrollbar-width: none;
+
+  @include bp.from(bp.$md) {
+    flex-direction: column;
+    width: 220px;
+    flex: none;
+    padding: 16px 12px;
+    border-bottom: 0;
+    border-right: 1px solid var(--os-line);
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--os-radius-sm);
+    color: var(--os-ink);
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--os-paper);
+    }
+
+    &.active {
+      background: var(--os-ink);
+      color: #fff;
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px var(--os-gutter) 48px;
+  outline: none;
+
+  @include bp.from(bp.$md) {
+    padding: 28px 32px 56px;
+  }
+}
+
+// ----- Alerts menu (shown in an overlay, but declared in this template, so these styles still apply) -----
+.alerts-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 8px 4px 16px;
+  min-width: 300px;
+}
+
+.alert {
+  height: auto !important;
+  min-height: 56px;
+  padding-block: 8px !important;
+  white-space: normal;
+
+  &.unread {
+    background: #fff8e6;
+  }
+}
+
+.alert-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+  font-size: 0.875rem;
+
+  small {
+    color: var(--os-muted);
+  }
+}
+
+.alerts-empty,
+.role {
+  padding: 8px 16px;
+  margin: 0;
+  color: var(--os-muted);
+  font-size: 0.875rem;
+}

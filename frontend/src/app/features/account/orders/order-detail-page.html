@@ -1,8 +1,8 @@
-<div class="page">
+<div [class.page]="!admin()">
   @if (order(); as order) {
-    <a class="back" routerLink="/account/orders">
+    <a class="back" [routerLink]="admin() ? '/admin/orders' : '/account/orders'">
       <mat-icon aria-hidden="true">arrow_back</mat-icon>
-      {{ auth.isStaff() ? 'All orders' : 'My orders' }}
+      {{ admin() ? 'All orders' : 'My orders' }}
     </a>
 
     @if (placed() && order.status !== 'Cancelled') {
@@ -162,7 +162,7 @@
     </div>
   } @else if (notFound()) {
     <app-empty-state icon="receipt_long" title="Order not found" message="It doesn't exist, or it belongs to another account.">
-      <a matButton="filled" routerLink="/account/orders">See my orders</a>
+      <a matButton="filled" [routerLink]="admin() ? '/admin/orders' : '/account/orders'">See all orders</a>
     </app-empty-state>
   } @else {
     <div class="loading" aria-busy="true" aria-label="Loading order"></div>

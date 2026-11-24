@@ -7,6 +7,36 @@
   margin-bottom: 16px;
 }
 
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 420px;
+  padding: 0 12px;
+  margin-bottom: 12px;
+  background: var(--os-surface);
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius-sm);
+
+  &:focus-within {
+    border-color: var(--os-ink);
+  }
+
+  mat-icon {
+    color: var(--os-muted);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    padding: 10px 0;
+    font: inherit;
+    background: none;
+  }
+}
+
 .filters {
   display: flex;
   gap: 8px;

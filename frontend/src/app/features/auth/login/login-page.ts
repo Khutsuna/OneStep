@@ -39,7 +39,12 @@ export class LoginPage {
     this.errorMessage.set(null);
 
     this.auth.login(this.form.getRawValue()).subscribe({
-      next: () => void this.router.navigateByUrl(this.returnUrl() || '/'),
+      next: () => {
+        // A page asked for the login (returnUrl)? Go back there. Otherwise staff start in the admin panel.
+        const returnUrl = this.returnUrl();
+        const target = returnUrl && returnUrl !== '/' ? returnUrl : this.auth.isStaff() ? '/admin' : '/';
+        void this.router.navigateByUrl(target);
+      },
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         this.errorMessage.set(

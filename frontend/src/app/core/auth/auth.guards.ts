@@ -32,3 +32,12 @@ export const customerGuard: CanActivateFn = (_route, state) => {
   }
   return auth.isCustomer() ? true : inject(Router).createUrlTree(['/']);
 };
+
+/** Only for Admins (user management). Store managers go to the admin dashboard. */
+export const adminGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthStore);
+  if (!auth.isLoggedIn()) {
+    return inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+  return auth.isAdmin() ? true : inject(Router).createUrlTree(['/admin']);
+};

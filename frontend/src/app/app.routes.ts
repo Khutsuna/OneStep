@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, customerGuard } from './core/auth/auth.guards';
+import { adminGuard, authGuard, customerGuard, staffGuard } from './core/auth/auth.guards';
 import { Shell } from './core/layout/shell/shell';
 
 /**
@@ -7,6 +7,62 @@ import { Shell } from './core/layout/shell/shell';
  * so the first page loads faster.
  */
 export const routes: Routes = [
+  // The admin panel has its own layout (no shop header), so it sits outside the Shell.
+  // It must come first: the Shell's '**' (page not found) would otherwise catch /admin.
+  {
+    path: 'admin',
+    canActivate: [staffGuard],
+    loadComponent: () => import('./features/admin/layout/admin-layout').then((m) => m.AdminLayout),
+    children: [
+      {
+        path: '',
+        title: 'Dashboard — OneStep Admin',
+        loadComponent: () => import('./features/admin/dashboard/dashboard-page').then((m) => m.DashboardPage),
+      },
+      {
+        path: 'orders',
+        title: 'Orders — OneStep Admin',
+        data: { admin: true },
+        loadComponent: () =>
+          import('./features/account/orders/order-list-page').then((m) => m.OrderListPage),
+      },
+      {
+        path: 'orders/:id',
+        title: 'Order — OneStep Admin',
+        data: { admin: true },
+        loadComponent: () =>
+          import('./features/account/orders/order-detail-page').then((m) => m.OrderDetailPage),
+      },
+      {
+        path: 'products',
+        title: 'Products — OneStep Admin',
+        loadComponent: () =>
+          import('./features/admin/products/admin-products-page').then((m) => m.AdminProductsPage),
+      },
+      {
+        path: 'products/new',
+        title: 'New product — OneStep Admin',
+        loadComponent: () => import('./features/admin/products/product-edit-page').then((m) => m.ProductEditPage),
+      },
+      {
+        path: 'products/:id',
+        title: 'Edit product — OneStep Admin',
+        loadComponent: () => import('./features/admin/products/product-edit-page').then((m) => m.ProductEditPage),
+      },
+      {
+        path: 'campaigns',
+        title: 'Campaigns — OneStep Admin',
+        loadComponent: () =>
+          import('./features/admin/campaigns/admin-campaigns-page').then((m) => m.AdminCampaignsPage),
+      },
+      {
+        path: 'users',
+        title: 'Users — OneStep Admin',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/admin/users/admin-users-page').then((m) => m.AdminUsersPage),
+      },
+    ],
+  },
   {
     path: '',
     component: Shell,

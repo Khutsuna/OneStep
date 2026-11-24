@@ -10,6 +10,9 @@ using OneStep.Application.Features.Products;
 using OneStep.Application.Features.Addresses;
 using OneStep.Application.Features.Cart;
 using OneStep.Application.Features.Orders;
+using OneStep.Application.Features.Analytics;
+using OneStep.Application.Features.Campaigns;
+using OneStep.Application.Features.Notifications;
 
 
 namespace OneStep.Application;
@@ -39,6 +42,11 @@ public static class DependencyInjection
         services.AddScoped<ICartService, CartService>();
         services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IOrderService, OrderService>();
+
+        // Admin panel
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<ICampaignService, CampaignService>();
 
         return services;
     }

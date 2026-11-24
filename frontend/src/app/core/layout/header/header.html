@@ -36,10 +36,17 @@
           {{ auth.firstName() }}
         </button>
         <mat-menu #accountMenu="matMenu" xPosition="before">
-          <a mat-menu-item routerLink="/account/orders">
-            <mat-icon aria-hidden="true">receipt_long</mat-icon>
-            {{ auth.isStaff() ? 'Orders' : 'My orders' }}
-          </a>
+          @if (auth.isStaff()) {
+            <a mat-menu-item routerLink="/admin">
+              <mat-icon aria-hidden="true">dashboard</mat-icon>
+              Admin panel
+            </a>
+          } @else {
+            <a mat-menu-item routerLink="/account/orders">
+              <mat-icon aria-hidden="true">receipt_long</mat-icon>
+              My orders
+            </a>
+          }
           <button mat-menu-item (click)="logout()">
             <mat-icon aria-hidden="true">logout</mat-icon>
             Log out
