@@ -1,0 +1,119 @@
+@use 'breakpoints' as bp;
+
+.carousel {
+  position: relative;
+}
+
+// The window you look through; the row of cards moves behind it.
+.viewport {
+  overflow: hidden;
+  container-type: inline-size; // lets the cards size themselves by the viewport's width (cqw units)
+  padding: 4px 0 8px;
+  // Cards fade in and out at the edges instead of being cut off sharply.
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+
+.track {
+  --per-view: 1.6; // cards visible at once
+  --gap: 12px;
+
+  display: flex;
+  gap: var(--gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  will-change: transform;
+
+  @include bp.from(bp.$sm) {
+    --per-view: 2.5;
+  }
+
+  @include bp.from(bp.$md) {
+    --per-view: 4;
+    --gap: 16px;
+  }
+
+  @include bp.from(bp.$lg) {
+    --per-view: 5;
+  }
+}
+
+.slide {
+  // 100cqw = the viewport's width, so exactly --per-view cards fit.
+  flex: 0 0 calc((100cqw - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+  min-width: 0;
+
+  app-product-card {
+    height: 100%;
+  }
+}
+
+// Round arrow buttons on both sides, half outside the row.
+.nav {
+  position: absolute;
+  top: 38%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--os-line);
+  border-radius: 50%;
+  background: var(--os-surface);
+  color: var(--os-ink);
+  box-shadow: 0 4px 14px rgb(16 26 51 / 0.18);
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background: var(--os-ink);
+    color: #fff;
+    border-color: var(--os-ink);
+  }
+
+  &.prev {
+    left: -14px;
+  }
+
+  &.next {
+    right: -14px;
+  }
+
+  @include bp.below(bp.$md) {
+    width: 36px;
+    height: 36px;
+
+    &.prev {
+      left: 4px;
+    }
+
+    &.next {
+      right: 4px;
+    }
+  }
+}
+
+.toggle {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--os-line);
+  border-radius: 50%;
+  background: var(--os-surface);
+  color: var(--os-ink);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--os-ink);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}

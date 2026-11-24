@@ -216,6 +216,10 @@
   }
 }
 
+.deals-head {
+  padding-right: 48px; // room for the carousel's pause button
+}
+
 .section-note {
   margin: 4px 0 0;
   color: var(--os-muted);
