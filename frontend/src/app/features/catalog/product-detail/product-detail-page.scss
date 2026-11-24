@@ -220,3 +220,33 @@
 .reviews {
   margin-top: 40px;
 }
+
+// "Watch video reviews on YouTube": a quiet outlined link under the buy box.
+.youtube {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--os-line);
+  border-radius: var(--os-radius-sm);
+  background: var(--os-surface);
+  color: var(--os-ink);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--os-ink);
+  }
+
+  mat-icon {
+    color: var(--os-sale);
+  }
+
+  .external {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--os-muted);
+  }
+}
