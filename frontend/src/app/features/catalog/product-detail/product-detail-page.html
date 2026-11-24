@@ -68,6 +68,7 @@
                 <mat-icon aria-hidden="true">add_shopping_cart</mat-icon>
                 {{ adding() ? 'Adding…' : 'Add to cart' }}
               </button>
+              <app-wishlist-button [productId]="product.id" [showLabel]="true" />
             </div>
             @if (inCart() > 0) {
               <p class="in-cart">
@@ -101,6 +102,11 @@
       <h2 id="about-title">About this product</h2>
       <p>{{ product.description }}</p>
       <p class="added">In our catalogue since {{ product.createdAt | date: 'longDate' }}</p>
+    </section>
+
+    <section class="reviews" aria-labelledby="reviews-title">
+      <h2 id="reviews-title" class="section-title">Reviews</h2>
+      <app-product-reviews [productId]="product.id" />
     </section>
 
     @if (similar().length) {

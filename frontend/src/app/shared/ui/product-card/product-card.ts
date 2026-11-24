@@ -5,6 +5,7 @@ import { ProductListItem } from '../../../core/models/catalog.models';
 import { PriceTag } from '../price-tag/price-tag';
 import { ProductImage } from '../product-image/product-image';
 import { RatingStars } from '../rating-stars/rating-stars';
+import { WishlistButton } from '../wishlist-button/wishlist-button';
 
 /**
  * Presentational component: it only receives a product through an input and displays it.
@@ -12,7 +13,7 @@ import { RatingStars } from '../rating-stars/rating-stars';
  */
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, PriceTag, ProductImage, RatingStars],
+  imports: [RouterLink, PriceTag, ProductImage, RatingStars, WishlistButton],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss',
 })

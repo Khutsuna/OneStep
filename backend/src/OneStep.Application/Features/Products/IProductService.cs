@@ -9,6 +9,7 @@ public interface IProductService
     Task<ProductFiltersDto> GetFiltersAsync(int? categoryId, CancellationToken cancellationToken);
     Task<IReadOnlyList<ProductListItemDto>> GetSimilarAsync(int id, int count, CancellationToken cancellationToken);
     Task<IReadOnlyList<LowStockProductDto>> GetLowStockAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<ProductListItemDto>> GetByIdsAsync(IReadOnlyList<int> ids, CancellationToken cancellationToken);
     Task<ProductDetailsDto> CreateAsync(ProductRequest request, CancellationToken cancellationToken);
     Task<ProductDetailsDto> UpdateAsync(int id, ProductRequest request, CancellationToken cancellationToken);
     Task UpdateStockAsync(int id, StockUpdateRequest request, CancellationToken cancellationToken);

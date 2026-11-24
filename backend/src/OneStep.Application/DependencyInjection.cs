@@ -13,6 +13,9 @@ using OneStep.Application.Features.Orders;
 using OneStep.Application.Features.Analytics;
 using OneStep.Application.Features.Campaigns;
 using OneStep.Application.Features.Notifications;
+using OneStep.Application.Features.Wishlist;
+using OneStep.Application.Features.Reviews;
+using OneStep.Application.Features.Account;
 
 
 namespace OneStep.Application;
@@ -47,6 +50,11 @@ public static class DependencyInjection
         services.AddScoped<IAnalyticsService, AnalyticsService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ICampaignService, CampaignService>();
+
+        // Customer account
+        services.AddScoped<IWishlistService, WishlistService>();
+        services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<IAccountService, AccountService>();
 
         return services;
     }

@@ -96,6 +96,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/checkout/checkout-page').then((m) => m.CheckoutPage),
       },
       {
+        path: 'account',
+        title: 'My account — OneStep',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/account/profile/profile-page').then((m) => m.ProfilePage),
+      },
+      {
+        path: 'account/wishlist',
+        title: 'Wishlist — OneStep',
+        canActivate: [customerGuard],
+        loadComponent: () => import('./features/account/wishlist/wishlist-page').then((m) => m.WishlistPage),
+      },
+      {
         path: 'account/orders',
         title: 'My orders — OneStep',
         canActivate: [authGuard],

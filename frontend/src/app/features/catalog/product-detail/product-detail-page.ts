@@ -19,6 +19,8 @@ import { PriceTag } from '../../../shared/ui/price-tag/price-tag';
 import { ProductCard } from '../../../shared/ui/product-card/product-card';
 import { ProductImage } from '../../../shared/ui/product-image/product-image';
 import { QuantityStepper } from '../../../shared/ui/quantity-stepper/quantity-stepper';
+import { WishlistButton } from '../../../shared/ui/wishlist-button/wishlist-button';
+import { ProductReviewsSection } from './reviews/product-reviews';
 import { RatingStars } from '../../../shared/ui/rating-stars/rating-stars';
 
 interface DetailState {
@@ -31,7 +33,7 @@ interface DetailState {
   selector: 'app-product-detail-page',
   imports: [
     DatePipe, RouterLink, MatButtonModule, MatIconModule,
-    EmptyState, PriceTag, ProductCard, ProductImage, QuantityStepper, RatingStars,
+    EmptyState, PriceTag, ProductCard, ProductImage, ProductReviewsSection, QuantityStepper, RatingStars, WishlistButton,
   ],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.scss',

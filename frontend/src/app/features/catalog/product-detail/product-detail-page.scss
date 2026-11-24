@@ -139,6 +139,7 @@
 
 .buy {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 16px;
 
@@ -148,6 +149,7 @@
 
   .add {
     flex: 1;
+    min-width: 150px;
     height: 48px;
   }
 
@@ -213,4 +215,8 @@
   height: 420px;
   border-radius: var(--os-radius-lg);
   background: var(--os-photo);
+}
+
+.reviews {
+  margin-top: 40px;
 }

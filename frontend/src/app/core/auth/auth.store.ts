@@ -54,6 +54,21 @@ export const AuthStore = signalStore(
         return api.register(request).pipe(tap(save));
       },
 
+      /** After the user edits their profile: keep the header's name in sync, and remember it. */
+      updateUser(changes: Partial<Pick<User, 'firstName' | 'lastName'>>): void {
+        const user = store.user();
+        if (!user) return;
+        patchState(store, { user: { ...user, ...changes } });
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({ user: store.user(), token: store.token(), expiresAt: store.expiresAt() }),
+          );
+        } catch {
+          // ignore
+        }
+      },
+
       logout(): void {
         patchState(store, initialState);
         try {
