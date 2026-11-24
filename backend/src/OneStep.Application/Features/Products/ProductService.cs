@@ -337,6 +337,38 @@ public class ProductService : IProductService
         return items.OrderBy(item => position[item.Id]).ToList();
     }
 
+    /// <summary>
+    /// The product's base price over time, for the chart on the product page.
+    /// The changes are written by the SQL trigger trg_Products_PriceHistory (database/05_triggers.sql)
+    /// every time a price is updated, so the API only has to read them.
+    /// </summary>
+    public async Task<IReadOnlyList<PricePointDto>> GetPriceHistoryAsync(int id, CancellationToken cancellationToken)
+    {
+        var product = await _db.Products
+            .AsNoTracking()
+            .Where(p => p.Id == id)
+            .Select(p => new { p.Price, p.CreatedAt })
+            .FirstOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException($"Product {id} was not found.");
+
+        var changes = await _db.ProductPriceHistory
+            .AsNoTracking()
+            .Where(h => h.ProductId == id)
+            .OrderBy(h => h.CreatedAt)
+            .Select(h => new { h.CreatedAt, h.OldPrice, h.NewPrice })
+            .ToListAsync(cancellationToken);
+
+        // First point: the price the product started with (before the first change, if there was one).
+        var points = new List<PricePointDto>
+        {
+            new(product.CreatedAt, changes.Count > 0 ? changes[0].OldPrice : product.Price)
+        };
+
+        // Then one point per change.
+        points.AddRange(changes.Select(c => new PricePointDto(c.CreatedAt, c.NewPrice)));
+        return points;
+    }
+
     // ---------- helpers ----------
 
     /// <summary>Adds the current (discounted) prices to rows read from the view.</summary>

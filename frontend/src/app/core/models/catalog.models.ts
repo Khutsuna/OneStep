@@ -43,6 +43,12 @@ export interface ProductListItem {
   status: ProductStatus;
 }
 
+/** One point of the price history: from this date on, the base price was this. */
+export interface PricePoint {
+  date: string;
+  price: number;
+}
+
 export interface ProductImage {
   id: number;
   url: string;

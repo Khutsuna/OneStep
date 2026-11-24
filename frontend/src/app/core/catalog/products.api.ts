@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PagedResult } from '../models/common.models';
-import { ProductDetails, ProductFilters, ProductListItem, ProductQuery } from '../models/catalog.models';
+import { PricePoint, ProductDetails, ProductFilters, ProductListItem, ProductQuery } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsApi {
@@ -21,6 +21,11 @@ export class ProductsApi {
   getFilters(categoryId: number | null): Observable<ProductFilters> {
     const params = categoryId ? new HttpParams().set('categoryId', categoryId) : undefined;
     return this.http.get<ProductFilters>(`${this.baseUrl}/filters`, { params });
+  }
+
+  /** The base price over time (written by the SQL trigger trg_Products_PriceHistory). */
+  getPriceHistory(id: number): Observable<PricePoint[]> {
+    return this.http.get<PricePoint[]>(`${this.baseUrl}/${id}/price-history`);
   }
 
   getSimilar(id: number, count = 4): Observable<ProductListItem[]> {

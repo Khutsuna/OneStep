@@ -71,6 +71,9 @@ public record ProductListItemDto(
     bool InStock,
     ProductStatus Status);
 
+/// <summary>One point of the price history chart: from this moment on, the base price was Price.</summary>
+public record PricePointDto(DateTime Date, decimal Price);
+
 public record ProductImageDto(int Id, string Url, string? AltText, int SortOrder, bool IsMain);
 
 public record ProductAttributeValueDto(int AttributeId, string Name, string Value);

@@ -60,6 +60,16 @@ public class ProductsController : ControllerBase
         return await _productService.GetSimilarAsync(id, count, cancellationToken);
     }
 
+    /// <summary>The product's base price over time (filled by the SQL trigger trg_Products_PriceHistory).</summary>
+    [HttpGet("{id:int}/price-history")]
+    [AllowAnonymous]
+    [ProducesResponseType<IReadOnlyList<PricePointDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IReadOnlyList<PricePointDto>> GetPriceHistory(int id, CancellationToken cancellationToken)
+    {
+        return await _productService.GetPriceHistoryAsync(id, cancellationToken);
+    }
+
     /// <summary>Products at or below their minimum stock level. Staff only.</summary>
     [HttpGet("low-stock")]
     [Authorize(Policy = Policies.StaffOnly)]
