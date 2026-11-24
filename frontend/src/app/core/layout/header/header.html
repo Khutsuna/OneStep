@@ -46,7 +46,15 @@
               <mat-icon aria-hidden="true">receipt_long</mat-icon>
               My orders
             </a>
+            <a mat-menu-item routerLink="/account/wishlist">
+              <mat-icon aria-hidden="true">favorite</mat-icon>
+              Wishlist
+            </a>
           }
+          <a mat-menu-item routerLink="/account">
+            <mat-icon aria-hidden="true">person</mat-icon>
+            My account
+          </a>
           <button mat-menu-item (click)="logout()">
             <mat-icon aria-hidden="true">logout</mat-icon>
             Log out

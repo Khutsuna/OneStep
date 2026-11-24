@@ -1,0 +1,100 @@
+@if (data(); as d) {
+  <div class="layout">
+    <div class="summary">
+      <p class="average">
+        <span class="number">{{ d.averageRating | number: '1.1-1' }}</span>
+        <span class="of">out of 5</span>
+      </p>
+      <app-rating-stars [rating]="d.averageRating" [count]="d.reviewCount" />
+
+      <ul class="bars" aria-label="Ratings by number of stars">
+        @for (count of d.ratingCounts; track $index) {
+          <li>
+            <span class="stars-label">{{ 5 - $index }} ★</span>
+            <span class="bar" aria-hidden="true"><span [style.width.%]="share(count)"></span></span>
+            <span class="bar-count">{{ count }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="main">
+      <!-- The form: only when the API says this customer may review. -->
+      @if (d.canReview) {
+        <form class="write" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <h3>Write a review</h3>
+          <div class="star-input" role="radiogroup" aria-label="Your rating" (mouseleave)="hoverRating.set(0)">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="form.controls.rating.value === star"
+                [attr.aria-label]="star + (star === 1 ? ' star' : ' stars')"
+                (mouseenter)="hoverRating.set(star)"
+                (click)="setRating(star)"
+              >
+                <mat-icon aria-hidden="true" [class.icon-filled]="(hoverRating() || form.controls.rating.value) >= star">star</mat-icon>
+              </button>
+            }
+            <span class="word">{{ ratingWords[hoverRating() || form.controls.rating.value] }}</span>
+          </div>
+
+          <mat-form-field class="full">
+            <mat-label>Title (optional)</mat-label>
+            <input matInput formControlName="title" maxlength="150" placeholder="Great sound, long battery" />
+          </mat-form-field>
+          <mat-form-field class="full">
+            <mat-label>Your review (optional)</mat-label>
+            <textarea matInput rows="3" formControlName="comment" maxlength="2000"></textarea>
+          </mat-form-field>
+
+          @if (errorMessage(); as message) {
+            <p class="error" role="alert">{{ message }}</p>
+          }
+          <button matButton="filled" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Publishing…' : 'Publish review' }}
+          </button>
+        </form>
+      } @else if (d.cannotReviewReason) {
+        <p class="hint">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          @if (!auth.isLoggedIn()) {
+            <span><a routerLink="/login">Log in</a> to write a review. Only customers who received the product can review it.</span>
+          } @else {
+            <span>{{ d.cannotReviewReason }}</span>
+          }
+        </p>
+      }
+
+      @if (reviews().length) {
+        <ul class="list">
+          @for (r of reviews(); track r.id) {
+            <li>
+              <div class="review-head">
+                <app-rating-stars [rating]="r.rating" [showCount]="false" />
+                @if (r.title) {
+                  <strong>{{ r.title }}</strong>
+                }
+              </div>
+              @if (r.comment) {
+                <p>{{ r.comment }}</p>
+              }
+              <div class="meta">
+                <span>{{ r.authorName }} · {{ r.createdAt | date: 'd MMM y' }}</span>
+                <span class="verified"><mat-icon aria-hidden="true">verified</mat-icon> Verified purchase</span>
+                @if (r.isMine || auth.isStaff()) {
+                  <button class="delete" type="button" (click)="remove(r)">Delete</button>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+        @if (hasMore()) {
+          <button matButton="outlined" (click)="showMore()">Show more reviews</button>
+        }
+      } @else {
+        <p class="none">No reviews yet. Customers who buy this product can be the first.</p>
+      }
+    </div>
+  </div>
+}

@@ -316,6 +316,27 @@ public class ProductService : IProductService
         await _db.SaveChangesAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Product cards for a list of ids, in the same order as the ids (used by the wishlist).
+    /// Hidden or deleted products are left out.
+    /// </summary>
+    public async Task<IReadOnlyList<ProductListItemDto>> GetByIdsAsync(IReadOnlyList<int> ids, CancellationToken cancellationToken)
+    {
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        var rows = await _db.ProductCatalog
+            .AsNoTracking()
+            .Where(p => ids.Contains(p.ProductId) && p.Status == ProductStatus.Active)
+            .ToListAsync(cancellationToken);
+
+        var items = await ToListItemsAsync(rows, cancellationToken);
+        var position = ids.Distinct().Select((id, index) => (id, index)).ToDictionary(x => x.id, x => x.index);
+        return items.OrderBy(item => position[item.Id]).ToList();
+    }
+
     // ---------- helpers ----------
 
     /// <summary>Adds the current (discounted) prices to rows read from the view.</summary>
