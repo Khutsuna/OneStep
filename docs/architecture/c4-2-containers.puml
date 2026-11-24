@@ -1,0 +1,26 @@
+@startuml c4-2-containers
+!include <C4/C4_Container>
+!include onestep-theme.puml
+
+title OneStep — Level 2: Containers\n<size:12>The separately running parts and how they talk to each other</size>
+
+Person(customer, "Customer")
+Person(staff, "Store Manager / Administrator")
+
+System_Boundary(onestep, "OneStep") {
+  Container(spa, "Single-page application", "Angular 22, TypeScript, Angular Material, NgRx Signal Store", "Shop, cart and checkout, customer account, and the admin panel. Runs in the browser")
+  Container(api, "Web API", "ASP.NET Core 10, C#", "REST/JSON API: business rules, JWT login and roles, validation, Swagger docs, error handling and logging")
+  ContainerDb(db, "Database", "Microsoft SQL Server 2025", "22 tables (EF Core migrations), plus hand-written SQL: catalogue view, analytics procedures, price-history trigger, seed data", $tags="db")
+  Container(files, "Image storage", "Folder wwwroot/uploads", "Product photos, served to the browser as static files")
+  Container(logs, "Log files", "Serilog", "One file per day: requests, warnings and errors")
+}
+
+Rel_Down(customer, spa, "Uses", "HTTPS")
+Rel_Down(staff, spa, "Uses", "HTTPS")
+Rel_Down(spa, api, "Calls", "JSON over HTTPS, JWT bearer token")
+Rel_Down(api, db, "Reads and writes", "EF Core / SQL")
+Rel_Right(api, files, "Saves and serves photos")
+Rel_Left(api, logs, "Writes")
+
+SHOW_LEGEND()
+@enduml

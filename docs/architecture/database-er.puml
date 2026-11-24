@@ -1,0 +1,216 @@
+@startuml database-er
+title OneStep — Database design (SQL Server)\n<size:12>22 tables. PK = primary key, FK = foreign key, UQ = unique. Created by EF Core migrations; views, procedures and trigger in /database</size>
+
+skinparam defaultFontName "Arial"
+skinparam backgroundColor #ffffff
+skinparam linetype polyline
+skinparam nodesep 30
+skinparam ranksep 50
+skinparam ArrowColor #5b6478
+skinparam class {
+  BackgroundColor #ffffff
+  BorderColor #2d4373
+  HeaderBackgroundColor #e9edf5
+  FontColor #14213d
+  FontStyle bold
+  AttributeFontColor #14213d
+}
+skinparam packageBorderColor #8a93a6
+skinparam packageFontColor #14213d
+left to right direction
+hide circle
+hide methods
+
+package "Users" {
+  entity Users {
+    * Id : int <<PK>>
+    --
+    {field} * Email : nvarchar(256) <<UQ>>
+    * PasswordHash : nvarchar
+    {field} * FirstName, LastName : nvarchar(100)
+    {field} PhoneNumber : nvarchar(30)
+    * Role : Customer | StoreManager | Admin
+    * IsActive : bit
+    LastLoginAt, CreatedAt
+  }
+  entity Addresses {
+    * Id <<PK>>
+    * UserId <<FK>>
+    * Label, RecipientName, Phone, Line1, City
+    Line2, Region, PostalCode
+    {field} * CountryCode : char(2)
+    * IsDefault : bit  [UQ per user when 1]
+  }
+  entity PasswordResetTokens {
+    * Id <<PK>>
+    * UserId <<FK>>
+    * TokenHash <<UQ>>
+    * ExpiresAt, UsedAt
+  }
+}
+
+package "Catalogue" {
+  entity Categories {
+    * Id <<PK>>
+    ParentId <<FK self>>  [subcategories]
+    * Name  [UQ with ParentId]
+    * Slug <<UQ>>
+    SortOrder
+  }
+  entity Brands {
+    * Id <<PK>>
+    * Name <<UQ>>
+    * Slug <<UQ>>
+  }
+  entity Products {
+    * Id <<PK>>
+    * CategoryId <<FK>>
+    BrandId <<FK>>
+    * Name, Description
+    * Sku <<UQ>>, Slug <<UQ>>
+    {field} * Price : decimal(18,2)  [>= 0]
+    * StockQuantity  [>= 0]
+    * LowStockThreshold
+    * Status : Active | Inactive
+    * IsDeleted : bit  [soft delete]
+    * RowVersion : rowversion
+  }
+  entity ProductImages {
+    * Id <<PK>>
+    * ProductId <<FK>>
+    * FilePath, SortOrder
+    * IsMain  [one per product]
+  }
+  entity ProductAttributes {
+    * Id <<PK>>
+    * Name <<UQ>>  [Color, Storage...]
+  }
+  entity ProductAttributeValues {
+    * ProductId <<PK, FK>>
+    * ProductAttributeId <<PK, FK>>
+    * Value
+  }
+  entity ProductPriceHistory {
+    * Id <<PK>>
+    * ProductId <<FK>>
+    * OldPrice, NewPrice
+    [filled by trigger]
+  }
+}
+
+package "Shopping" {
+  entity Carts {
+    * Id <<PK>>
+    * UserId <<FK, UQ>>
+  }
+  entity CartItems {
+    * Id <<PK>>
+    * CartId <<FK>>
+    * ProductId <<FK>>  [UQ with CartId]
+    * Quantity  [> 0]
+  }
+  entity WishlistItems {
+    * UserId <<PK, FK>>
+    * ProductId <<PK, FK>>
+    * CreatedAt
+  }
+  entity Reviews {
+    * Id <<PK>>
+    * ProductId <<FK>>
+    * UserId <<FK>>  [UQ with ProductId]
+    * Rating : tinyint  [1–5]
+    Title, Comment
+  }
+}
+
+package "Orders" {
+  entity Orders {
+    * Id <<PK>>
+    * UserId <<FK>>
+    * DeliveryMethodId <<FK>>
+    * Status : Pending | Paid | Shipped | Delivered | Cancelled
+    * Subtotal, DiscountTotal, ShippingCost,
+      TaxAmount, TotalAmount  [CHECK: total = formula]
+    * PaymentMethod, PaidAt
+    * Ship* columns  [address snapshot]
+  }
+  entity OrderItems {
+    * Id <<PK>>
+    * OrderId <<FK>>
+    * ProductId <<FK>>
+    * ProductName, Sku, UnitPrice, UnitDiscount  [snapshot]
+    * Quantity  [> 0]
+    LineTotal  [computed, persisted]
+  }
+  entity OrderStatusHistory {
+    * Id <<PK>>
+    * OrderId <<FK>>
+    FromStatus, * ToStatus
+    ChangedByUserId <<FK>>, Note
+  }
+  entity DeliveryMethods {
+    * Id <<PK>>
+    * Name <<UQ>>
+    * Price, FreeOverAmount
+    * MinDays <= MaxDays
+  }
+}
+
+package "Marketing & alerts" {
+  entity Campaigns {
+    * Id <<PK>>
+    * Name
+    * DiscountType : Percentage | FixedAmount
+    * DiscountValue
+    * StartsAt < EndsAt  [scheduled]
+    * AppliesToAllProducts, IsEnabled
+  }
+  entity CampaignProducts {
+    * CampaignId <<PK, FK>>
+    * ProductId <<PK, FK>>
+  }
+  entity CampaignCategories {
+    * CampaignId <<PK, FK>>
+    * CategoryId <<PK, FK>>
+  }
+  entity Notifications {
+    * Id <<PK>>
+    * Type : LowStock | OutOfStock | NewOrder
+    * Message
+    ProductId <<FK>>, OrderId <<FK>>
+    * IsRead
+  }
+}
+
+Users ||--o{ Addresses
+Users ||--o{ PasswordResetTokens
+Users ||--o| Carts
+Users ||--o{ Orders
+Users ||--o{ Reviews
+Users ||--o{ WishlistItems
+
+Categories |o--o{ Categories : parent
+Categories ||--o{ Products
+Brands |o--o{ Products
+Products ||--o{ ProductImages
+Products ||--o{ ProductAttributeValues
+ProductAttributes ||--o{ ProductAttributeValues
+Products ||--o{ ProductPriceHistory
+
+Carts ||--o{ CartItems
+Products ||--o{ CartItems
+Products ||--o{ WishlistItems
+Products ||--o{ Reviews
+
+Orders ||--|{ OrderItems
+Products ||--o{ OrderItems
+Orders ||--|{ OrderStatusHistory
+DeliveryMethods ||--o{ Orders
+
+Campaigns ||--o{ CampaignProducts
+Products ||--o{ CampaignProducts
+Campaigns ||--o{ CampaignCategories
+Categories ||--o{ CampaignCategories
+Products |o--o{ Notifications
+Orders |o--o{ Notifications
+@enduml
