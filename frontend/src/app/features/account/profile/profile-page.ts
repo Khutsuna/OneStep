@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,12 +14,13 @@ import { AccountApi } from '../../../core/shop/account.api';
 import { AddressesApi } from '../../../core/shop/addresses.api';
 import { applyServerErrors } from '../../../core/util/form-errors';
 import { AddressForm } from '../address-form/address-form';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /** "My account": personal details, password, and (for customers) the address book. */
 @Component({
   selector: 'app-profile-page',
-  imports: [
-    DatePipe, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  imports: [I18N, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
     AddressForm,
   ],
   templateUrl: './profile-page.html',
@@ -31,6 +31,7 @@ export class ProfilePage {
   private readonly accountApi = inject(AccountApi);
   private readonly addressesApi = inject(AddressesApi);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
   private readonly fb = inject(FormBuilder).nonNullable;
 
   protected readonly profile = signal<Profile | null>(null);
@@ -83,11 +84,11 @@ export class ProfilePage {
         this.savingProfile.set(false);
         this.profile.set(profile);
         this.auth.updateUser({ firstName: profile.firstName, lastName: profile.lastName }); // header shows the new name
-        this.snackBar.open('Your details are saved.', 'OK', { duration: 3000 });
+        this.snackBar.open(this.i18n.t('profile.saved'), this.i18n.t('common.ok'), { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
         this.savingProfile.set(false);
-        this.profileError.set(applyServerErrors(this.profileForm, error));
+        this.profileError.set(applyServerErrors(this.profileForm, error, this.i18n));
       },
     });
   }
@@ -103,11 +104,11 @@ export class ProfilePage {
       next: () => {
         this.savingPassword.set(false);
         this.passwordForm.reset();
-        this.snackBar.open('Your password is changed.', 'OK', { duration: 3000 });
+        this.snackBar.open(this.i18n.t('profile.passwordChanged'), this.i18n.t('common.ok'), { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
         this.savingPassword.set(false);
-        this.passwordError.set(applyServerErrors(this.passwordForm, error));
+        this.passwordError.set(applyServerErrors(this.passwordForm, error, this.i18n));
       },
     });
   }
@@ -121,7 +122,7 @@ export class ProfilePage {
   protected onAddressSaved(): void {
     this.editing.set(null);
     this.loadAddresses();
-    this.snackBar.open('Address saved.', 'OK', { duration: 3000 });
+    this.snackBar.open(this.i18n.t('profile.addressSaved'), this.i18n.t('common.ok'), { duration: 3000 });
   }
 
   protected makeDefault(address: Address): void {
@@ -132,7 +133,7 @@ export class ProfilePage {
     this.addressesApi.delete(address.id).subscribe(() => {
       this.confirmDeleteId.set(null);
       this.loadAddresses();
-      this.snackBar.open('Address deleted.', 'OK', { duration: 3000 });
+      this.snackBar.open(this.i18n.t('profile.addressDeleted'), this.i18n.t('common.ok'), { duration: 3000 });
     });
   }
 

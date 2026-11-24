@@ -16,6 +16,8 @@ import { NamedOption, ProductRequest } from '../../../core/models/admin.models';
 import { ProductDetails, ProductStatus } from '../../../core/models/catalog.models';
 import { applyServerErrors } from '../../../core/util/form-errors';
 import { mediaUrl } from '../../../core/util/media';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /** One "Color = Black" row of the specifications list. */
 type AttributeRow = FormGroup<{ attributeId: FormControl<number>; value: FormControl<string> }>;
@@ -23,8 +25,7 @@ type AttributeRow = FormGroup<{ attributeId: FormControl<number>; value: FormCon
 /** Create a product (/admin/products/new) or edit one (/admin/products/12), including its photos. */
 @Component({
   selector: 'app-product-edit-page',
-  imports: [
-    ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule,
+  imports: [I18N, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule,
   ],
   templateUrl: './product-edit-page.html',
   styleUrl: './product-edit-page.scss',
@@ -36,6 +37,7 @@ export class ProductEditPage {
   private readonly api = inject(ProductAdminApi);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
   protected readonly categories = inject(CategoryStore);
   protected readonly mediaUrl = mediaUrl;
 
@@ -80,7 +82,7 @@ export class ProductEditPage {
       if (!id) return;
       this.api.getById(Number(id)).subscribe({
         next: (product) => this.fill(product),
-        error: () => this.errorMessage.set('This product could not be loaded.'),
+        error: () => this.errorMessage.set(this.i18n.t('pe.loadFailed')),
       });
     });
   }
@@ -134,16 +136,16 @@ export class ProductEditPage {
         this.saving.set(false);
         if (existing) {
           this.fill(product);
-          this.snackBar.open('Product saved.', 'OK', { duration: 3000 });
+          this.snackBar.open(this.i18n.t('pe.saved'), this.i18n.t('common.ok'), { duration: 3000 });
         } else {
           // Go to the edit page of the new product, where photos can be added.
-          this.snackBar.open('Product created. Now add some photos.', 'OK', { duration: 4000 });
+          this.snackBar.open(this.i18n.t('pe.created'), this.i18n.t('common.ok'), { duration: 4000 });
           void this.router.navigate(['/admin/products', product.id]);
         }
       },
       error: (error: HttpErrorResponse) => {
         this.saving.set(false);
-        this.errorMessage.set(applyServerErrors(this.form, error));
+        this.errorMessage.set(applyServerErrors(this.form, error, this.i18n));
       },
     });
   }
@@ -161,7 +163,7 @@ export class ProductEditPage {
         concatMap((file) =>
           this.api.uploadImage(product.id, file).pipe(
             catchError((error: HttpErrorResponse) => {
-              this.snackBar.open(`${file.name}: ${error.error?.detail ?? 'upload failed'}`, 'OK', { duration: 5000 });
+              this.snackBar.open(error.error?.detail ? `${file.name}: ${error.error.detail}` : this.i18n.t('pe.uploadFailed', { file: file.name }), this.i18n.t('common.ok'), { duration: 5000 });
               return of(null);
             }),
           ),
@@ -187,7 +189,7 @@ export class ProductEditPage {
   protected deleteProduct(): void {
     const product = this.product()!;
     this.api.delete(product.id).subscribe(() => {
-      this.snackBar.open(`${product.name} was deleted.`, 'OK', { duration: 4000 });
+      this.snackBar.open(this.i18n.t('pe.deleted', { name: product.name }), this.i18n.t('common.ok'), { duration: 4000 });
       void this.router.navigateByUrl('/admin/products');
     });
   }

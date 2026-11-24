@@ -31,6 +31,10 @@
               }
             ],
             "styles": [
+              "node_modules/@fontsource-variable/onest/index.css",
+              "node_modules/@fontsource-variable/archivo/wdth.css",
+              "node_modules/@fontsource-variable/noto-sans-georgian/index.css",
+              "node_modules/material-symbols/outlined.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {

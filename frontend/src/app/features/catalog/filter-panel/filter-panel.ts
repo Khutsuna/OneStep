@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CategoryNode, ProductFilters, ProductQuery } from '../../../core/models/catalog.models';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /**
  * Presentational component: gets the current query and the available options as inputs,
@@ -13,7 +14,7 @@ import { CategoryNode, ProductFilters, ProductQuery } from '../../../core/models
  */
 @Component({
   selector: 'app-filter-panel',
-  imports: [FormsModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatSlideToggleModule],
+  imports: [I18N, FormsModule, MatButtonModule, MatCheckboxModule, MatIconModule, MatSlideToggleModule],
   templateUrl: './filter-panel.html',
   styleUrl: './filter-panel.scss',
 })

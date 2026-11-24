@@ -1,119 +1,119 @@
 <div class="head">
-  <h1>Dashboard</h1>
-  <div class="periods" role="group" aria-label="Period">
+  <h1>{{ 'admin.dashboard' | t }}</h1>
+  <div class="periods" role="group" [attr.aria-label]="'dash.period' | t">
     @for (period of periods; track period) {
       <button [class.active]="days() === period" [attr.aria-pressed]="days() === period" (click)="days.set(period)">
-        {{ period }} days
+        {{ 'dash.days' | t: { count: period } }}
       </button>
     }
   </div>
 </div>
 
 @if (dashboard()?.data; as d) {
-  <p class="range">{{ d.from | date: 'd MMM y' }} – {{ d.to | date: 'd MMM y' }}</p>
+  <p class="range">{{ d.from | localDate: 'd MMM y' }} – {{ d.to | localDate: 'd MMM y' }}</p>
 
-  <section class="kpis" aria-label="Key numbers">
+  <section class="kpis" [attr.aria-label]="'dash.keyNumbers' | t">
     <div class="kpi main">
-      <span class="label">Revenue</span>
+      <span class="label">{{ 'dash.revenue' | t }}</span>
       <span class="value">{{ d.summary.revenue | currency: 'GEL' : 'symbol-narrow' : '1.0-0' }}</span>
-      <span class="note">from {{ d.summary.paidOrderCount }} paid orders</span>
+      <span class="note">{{ 'dash.fromPaid' | t: { count: d.summary.paidOrderCount } }}</span>
     </div>
     <div class="kpi">
-      <span class="label">Orders placed</span>
+      <span class="label">{{ 'dash.ordersPlaced' | t }}</span>
       <span class="value">{{ d.summary.orderCount }}</span>
-      <span class="note">not counting cancelled</span>
+      <span class="note">{{ 'dash.notCancelled' | t }}</span>
     </div>
     <div class="kpi">
-      <span class="label">Average order</span>
+      <span class="label">{{ 'dash.avgOrder' | t }}</span>
       <span class="value">{{ d.summary.averageOrderValue | currency: 'GEL' : 'symbol-narrow' : '1.0-0' }}</span>
-      <span class="note">per paid order</span>
+      <span class="note">{{ 'dash.perPaid' | t }}</span>
     </div>
     <div class="kpi">
-      <span class="label">New customers</span>
+      <span class="label">{{ 'dash.newCustomers' | t }}</span>
       <span class="value">{{ d.summary.newCustomers }}</span>
-      <span class="note">registered in this period</span>
+      <span class="note">{{ 'dash.registered' | t }}</span>
     </div>
   </section>
 
-  <section class="attention" aria-label="Needs attention">
+  <section class="attention" [attr.aria-label]="'dash.attention' | t">
     <a class="todo" routerLink="/admin/orders" [queryParams]="{ status: 'Paid' }">
       <mat-icon aria-hidden="true">local_shipping</mat-icon>
-      <span><strong>{{ d.summary.ordersToShip }}</strong> paid orders to ship</span>
+      <span><strong>{{ d.summary.ordersToShip }}</strong> {{ 'dash.toShip' | t }}</span>
     </a>
     <a class="todo" routerLink="/admin/orders" [queryParams]="{ status: 'Pending' }">
       <mat-icon aria-hidden="true">hourglass_top</mat-icon>
-      <span><strong>{{ d.summary.pendingOrders }}</strong> awaiting payment</span>
+      <span><strong>{{ d.summary.pendingOrders }}</strong> {{ 'dash.awaiting' | t }}</span>
     </a>
     <button class="todo" [class.warn]="d.summary.lowStockProducts > 0" (click)="lowStockCard.scrollIntoView({ behavior: 'smooth' })">
       <mat-icon aria-hidden="true">inventory</mat-icon>
-      <span><strong>{{ d.summary.lowStockProducts }}</strong> products low on stock</span>
+      <span><strong>{{ d.summary.lowStockProducts }}</strong> {{ 'dash.lowStock' | t }}</span>
     </button>
   </section>
 
   <div class="grid">
     <section class="card chart" aria-labelledby="sales-title">
-      <h2 id="sales-title">Revenue per day</h2>
+      <h2 id="sales-title">{{ 'dash.revenuePerDay' | t }}</h2>
       <app-sales-chart [data]="d.salesByDay" />
     </section>
 
     <section class="card" aria-labelledby="top-title">
-      <h2 id="top-title">Best sellers</h2>
+      <h2 id="top-title">{{ 'dash.bestSellers' | t }}</h2>
       @if (d.topProducts.length) {
         <ol class="top">
           @for (p of d.topProducts; track p.productId) {
             <li>
               <a [routerLink]="['/admin/products', p.productId]">{{ p.productName }}</a>
-              <span class="muted">{{ p.unitsSold }} sold</span>
+              <span class="muted">{{ 'dash.sold' | t: { count: p.unitsSold } }}</span>
               <span class="amount">{{ p.revenue | currency: 'GEL' : 'symbol-narrow' : '1.0-0' }}</span>
             </li>
           }
         </ol>
       } @else {
-        <p class="muted">No paid orders in this period.</p>
+        <p class="muted">{{ 'dash.noPaid' | t }}</p>
       }
     </section>
 
     <section class="card" #lowStockCard aria-labelledby="stock-title">
-      <h2 id="stock-title">Low stock</h2>
+      <h2 id="stock-title">{{ 'dash.lowStockTitle' | t }}</h2>
       @if (lowStock().length) {
         <ul class="stock">
           @for (p of lowStock(); track p.id) {
             <li>
               <a [routerLink]="['/admin/products', p.id]">{{ p.name }}</a>
               <span class="count" [class.out]="p.stockQuantity === 0">
-                {{ p.stockQuantity === 0 ? 'Out of stock' : p.stockQuantity + ' left' }}
+                {{ p.stockQuantity === 0 ? ('card.outOfStock' | t) : ('dash.left' | t: { count: p.stockQuantity }) }}
               </span>
             </li>
           }
         </ul>
       } @else {
-        <p class="muted">Everything is well stocked.</p>
+        <p class="muted">{{ 'dash.wellStocked' | t }}</p>
       }
     </section>
 
     <section class="card" aria-labelledby="alerts-title">
       <div class="card-head">
-        <h2 id="alerts-title">Latest alerts</h2>
+        <h2 id="alerts-title">{{ 'dash.latestAlerts' | t }}</h2>
         @if (notifications.hasUnread()) {
-          <button class="link" (click)="notifications.markAllRead()">Mark all as read</button>
+          <button class="link" (click)="notifications.markAllRead()">{{ 'admin.markAllRead' | t }}</button>
         }
       </div>
       <ul class="alerts">
         @for (n of notifications.items().slice(0, 6); track n.id) {
           <li [class.unread]="!n.isRead">
             <span>{{ n.message }}</span>
-            <small>{{ n.createdAt | date: 'd MMM, HH:mm' }}</small>
+            <small>{{ n.createdAt | localDate: 'd MMM, HH:mm' }}</small>
           </li>
         } @empty {
-          <li class="muted">No alerts yet.</li>
+          <li class="muted">{{ 'admin.noAlerts' | t }}</li>
         }
       </ul>
     </section>
   </div>
 } @else if (dashboard()?.failed) {
   <p class="error" role="alert">
-    We couldn't load the dashboard. Check that the API is running and that database/04_procedures.sql was run.
+    {{ 'dash.loadFailed' | t }}
   </p>
 } @else {
-  <div class="loading" aria-busy="true" aria-label="Loading dashboard"></div>
+  <div class="loading" aria-busy="true" [attr.aria-label]="'dash.loading' | t"></div>
 }

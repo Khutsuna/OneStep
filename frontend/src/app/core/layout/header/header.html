@@ -1,31 +1,39 @@
 <header class="bar">
   <div class="bar-inner">
-    <a class="logo" routerLink="/" aria-label="OneStep home">
+    <a class="logo" routerLink="/" [attr.aria-label]="'common.home' | t">
       <span class="mark" aria-hidden="true"><span></span><span></span></span>
       <span class="wordmark">OneStep</span>
     </a>
 
     <form class="search" role="search" (ngSubmit)="search()">
-      <label class="visually-hidden" for="site-search">Search products</label>
+      <label class="visually-hidden" for="site-search">{{ 'header.searchLabel' | t }}</label>
       <input
         id="site-search"
         name="search"
         type="search"
-        placeholder="Search phones, laptops, headphones…"
+        [placeholder]="'header.searchPlaceholder' | t"
         autocomplete="off"
         [ngModel]="searchTerm()"
         (ngModelChange)="searchTerm.set($event)"
       />
-      <button type="submit" aria-label="Search">
+      <button type="submit" [attr.aria-label]="'header.search' | t">
         <mat-icon aria-hidden="true">search</mat-icon>
       </button>
     </form>
 
-    <nav class="account" aria-label="Account">
+    <nav class="account" [attr.aria-label]="'header.account' | t">
+      <!-- Language switch: Georgian / English, changes every text at once. -->
+      <div class="lang" role="group" [attr.aria-label]="'header.language' | t">
+        <button type="button" [class.active]="language.lang() === 'ka'" [attr.aria-pressed]="language.lang() === 'ka'"
+                lang="ka" (click)="language.setLanguage('ka')">ქარ</button>
+        <button type="button" [class.active]="language.lang() === 'en'" [attr.aria-pressed]="language.lang() === 'en'"
+                lang="en" (click)="language.setLanguage('en')">EN</button>
+      </div>
+
       <!-- Guests see the cart too: clicking it asks them to log in first. Staff accounts can't shop. -->
       @if (!auth.isStaff()) {
         <a matIconButton class="cart-button" routerLink="/cart"
-           [attr.aria-label]="'Cart, ' + cart.itemCount() + (cart.itemCount() === 1 ? ' item' : ' items')">
+           [attr.aria-label]="'header.cartLabel' | t: { count: cart.itemCount() }">
           <mat-icon aria-hidden="true" [matBadge]="cart.itemCount()" [matBadgeHidden]="cart.itemCount() === 0">shopping_cart</mat-icon>
         </a>
       }
@@ -39,54 +47,54 @@
           @if (auth.isStaff()) {
             <a mat-menu-item routerLink="/admin">
               <mat-icon aria-hidden="true">dashboard</mat-icon>
-              Admin panel
+              {{ 'header.adminPanel' | t }}
             </a>
           } @else {
             <a mat-menu-item routerLink="/account/orders">
               <mat-icon aria-hidden="true">receipt_long</mat-icon>
-              My orders
+              {{ 'header.myOrders' | t }}
             </a>
             <a mat-menu-item routerLink="/account/wishlist">
               <mat-icon aria-hidden="true">favorite</mat-icon>
-              Wishlist
+              {{ 'header.wishlist' | t }}
             </a>
           }
           <a mat-menu-item routerLink="/account">
             <mat-icon aria-hidden="true">person</mat-icon>
-            My account
+            {{ 'header.myAccount' | t }}
           </a>
           <button mat-menu-item (click)="logout()">
             <mat-icon aria-hidden="true">logout</mat-icon>
-            Log out
+            {{ 'header.logout' | t }}
           </button>
         </mat-menu>
       } @else {
         <a matButton class="account-button" routerLink="/login">
           <mat-icon aria-hidden="true">login</mat-icon>
-          Log in
+          {{ 'header.login' | t }}
         </a>
       }
     </nav>
   </div>
 </header>
 
-<nav class="categories" aria-label="Categories">
+<nav class="categories" [attr.aria-label]="'header.categories' | t">
   <div class="categories-inner">
-    <a class="category-link" routerLink="/products">All products</a>
+    <a class="category-link" routerLink="/products">{{ 'header.allProducts' | t }}</a>
     @for (category of categories.tree(); track category.id) {
       <button class="category-link" [matMenuTriggerFor]="subMenu">
         <mat-icon aria-hidden="true">{{ categoryIcon(category.slug) }}</mat-icon>
-        {{ category.name }}
+        {{ category.name | term }}
         <mat-icon class="chevron" aria-hidden="true">expand_more</mat-icon>
       </button>
       <mat-menu #subMenu="matMenu">
         <a mat-menu-item routerLink="/products" [queryParams]="{ categoryId: category.id }">
-          All {{ category.name }}
+          {{ 'header.allInCategory' | t: { name: (category.name | term) } }}
         </a>
         @for (child of category.children; track child.id) {
           <a mat-menu-item routerLink="/products" [queryParams]="{ categoryId: child.id }">
             <mat-icon aria-hidden="true">{{ categoryIcon(child.slug) }}</mat-icon>
-            {{ child.name }}
+            {{ child.name | term }}
           </a>
         }
       </mat-menu>

@@ -1,6 +1,7 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { DailySales } from '../../../core/models/admin.models';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 const WIDTH = 720;
 const HEIGHT = 220;
@@ -13,25 +14,25 @@ const PAD_BOTTOM = 24;
  */
 @Component({
   selector: 'app-sales-chart',
-  imports: [CurrencyPipe, DatePipe],
+  imports: [I18N, CurrencyPipe],
   template: `
     <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none" role="img"
-         [attr.aria-label]="'Revenue per day. Highest day: ' + (max() | currency: 'GEL' : 'symbol-narrow' : '1.0-0')">
+         [attr.aria-label]="'chart.label' | t: { amount: (max() | currency: 'GEL' : 'symbol-narrow' : '1.0-0') }">
       <!-- guide lines at 50% and 100% of the best day -->
       <line [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="top" [attr.y2]="top" class="guide" />
       <line [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="(top + baseline) / 2" [attr.y2]="(top + baseline) / 2" class="guide" />
       @for (bar of bars(); track bar.day) {
         <rect [attr.x]="bar.x" [attr.y]="bar.y" [attr.width]="bar.w" [attr.height]="bar.h" rx="2"
               [class.empty]="bar.revenue === 0">
-          <title>{{ bar.day | date: 'EEE d MMM' }}: {{ bar.revenue | currency: 'GEL' : 'symbol-narrow' }}, {{ bar.orders }} orders</title>
+          <title>{{ 'chart.bar' | t: { day: (bar.day | localDate: 'EEE d MMM'), amount: (bar.revenue | currency: 'GEL' : 'symbol-narrow'), count: bar.orders } }}</title>
         </rect>
       }
       <line [attr.x1]="padLeft" [attr.x2]="width" [attr.y1]="baseline" [attr.y2]="baseline" class="axis" />
     </svg>
     <div class="scale">
-      <span>{{ data()[0]?.day | date: 'd MMM' }}</span>
-      <span>Best day {{ max() | currency: 'GEL' : 'symbol-narrow' : '1.0-0' }}</span>
-      <span>{{ data()[data().length - 1]?.day | date: 'd MMM' }}</span>
+      <span>{{ data()[0]?.day | localDate: 'd MMM' }}</span>
+      <span>{{ 'chart.best' | t: { amount: (max() | currency: 'GEL' : 'symbol-narrow' : '1.0-0') } }}</span>
+      <span>{{ data()[data().length - 1]?.day | localDate: 'd MMM' }}</span>
     </div>
   `,
   styles: `

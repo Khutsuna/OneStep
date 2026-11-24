@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,6 +12,9 @@ import { AuthStore } from '../../../../core/auth/auth.store';
 import { ProductReviews, Review } from '../../../../core/models/account.models';
 import { ReviewsApi } from '../../../../core/shop/reviews.api';
 import { RatingStars } from '../../../../shared/ui/rating-stars/rating-stars';
+import { I18N } from '../../../../core/i18n/translate.pipes';
+import { TranslationKey } from '../../../../core/i18n/en';
+import { LanguageStore } from '../../../../core/i18n/language.store';
 
 /**
  * The reviews section of the product page: rating summary, the reviews, and the form.
@@ -19,8 +22,7 @@ import { RatingStars } from '../../../../shared/ui/rating-stars/rating-stars';
  */
 @Component({
   selector: 'app-product-reviews',
-  imports: [
-    DatePipe, DecimalPipe, ReactiveFormsModule, RouterLink,
+  imports: [I18N, DecimalPipe, ReactiveFormsModule, RouterLink,
     MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, RatingStars,
   ],
   templateUrl: './product-reviews.html',
@@ -53,7 +55,13 @@ export class ProductReviewsSection {
 
   /** The star the mouse is over, to preview the rating before clicking. */
   protected readonly hoverRating = signal(0);
-  protected readonly ratingWords = ['', 'Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+  private readonly i18n = inject(LanguageStore);
+
+  /** "Poor" ... "Excellent" for the hovered or chosen number of stars. */
+  protected ratingWord(): string {
+    const stars = this.hoverRating() || this.form.controls.rating.value;
+    return stars ? this.i18n.t(`reviews.word${stars}` as TranslationKey) : '';
+  }
 
   constructor() {
     // Load page 1 whenever the product changes (e.g. clicking a "you might also like" product).
@@ -81,7 +89,7 @@ export class ProductReviewsSection {
 
   protected submit(): void {
     if (this.form.controls.rating.value < 1) {
-      this.errorMessage.set('Choose 1 to 5 stars.');
+      this.errorMessage.set(this.i18n.t('reviews.chooseStars'));
       return;
     }
     if (this.form.invalid) return;
@@ -100,19 +108,19 @@ export class ProductReviewsSection {
         next: () => {
           this.saving.set(false);
           this.form.reset({ rating: 0, title: '', comment: '' });
-          this.snackBar.open('Thank you! Your review is published.', 'OK', { duration: 4000 });
+          this.snackBar.open(this.i18n.t('reviews.thanks'), this.i18n.t('common.ok'), { duration: 4000 });
           this.load(this.productId(), 1); // new average, and the form disappears (already reviewed)
         },
         error: (error: HttpErrorResponse) => {
           this.saving.set(false);
-          this.errorMessage.set(error.error?.detail ?? error.error?.title ?? "Your review wasn't saved.");
+          this.errorMessage.set(error.error?.detail ?? error.error?.title ?? this.i18n.t('reviews.notSaved'));
         },
       });
   }
 
   protected remove(review: Review): void {
     this.api.delete(review.id).subscribe(() => {
-      this.snackBar.open('Review deleted.', 'OK', { duration: 3000 });
+      this.snackBar.open(this.i18n.t('reviews.deleted'), this.i18n.t('common.ok'), { duration: 3000 });
       this.load(this.productId(), 1);
     });
   }

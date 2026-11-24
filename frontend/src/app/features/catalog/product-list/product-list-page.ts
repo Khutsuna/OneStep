@@ -14,6 +14,9 @@ import { ProductCard } from '../../../shared/ui/product-card/product-card';
 import { CatalogStore } from '../catalog.store';
 import { FilterPanel } from '../filter-panel/filter-panel';
 import { parseProductQuery, toQueryParams } from '../product-query';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { TranslationKey } from '../../../core/i18n/en';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /**
  * Page component ("smart"): connects the URL, the CatalogStore and the presentational components.
@@ -22,8 +25,7 @@ import { parseProductQuery, toQueryParams } from '../product-query';
  */
 @Component({
   selector: 'app-product-list-page',
-  imports: [
-    RouterLink,
+  imports: [I18N, RouterLink,
     MatButtonModule,
     MatIconModule,
     MatPaginatorModule,
@@ -43,13 +45,15 @@ export class ProductListPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  private readonly i18n = inject(LanguageStore);
+
   protected readonly filtersOpen = signal(false);
-  protected readonly sortOptions: { value: ProductSort; label: string }[] = [
-    { value: 'Newest', label: 'Newest first' },
-    { value: 'PriceAsc', label: 'Price: low to high' },
-    { value: 'PriceDesc', label: 'Price: high to low' },
-    { value: 'Rating', label: 'Best rated' },
-    { value: 'Name', label: 'Name A–Z' },
+  protected readonly sortOptions: { value: ProductSort; label: TranslationKey }[] = [
+    { value: 'Newest', label: 'sort.newest' },
+    { value: 'PriceAsc', label: 'sort.priceAsc' },
+    { value: 'PriceDesc', label: 'sort.priceDesc' },
+    { value: 'Rating', label: 'sort.rating' },
+    { value: 'Name', label: 'sort.name' },
   ];
 
   /** The current query, read from the URL. */
@@ -65,10 +69,10 @@ export class ProductListPage {
   protected readonly title = computed(() => {
     const query = this.query();
     if (query.search) {
-      return `Results for “${query.search}”`;
+      return this.i18n.t('catalog.resultsFor', { term: query.search });
     }
     const path = this.breadcrumb();
-    return path.length ? path[path.length - 1].name : 'All products';
+    return path.length ? this.i18n.term(path[path.length - 1].name) : this.i18n.t('header.allProducts');
   });
 
   constructor() {

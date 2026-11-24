@@ -180,3 +180,32 @@
     color: var(--os-muted);
   }
 }
+
+// Language switch: two small buttons, the active one in marigold.
+.lang {
+  display: inline-flex;
+  margin-right: 6px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: var(--os-radius-sm);
+  overflow: hidden;
+
+  button {
+    border: 0;
+    background: none;
+    color: #c3cbdd;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    padding: 5px 9px;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      background: var(--os-step);
+      color: var(--os-ink);
+    }
+  }
+}

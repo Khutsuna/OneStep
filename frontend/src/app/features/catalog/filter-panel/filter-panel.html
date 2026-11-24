@@ -1,31 +1,31 @@
 <div class="panel-head">
-  <h2>Filters</h2>
+  <h2>{{ 'catalog.filters' | t }}</h2>
   @if (hasActiveFilters()) {
-    <button matButton (click)="clearAll()">Clear all</button>
+    <button matButton (click)="clearAll()">{{ 'filters.clearAll' | t }}</button>
   }
-  <button matIconButton class="close" aria-label="Close filters" (click)="closed.emit()">
+  <button matIconButton class="close" [attr.aria-label]="'filters.close' | t" (click)="closed.emit()">
     <mat-icon aria-hidden="true">close</mat-icon>
   </button>
 </div>
 
 <section class="group" aria-labelledby="f-category">
-  <h3 id="f-category">Category</h3>
+  <h3 id="f-category">{{ 'filters.category' | t }}</h3>
   <ul class="category-list">
     <li>
       <button class="category" [class.active]="query().categoryId === null" (click)="selectCategory(null)">
-        All categories
+        {{ 'filters.allCategories' | t }}
       </button>
     </li>
     @for (parent of categories(); track parent.id) {
       <li>
         <button class="category" [class.active]="query().categoryId === parent.id" (click)="selectCategory(parent.id)">
-          {{ parent.name }}
+          {{ parent.name | term }}
         </button>
         <ul>
           @for (child of parent.children; track child.id) {
             <li>
               <button class="category child" [class.active]="query().categoryId === child.id" (click)="selectCategory(child.id)">
-                {{ child.name }} <span class="count">{{ child.productCount }}</span>
+                {{ child.name | term }} <span class="count">{{ child.productCount }}</span>
               </button>
             </li>
           }
@@ -36,35 +36,35 @@
 </section>
 
 <section class="group" aria-labelledby="f-price">
-  <h3 id="f-price">Price, ₾</h3>
+  <h3 id="f-price">{{ 'filters.price' | t }}</h3>
   <form class="price" (ngSubmit)="applyPrice()">
     <label>
-      <span class="visually-hidden">Minimum price</span>
+      <span class="visually-hidden">{{ 'filters.minPrice' | t }}</span>
       <input type="number" name="min" min="0" inputmode="numeric"
-             [placeholder]="filters()?.minPrice ?? 'From'"
+             [placeholder]="filters()?.minPrice ?? ('filters.from' | t)"
              [ngModel]="minPrice()" (ngModelChange)="minPrice.set($event)" />
     </label>
     <span aria-hidden="true">–</span>
     <label>
-      <span class="visually-hidden">Maximum price</span>
+      <span class="visually-hidden">{{ 'filters.maxPrice' | t }}</span>
       <input type="number" name="max" min="0" inputmode="numeric"
-             [placeholder]="filters()?.maxPrice ?? 'To'"
+             [placeholder]="filters()?.maxPrice ?? ('filters.to' | t)"
              [ngModel]="maxPrice()" (ngModelChange)="maxPrice.set($event)" />
     </label>
-    <button matButton="outlined" type="submit">Apply</button>
+    <button matButton="outlined" type="submit">{{ 'filters.apply' | t }}</button>
   </form>
 </section>
 
 <section class="group">
   <mat-slide-toggle [checked]="query().inStock" (change)="changed.emit({ inStock: $event.checked })">
-    In stock only
+    {{ 'filters.inStock' | t }}
   </mat-slide-toggle>
 </section>
 
 @if (filters(); as options) {
   @if (options.brands.length) {
     <section class="group" aria-labelledby="f-brand">
-      <h3 id="f-brand">Brand</h3>
+      <h3 id="f-brand">{{ 'filters.brand' | t }}</h3>
       @for (brand of options.brands; track brand.id) {
         <mat-checkbox class="brand"
                       [checked]="query().brandIds.includes(brand.id)"
@@ -76,15 +76,15 @@
   }
 
   @for (attribute of options.attributes; track attribute.name) {
-    <section class="group" [attr.aria-label]="attribute.name">
-      <h3>{{ attribute.name }}</h3>
+    <section class="group" [attr.aria-label]="attribute.name | term">
+      <h3>{{ attribute.name | term }}</h3>
       <div class="chips">
         @for (value of attribute.values; track value) {
           <button class="chip"
                   [class.selected]="isAttributeSelected(attribute.name, value)"
                   [attr.aria-pressed]="isAttributeSelected(attribute.name, value)"
                   (click)="toggleAttribute(attribute.name, value)">
-            {{ value }}
+            {{ value | term }}
           </button>
         }
       </div>

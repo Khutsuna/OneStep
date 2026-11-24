@@ -11,16 +11,19 @@ import { CartStore } from '../../core/shop/cart.store';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { ProductImage } from '../../shared/ui/product-image/product-image';
 import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepper';
+import { I18N } from '../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../core/i18n/language.store';
 
 @Component({
   selector: 'app-cart-page',
-  imports: [CurrencyPipe, RouterLink, MatButtonModule, MatIconModule, EmptyState, ProductImage, QuantityStepper],
+  imports: [I18N, CurrencyPipe, RouterLink, MatButtonModule, MatIconModule, EmptyState, ProductImage, QuantityStepper],
   templateUrl: './cart-page.html',
   styleUrl: './cart-page.scss',
 })
 export class CartPage {
   protected readonly cart = inject(CartStore);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
 
   /** The item that is being saved right now, so its buttons can be disabled. */
   protected readonly busyItemId = signal<number | null>(null);
@@ -30,7 +33,7 @@ export class CartPage {
   }
 
   protected remove(item: CartItem): void {
-    this.run(item, this.cart.remove(item.id), `${item.name} was removed from your cart.`);
+    this.run(item, this.cart.remove(item.id), this.i18n.t('cart.removed', { name: item.name }));
   }
 
   private run(item: CartItem, request: Observable<Cart>, successMessage?: string): void {
@@ -38,13 +41,13 @@ export class CartPage {
     request.subscribe({
       next: () => {
         this.busyItemId.set(null);
-        if (successMessage) this.snackBar.open(successMessage, 'OK', { duration: 3000 });
+        if (successMessage) this.snackBar.open(successMessage, this.i18n.t('common.ok'), { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
         this.busyItemId.set(null);
         // 409 = not enough stock. The API's message says how many are left.
         if (error.status === 409 || error.status === 400) {
-          this.snackBar.open(error.error?.detail ?? "That quantity isn't available.", 'OK', { duration: 5000 });
+          this.snackBar.open(error.error?.detail ?? this.i18n.t('cart.unavailable'), this.i18n.t('common.ok'), { duration: 5000 });
         }
       },
     });

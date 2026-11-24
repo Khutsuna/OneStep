@@ -1,5 +1,5 @@
-<h1>Campaigns</h1>
-<p class="lead">A campaign's discount is applied automatically between its start and end dates. Switch one off to stop it at once.</p>
+<h1>{{ 'admin.campaigns' | t }}</h1>
+<p class="lead">{{ 'camp.lead' | t }}</p>
 
 @if (campaigns(); as list) {
   <div class="list">
@@ -8,38 +8,37 @@
         <div class="main">
           <div class="title-row">
             <h2>{{ c.name }}</h2>
-            <span class="state" [class]="'state ' + c.state.toLowerCase()">{{ stateLabels[c.state] }}</span>
+            <span class="state" [class]="'state ' + c.state.toLowerCase()">{{ stateKey(c.state) | t }}</span>
           </div>
           @if (c.description) {
             <p class="description">{{ c.description }}</p>
           }
           <dl>
             <div>
-              <dt>Discount</dt>
+              <dt>{{ 'camp.discount' | t }}</dt>
               <dd>
-                {{ c.discountType === 'Percentage' ? c.discountValue + '%' : (c.discountValue | currency: 'GEL' : 'symbol-narrow' : '1.0-2') }}
-                off
+                {{ 'camp.off' | t: { value: c.discountType === 'Percentage' ? c.discountValue + '%' : (c.discountValue | currency: 'GEL' : 'symbol-narrow' : '1.0-2') } }}
               </dd>
             </div>
             <div>
-              <dt>Applies to</dt>
+              <dt>{{ 'camp.appliesTo' | t }}</dt>
               <dd>{{ target(c) }}</dd>
             </div>
             <div>
-              <dt>Runs</dt>
-              <dd>{{ c.startsAt | date: 'd MMM, HH:mm' }} – {{ c.endsAt | date: 'd MMM y, HH:mm' }}</dd>
+              <dt>{{ 'camp.runs' | t }}</dt>
+              <dd>{{ c.startsAt | localDate: 'd MMM, HH:mm' }} – {{ c.endsAt | localDate: 'd MMM y, HH:mm' }}</dd>
             </div>
           </dl>
         </div>
         <mat-slide-toggle [checked]="c.isEnabled" (change)="toggle(c, $event.checked)"
-                          [attr.aria-label]="(c.isEnabled ? 'Switch off ' : 'Switch on ') + c.name">
-          {{ c.isEnabled ? 'On' : 'Off' }}
+                          [attr.aria-label]="(c.isEnabled ? 'camp.switchOff' : 'camp.switchOn') | t: { name: c.name }">
+          {{ (c.isEnabled ? 'camp.on' : 'camp.offSwitch') | t }}
         </mat-slide-toggle>
       </article>
     } @empty {
-      <p class="lead">No campaigns yet.</p>
+      <p class="lead">{{ 'camp.none' | t }}</p>
     }
   </div>
 } @else {
-  <div class="loading" aria-busy="true" aria-label="Loading campaigns"></div>
+  <div class="loading" aria-busy="true" [attr.aria-label]="'camp.loading' | t"></div>
 }

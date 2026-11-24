@@ -1,77 +1,77 @@
 <div class="page">
-  <h1 class="title">My account</h1>
+  <h1 class="title">{{ 'profile.title' | t }}</h1>
   @if (profile(); as p) {
-    <p class="lead">{{ p.email }} · member since {{ p.createdAt | date: 'MMMM y' }}</p>
+    <p class="lead">{{ 'profile.memberSince' | t: { email: p.email, date: (p.createdAt | localDate: 'MMMM y') } }}</p>
   }
 
   @if (auth.isCustomer()) {
-    <nav class="quick" aria-label="Account shortcuts">
-      <a routerLink="/account/orders"><mat-icon aria-hidden="true">receipt_long</mat-icon> My orders</a>
-      <a routerLink="/account/wishlist"><mat-icon aria-hidden="true">favorite</mat-icon> Wishlist</a>
+    <nav class="quick" [attr.aria-label]="'profile.shortcuts' | t">
+      <a routerLink="/account/orders"><mat-icon aria-hidden="true">receipt_long</mat-icon> {{ 'header.myOrders' | t }}</a>
+      <a routerLink="/account/wishlist"><mat-icon aria-hidden="true">favorite</mat-icon> {{ 'header.wishlist' | t }}</a>
     </nav>
   }
 
   <div class="layout">
     <div class="column">
       <section class="card" aria-labelledby="details-title">
-        <h2 id="details-title">Personal details</h2>
+        <h2 id="details-title">{{ 'profile.details' | t }}</h2>
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate class="two">
           @if (profileError(); as message) {
             <p class="error" role="alert">{{ message }}</p>
           }
           <mat-form-field>
-            <mat-label>First name</mat-label>
+            <mat-label>{{ 'auth.firstName' | t }}</mat-label>
             <input matInput formControlName="firstName" autocomplete="given-name" />
             @if (profileForm.controls.firstName.hasError('required')) {
-              <mat-error>Enter your first name.</mat-error>
+              <mat-error>{{ 'auth.firstNameRequired' | t }}</mat-error>
             }
           </mat-form-field>
           <mat-form-field>
-            <mat-label>Last name</mat-label>
+            <mat-label>{{ 'auth.lastName' | t }}</mat-label>
             <input matInput formControlName="lastName" autocomplete="family-name" />
             @if (profileForm.controls.lastName.hasError('required')) {
-              <mat-error>Enter your last name.</mat-error>
+              <mat-error>{{ 'auth.lastNameRequired' | t }}</mat-error>
             }
           </mat-form-field>
           <mat-form-field class="wide">
-            <mat-label>Phone (optional)</mat-label>
+            <mat-label>{{ 'profile.phoneOptional' | t }}</mat-label>
             <input matInput type="tel" formControlName="phoneNumber" autocomplete="tel" placeholder="+995 555 12 34 56" />
             @if (profileForm.controls.phoneNumber.invalid) {
-              <mat-error>Use digits, spaces and +, e.g. +995 555 12 34 56.</mat-error>
+              <mat-error>{{ 'address.phoneInvalid' | t }}</mat-error>
             }
           </mat-form-field>
           <div class="wide">
             <button matButton="filled" type="submit" [disabled]="savingProfile()">
-              {{ savingProfile() ? 'Saving…' : 'Save details' }}
+              {{ (savingProfile() ? 'profile.saving' : 'profile.save') | t }}
             </button>
           </div>
         </form>
       </section>
 
       <section class="card" aria-labelledby="password-title">
-        <h2 id="password-title">Password</h2>
+        <h2 id="password-title">{{ 'profile.password' | t }}</h2>
         <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" novalidate class="two">
           @if (passwordError(); as message) {
             <p class="error" role="alert">{{ message }}</p>
           }
           <mat-form-field>
-            <mat-label>Current password</mat-label>
+            <mat-label>{{ 'profile.currentPassword' | t }}</mat-label>
             <input matInput type="password" formControlName="currentPassword" autocomplete="current-password" />
             @if (passwordForm.controls.currentPassword.hasError('required')) {
-              <mat-error>Enter your current password.</mat-error>
+              <mat-error>{{ 'profile.currentRequired' | t }}</mat-error>
             }
           </mat-form-field>
           <mat-form-field>
-            <mat-label>New password</mat-label>
+            <mat-label>{{ 'profile.newPassword' | t }}</mat-label>
             <input matInput type="password" formControlName="newPassword" autocomplete="new-password" />
-            <mat-hint>At least 8 characters, with a letter and a digit.</mat-hint>
+            <mat-hint>{{ 'auth.passwordHint' | t }}</mat-hint>
             @if (passwordForm.controls.newPassword.invalid) {
-              <mat-error>At least 8 characters, with a letter and a digit.</mat-error>
+              <mat-error>{{ 'auth.passwordRules' | t }}</mat-error>
             }
           </mat-form-field>
           <div class="wide">
             <button matButton="outlined" type="submit" [disabled]="savingPassword()">
-              {{ savingPassword() ? 'Changing…' : 'Change password' }}
+              {{ (savingPassword() ? 'profile.changing' : 'profile.changePassword') | t }}
             </button>
           </div>
         </form>
@@ -81,11 +81,11 @@
     @if (auth.isCustomer()) {
       <section class="card" aria-labelledby="addresses-title">
         <div class="card-head">
-          <h2 id="addresses-title">Address book</h2>
+          <h2 id="addresses-title">{{ 'profile.addresses' | t }}</h2>
           @if (editing() === null) {
             <button matButton (click)="editing.set('new')">
               <mat-icon aria-hidden="true">add</mat-icon>
-              Add address
+              {{ 'profile.addAddress' | t }}
             </button>
           }
         </div>
@@ -106,7 +106,7 @@
                   <div class="address-head">
                     <strong>{{ a.label }}</strong>
                     @if (a.isDefault) {
-                      <span class="tag">Default</span>
+                      <span class="tag">{{ 'checkout.default' | t }}</span>
                     }
                   </div>
                   <address>
@@ -117,24 +117,24 @@
 
                   @if (confirmDeleteId() === a.id) {
                     <div class="confirm">
-                      <span>Delete this address?</span>
-                      <button matButton="filled" class="danger" (click)="deleteAddress(a)">Delete</button>
-                      <button matButton (click)="confirmDeleteId.set(null)">Keep</button>
+                      <span>{{ 'profile.deleteQuestion' | t }}</span>
+                      <button matButton="filled" class="danger" (click)="deleteAddress(a)">{{ 'profile.delete' | t }}</button>
+                      <button matButton (click)="confirmDeleteId.set(null)">{{ 'profile.keep' | t }}</button>
                     </div>
                   } @else {
                     <div class="actions">
-                      <button matButton (click)="editing.set(a)">Edit</button>
+                      <button matButton (click)="editing.set(a)">{{ 'profile.edit' | t }}</button>
                       @if (!a.isDefault) {
-                        <button matButton (click)="makeDefault(a)">Make default</button>
+                        <button matButton (click)="makeDefault(a)">{{ 'profile.makeDefault' | t }}</button>
                       }
-                      <button matButton (click)="confirmDeleteId.set(a.id)">Delete</button>
+                      <button matButton (click)="confirmDeleteId.set(a.id)">{{ 'profile.delete' | t }}</button>
                     </div>
                   }
                 }
               </li>
             } @empty {
               @if (editing() !== 'new') {
-                <li class="none">No addresses yet. Add one to check out faster.</li>
+                <li class="none">{{ 'profile.noAddresses' | t }}</li>
               }
             }
           </ul>

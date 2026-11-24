@@ -1,26 +1,32 @@
 <header class="topbar">
-  <a class="logo" routerLink="/admin" aria-label="OneStep admin home">
+  <a class="logo" routerLink="/admin" [attr.aria-label]="'admin.home' | t">
     <span class="mark" aria-hidden="true"><span></span><span></span></span>
     <span class="wordmark">OneStep</span>
-    <span class="area">Admin</span>
+    <span class="area">{{ 'admin.area' | t }}</span>
   </a>
 
   <div class="tools">
+    <div class="lang" role="group" [attr.aria-label]="'header.language' | t">
+      <button type="button" [class.active]="language.lang() === 'ka'" [attr.aria-pressed]="language.lang() === 'ka'"
+              lang="ka" (click)="language.setLanguage('ka')">ქარ</button>
+      <button type="button" [class.active]="language.lang() === 'en'" [attr.aria-pressed]="language.lang() === 'en'"
+              lang="en" (click)="language.setLanguage('en')">EN</button>
+    </div>
     <a matButton class="shop-link" routerLink="/">
       <mat-icon aria-hidden="true">storefront</mat-icon>
-      <span class="label">View shop</span>
+      <span class="label">{{ 'admin.viewShop' | t }}</span>
     </a>
 
     <button matIconButton [matMenuTriggerFor]="alerts"
-            [attr.aria-label]="'Alerts, ' + notifications.unreadCount() + ' unread'">
+            [attr.aria-label]="'admin.alertsLabel' | t: { count: notifications.unreadCount() }">
       <mat-icon aria-hidden="true" [matBadge]="notifications.unreadCount()"
                 [matBadgeHidden]="!notifications.hasUnread()">notifications</mat-icon>
     </button>
     <mat-menu #alerts="matMenu" xPosition="before" class="alerts-menu">
       <div class="alerts-head" (click)="$event.stopPropagation()">
-        <strong>Alerts</strong>
+        <strong>{{ 'admin.alerts' | t }}</strong>
         @if (notifications.hasUnread()) {
-          <button matButton (click)="notifications.markAllRead()">Mark all as read</button>
+          <button matButton (click)="notifications.markAllRead()">{{ 'admin.markAllRead' | t }}</button>
         }
       </div>
       @for (item of notifications.items(); track item.id) {
@@ -28,11 +34,11 @@
           <mat-icon aria-hidden="true">{{ icons[item.type] }}</mat-icon>
           <span class="alert-text">
             <span>{{ item.message }}</span>
-            <small>{{ item.createdAt | date: 'd MMM, HH:mm' }}</small>
+            <small>{{ item.createdAt | localDate: 'd MMM, HH:mm' }}</small>
           </span>
         </button>
       } @empty {
-        <p class="alerts-empty">No alerts yet.</p>
+        <p class="alerts-empty">{{ 'admin.noAlerts' | t }}</p>
       }
     </mat-menu>
 
@@ -41,32 +47,32 @@
       <span class="label">{{ auth.firstName() }}</span>
     </button>
     <mat-menu #userMenu="matMenu" xPosition="before">
-      <p class="role">{{ auth.isAdmin() ? 'Admin' : 'Store manager' }}</p>
+      <p class="role">{{ (auth.isAdmin() ? 'admin.roleAdmin' : 'admin.roleManager') | t }}</p>
       <button mat-menu-item (click)="logout()">
         <mat-icon aria-hidden="true">logout</mat-icon>
-        Log out
+        {{ 'header.logout' | t }}
       </button>
     </mat-menu>
   </div>
 </header>
 
 <div class="body">
-  <nav class="side" aria-label="Admin sections">
+  <nav class="side" [attr.aria-label]="'admin.sections' | t">
     <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-      <mat-icon aria-hidden="true">dashboard</mat-icon> Dashboard
+      <mat-icon aria-hidden="true">dashboard</mat-icon> {{ 'admin.dashboard' | t }}
     </a>
     <a routerLink="/admin/orders" routerLinkActive="active">
-      <mat-icon aria-hidden="true">receipt_long</mat-icon> Orders
+      <mat-icon aria-hidden="true">receipt_long</mat-icon> {{ 'admin.orders' | t }}
     </a>
     <a routerLink="/admin/products" routerLinkActive="active">
-      <mat-icon aria-hidden="true">inventory_2</mat-icon> Products
+      <mat-icon aria-hidden="true">inventory_2</mat-icon> {{ 'admin.products' | t }}
     </a>
     <a routerLink="/admin/campaigns" routerLinkActive="active">
-      <mat-icon aria-hidden="true">campaign</mat-icon> Campaigns
+      <mat-icon aria-hidden="true">campaign</mat-icon> {{ 'admin.campaigns' | t }}
     </a>
     @if (auth.isAdmin()) {
       <a routerLink="/admin/users" routerLinkActive="active">
-        <mat-icon aria-hidden="true">group</mat-icon> Users
+        <mat-icon aria-hidden="true">group</mat-icon> {{ 'admin.users' | t }}
       </a>
     }
   </nav>

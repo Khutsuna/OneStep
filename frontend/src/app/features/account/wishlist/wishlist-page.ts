@@ -6,30 +6,31 @@ import { WishlistApi } from '../../../core/shop/wishlist.api';
 import { WishlistStore } from '../../../core/shop/wishlist.store';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
 import { ProductCard } from '../../../shared/ui/product-card/product-card';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /** The saved products. Un-hearting a card removes it from this page straight away. */
 @Component({
   selector: 'app-wishlist-page',
-  imports: [RouterLink, MatButtonModule, EmptyState, ProductCard],
+  imports: [I18N, RouterLink, MatButtonModule, EmptyState, ProductCard],
   template: `
     <div class="page">
-      <h1 class="title">Wishlist</h1>
+      <h1 class="title">{{ 'wishlist.title' | t }}</h1>
       @if (products(); as list) {
         @if (visible().length) {
-          <p class="count">{{ visible().length }} saved {{ visible().length === 1 ? 'product' : 'products' }}</p>
+          <p class="count">{{ 'wishlist.count' | t: { count: visible().length } }}</p>
           <div class="product-grid">
             @for (product of visible(); track product.id) {
               <app-product-card [product]="product" />
             }
           </div>
         } @else {
-          <app-empty-state icon="favorite" title="Nothing saved yet"
-                           message="Tap the heart on any product to keep it here for later.">
-            <a matButton="filled" routerLink="/products">Browse products</a>
+          <app-empty-state icon="favorite" [title]="'wishlist.empty' | t"
+                           [message]="'wishlist.emptyHint' | t">
+            <a matButton="filled" routerLink="/products">{{ 'cart.browse' | t }}</a>
           </app-empty-state>
         }
       } @else {
-        <div class="loading" aria-busy="true" aria-label="Loading wishlist"></div>
+        <div class="loading" aria-busy="true" [attr.aria-label]="'wishlist.loading' | t"></div>
       }
     </div>
   `,

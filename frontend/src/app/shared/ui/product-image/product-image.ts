@@ -1,16 +1,17 @@
 import { Component, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { mediaUrl } from '../../../core/util/media';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /** A product photo on a light background, or a calm placeholder when there is no photo yet. */
 @Component({
   selector: 'app-product-image',
-  imports: [MatIconModule],
+  imports: [I18N, MatIconModule],
   template: `
     @if (src()) {
       <img [src]="src()" [alt]="alt()" loading="lazy" />
     } @else {
-      <div class="placeholder" role="img" [attr.aria-label]="'No photo of ' + alt() + ' yet'">
+      <div class="placeholder" role="img" [attr.aria-label]="'image.noPhoto' | t: { name: alt() }">
         <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
       </div>
     }

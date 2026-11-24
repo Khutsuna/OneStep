@@ -17,6 +17,8 @@ import { OrdersApi } from '../../core/shop/orders.api';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { TotalsTable } from '../../shared/ui/totals-table/totals-table';
 import { AddressForm } from '../account/address-form/address-form';
+import { I18N } from '../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../core/i18n/language.store';
 
 /**
  * Checkout on one page: address, delivery, payment, then "Place order".
@@ -25,8 +27,7 @@ import { AddressForm } from '../account/address-form/address-form';
  */
 @Component({
   selector: 'app-checkout-page',
-  imports: [
-    CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  imports: [I18N, CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
     AddressForm, EmptyState, TotalsTable,
   ],
   templateUrl: './checkout-page.html',
@@ -37,6 +38,7 @@ export class CheckoutPage {
   private readonly addressesApi = inject(AddressesApi);
   private readonly ordersApi = inject(OrdersApi);
   private readonly router = inject(Router);
+  private readonly i18n = inject(LanguageStore);
 
   // ---- 1. Address ----
   protected readonly addresses = signal<Address[] | null>(null);
@@ -94,9 +96,9 @@ export class CheckoutPage {
   }
 
   protected deliveryNote(method: DeliveryMethod): string {
+    if (method.maxDays === 0) return this.i18n.t('checkout.pickupToday');
     const days = method.minDays === method.maxDays ? `${method.minDays}` : `${method.minDays}–${method.maxDays}`;
-    if (method.maxDays === 0) return 'Pick up today from our Tbilisi store';
-    return `${days} working day${method.maxDays === 1 ? '' : 's'}`;
+    return this.i18n.t('checkout.days', { days, count: method.maxDays });
   }
 
   /** What this method costs for the current cart: free above its threshold (the API uses the same rule). */
@@ -126,7 +128,7 @@ export class CheckoutPage {
         },
         error: (error: HttpErrorResponse) => {
           this.placing.set(false);
-          this.errorMessage.set(error.error?.detail ?? "We couldn't place your order. Please try again.");
+          this.errorMessage.set(error.error?.detail ?? this.i18n.t('checkout.failed'));
           // 409 = stock changed: reload the cart so the customer sees what's actually available.
           if (error.status === 409) this.cart.load();
         },

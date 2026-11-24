@@ -1,12 +1,13 @@
 import { Component, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /** Five stars (full, half or empty) and the number of reviews. */
 @Component({
   selector: 'app-rating-stars',
-  imports: [MatIconModule],
+  imports: [I18N, MatIconModule],
   template: `
-    <span class="stars" [attr.aria-label]="label()" role="img">
+    <span class="stars" [attr.aria-label]="'rating.label' | t: { rating: rating().toFixed(1) }" role="img">
       @for (star of stars(); track $index) {
         <mat-icon [class.icon-filled]="star !== 'star_outline'" aria-hidden="true">{{
           star === 'star_outline' ? 'star' : star
@@ -14,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
       }
     </span>
     @if (showCount()) {
-      <span class="count">{{ count() > 0 ? '(' + count() + ')' : 'No reviews yet' }}</span>
+      <span class="count">{{ count() > 0 ? '(' + count() + ')' : ('rating.none' | t) }}</span>
     }
   `,
   styles: `
@@ -36,5 +37,4 @@ export class RatingStars {
     );
   });
 
-  protected readonly label = computed(() => `Rated ${this.rating().toFixed(1)} out of 5`);
 }

@@ -1,29 +1,56 @@
 <section class="hero">
   <div class="hero-inner">
     <div class="intro">
-      <h1>Find it in one step.</h1>
-      <p>Phones, laptops, audio and accessories from Apple, Samsung, Sony and more, delivered across Georgia.</p>
-      <a class="cta" routerLink="/products">Browse all products</a>
+      <h1>{{ 'home.title' | t }}</h1>
+      <p class="lead">{{ 'home.lead' | t }}</p>
+      <div class="actions">
+        <a class="cta" routerLink="/products">{{ 'home.browse' | t }}</a>
+        @if (deals()?.length) {
+          <button type="button" class="cta ghost" (click)="scrollToDeals(dealsSection)">{{ 'home.seeDeals' | t }}</button>
+        }
+      </div>
+      <ul class="perks">
+        <li><mat-icon aria-hidden="true">local_shipping</mat-icon>{{ 'home.perkDelivery' | t }}</li>
+        <li><mat-icon aria-hidden="true">storefront</mat-icon>{{ 'home.perkPickup' | t }}</li>
+        <li><mat-icon aria-hidden="true">credit_card</mat-icon>{{ 'home.perkPay' | t }}</li>
+      </ul>
     </div>
 
-    <!-- The four main categories rise like stairs on wide screens. -->
-    <nav class="steps" aria-label="Shop by category">
+    <!-- The four main categories rise like stairs: one step to each part of the shop. -->
+    <nav class="steps" [attr.aria-label]="'home.shopByCategory' | t">
       @for (category of categories.tree(); track category.id) {
         <a class="step" routerLink="/products" [queryParams]="{ categoryId: category.id }">
           <mat-icon aria-hidden="true">{{ categoryIcon(category.slug) }}</mat-icon>
-          <span class="step-name">{{ category.name }}</span>
-          <span class="step-count">{{ category.productCount }} products</span>
+          <span class="step-name">{{ category.name | term }}</span>
+          <span class="step-count">{{ 'home.productCount' | t: { count: category.productCount } }}</span>
         </a>
       }
     </nav>
   </div>
 </section>
 
+<section class="deals" #dealsSection aria-labelledby="deals-title" [hidden]="!deals()?.length">
+  <div class="band">
+    <div class="section-head">
+      <div>
+        <h2 id="deals-title" class="section-title">{{ 'home.deals' | t }}</h2>
+        <p class="section-note">{{ 'home.dealsNote' | t }}</p>
+      </div>
+      <a routerLink="/products">{{ 'home.seeAll' | t }}</a>
+    </div>
+    <div class="product-grid">
+      @for (product of deals(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </div>
+</section>
+
 <div class="page">
   <section aria-labelledby="newest-title">
     <div class="section-head">
-      <h2 id="newest-title" class="section-title">New arrivals</h2>
-      <a routerLink="/products">See all</a>
+      <h2 id="newest-title" class="section-title">{{ 'home.newest' | t }}</h2>
+      <a routerLink="/products">{{ 'home.seeAll' | t }}</a>
     </div>
     @if (newest(); as products) {
       <div class="product-grid">
@@ -33,7 +60,7 @@
       </div>
     } @else {
       <div class="product-grid" aria-busy="true">
-        @for (i of [1, 2, 3, 4]; track i) {
+        @for (i of [1, 2, 3, 4, 5]; track i) {
           <div class="skeleton"></div>
         }
       </div>
@@ -42,8 +69,8 @@
 
   <section aria-labelledby="rated-title" class="rated">
     <div class="section-head">
-      <h2 id="rated-title" class="section-title">Customers' favourites</h2>
-      <a routerLink="/products" [queryParams]="{ sort: 'Rating' }">See all</a>
+      <h2 id="rated-title" class="section-title">{{ 'home.favourites' | t }}</h2>
+      <a routerLink="/products" [queryParams]="{ sort: 'Rating' }">{{ 'home.seeAll' | t }}</a>
     </div>
     @if (topRated(); as products) {
       <div class="product-grid">

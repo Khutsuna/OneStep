@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,11 +8,12 @@ import { AdminApi } from '../../../core/admin/admin.api';
 import { Dashboard, LowStockProduct } from '../../../core/models/admin.models';
 import { NotificationsStore } from '../layout/notifications.store';
 import { SalesChart } from './sales-chart';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /** The admin home page: key numbers, sales chart, best sellers, low stock and alerts. */
 @Component({
   selector: 'app-dashboard-page',
-  imports: [CurrencyPipe, DatePipe, RouterLink, MatIconModule, SalesChart],
+  imports: [I18N, CurrencyPipe, RouterLink, MatIconModule, SalesChart],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })

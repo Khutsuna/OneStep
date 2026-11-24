@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -14,10 +14,12 @@ import { AuthStore } from '../../../core/auth/auth.store';
 import { OrderDetails, OrderStatus } from '../../../core/models/shop.models';
 import { OrdersApi } from '../../../core/shop/orders.api';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
-import { ORDER_STATUS_LABELS, ORDER_STEP_LABELS, OrderStatusChip } from '../../../shared/ui/order-status/order-status-chip';
+import { OrderStatusChip, stepKey } from '../../../shared/ui/order-status/order-status-chip';
 import { ProductImage } from '../../../shared/ui/product-image/product-image';
 import { TotalsTable } from '../../../shared/ui/totals-table/totals-table';
 import { OrderTracker } from './order-tracker';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 /**
  * One order: tracking steps, items, address and totals.
@@ -26,8 +28,7 @@ import { OrderTracker } from './order-tracker';
  */
 @Component({
   selector: 'app-order-detail-page',
-  imports: [
-    CurrencyPipe, DatePipe, FormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  imports: [I18N, CurrencyPipe, FormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule,
     EmptyState, OrderStatusChip, OrderTracker, ProductImage, TotalsTable,
   ],
   templateUrl: './order-detail-page.html',
@@ -44,14 +45,14 @@ export class OrderDetailPage {
   protected readonly auth = inject(AuthStore);
   private readonly api = inject(OrdersApi);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly i18n = inject(LanguageStore);
 
   protected readonly order = signal<OrderDetails | null>(null);
   protected readonly notFound = signal(false);
   protected readonly busy = signal(false);
   protected readonly confirmingCancel = signal(false);
   protected readonly statusNote = signal('');
-  protected readonly statusLabels = ORDER_STATUS_LABELS;
-  protected readonly stepLabels = ORDER_STEP_LABELS;
+  protected readonly stepKey = stepKey;
 
   /** Staff buttons: every allowed next status except Cancelled (that has its own button). */
   protected readonly moveTo = computed(() => this.order()?.nextStatuses.filter((s) => s !== 'Cancelled') ?? []);
@@ -66,16 +67,16 @@ export class OrderDetailPage {
   }
 
   protected pay(): void {
-    this.act(this.api.pay(this.order()!.id), 'Payment received. Thank you!');
+    this.act(this.api.pay(this.order()!.id), this.i18n.t('order.paid'));
   }
 
   protected cancel(): void {
-    this.act(this.api.cancel(this.order()!.id), 'Your order was cancelled.');
+    this.act(this.api.cancel(this.order()!.id), this.i18n.t('order.cancelled'));
   }
 
   protected changeStatus(status: OrderStatus): void {
     const note = this.statusNote().trim() || null;
-    this.act(this.api.changeStatus(this.order()!.id, status, note), `Order marked as ${ORDER_STEP_LABELS[status].toLowerCase()}.`);
+    this.act(this.api.changeStatus(this.order()!.id, status, note), this.i18n.t('order.marked', { status: this.i18n.t(stepKey(status)) }));
   }
 
   /** Runs an action; the API answers with the updated order, which replaces ours. */
@@ -87,12 +88,12 @@ export class OrderDetailPage {
         this.busy.set(false);
         this.confirmingCancel.set(false);
         this.statusNote.set('');
-        this.snackBar.open(successMessage, 'OK', { duration: 4000 });
+        this.snackBar.open(successMessage, this.i18n.t('common.ok'), { duration: 4000 });
       },
       error: (error: HttpErrorResponse) => {
         this.busy.set(false);
         if (error.status === 409 || error.status === 400) {
-          this.snackBar.open(error.error?.detail ?? "That isn't possible right now.", 'OK', { duration: 5000 });
+          this.snackBar.open(error.error?.detail ?? this.i18n.t('order.notPossible'), this.i18n.t('common.ok'), { duration: 5000 });
         }
       },
     });

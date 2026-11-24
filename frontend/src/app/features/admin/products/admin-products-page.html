@@ -1,19 +1,19 @@
 <div class="head">
-  <h1>Products</h1>
+  <h1>{{ 'admin.products' | t }}</h1>
   <a matButton="filled" routerLink="/admin/products/new">
     <mat-icon aria-hidden="true">add</mat-icon>
-    New product
+    {{ 'ap.new' | t }}
   </a>
 </div>
 
 <div class="toolbar">
   <label class="search">
     <mat-icon aria-hidden="true">search</mat-icon>
-    <span class="visually-hidden">Search products</span>
-    <input type="search" placeholder="Search by name, brand or category" [ngModel]="search()" (ngModelChange)="onSearch($event)" />
+    <span class="visually-hidden">{{ 'ap.search' | t }}</span>
+    <input type="search" [placeholder]="'ap.searchPlaceholder' | t" [ngModel]="search()" (ngModelChange)="onSearch($event)" />
   </label>
   @if (result(); as r) {
-    <span class="count">{{ r.totalCount }} products</span>
+    <span class="count">{{ 'ap.count' | t: { count: r.totalCount } }}</span>
   }
 </div>
 
@@ -21,13 +21,13 @@
   <table>
     <thead>
       <tr>
-        <th scope="col" class="photo-col"><span class="visually-hidden">Photo</span></th>
-        <th scope="col">Product</th>
-        <th scope="col" class="hide-sm">Category</th>
-        <th scope="col" class="num">Price</th>
-        <th scope="col" class="num">Stock</th>
-        <th scope="col">Status</th>
-        <th scope="col"><span class="visually-hidden">Actions</span></th>
+        <th scope="col" class="photo-col"><span class="visually-hidden">{{ 'ap.photo' | t }}</span></th>
+        <th scope="col">{{ 'ap.product' | t }}</th>
+        <th scope="col" class="hide-sm">{{ 'ap.category' | t }}</th>
+        <th scope="col" class="num">{{ 'ap.price' | t }}</th>
+        <th scope="col" class="num">{{ 'ap.stock' | t }}</th>
+        <th scope="col">{{ 'ap.status' | t }}</th>
+        <th scope="col"><span class="visually-hidden">{{ 'ap.actions' | t }}</span></th>
       </tr>
     </thead>
     <tbody>
@@ -37,13 +37,13 @@
             <td class="photo-col"><app-product-image [url]="p.mainImageUrl" [alt]="p.name" /></td>
             <td>
               <a class="name" [routerLink]="['/admin/products', p.id]">{{ p.name }}</a>
-              <span class="sub">{{ p.brandName ?? 'No brand' }}</span>
+              <span class="sub">{{ p.brandName ?? ('ap.noBrand' | t) }}</span>
             </td>
-            <td class="hide-sm">{{ p.categoryName }}</td>
+            <td class="hide-sm">{{ p.categoryName | term }}</td>
             <td class="num">
               {{ p.price | currency: 'GEL' : 'symbol-narrow' }}
               @if (p.discount > 0) {
-                <span class="sub sale">{{ p.finalPrice | currency: 'GEL' : 'symbol-narrow' }} now</span>
+                <span class="sub sale">{{ 'ap.now' | t: { price: (p.finalPrice | currency: 'GEL' : 'symbol-narrow') } }}</span>
               }
             </td>
             <td class="num">
@@ -55,25 +55,25 @@
                 type="number"
                 min="0"
                 [value]="p.stockQuantity"
-                [attr.aria-label]="'Stock of ' + p.name"
+                [attr.aria-label]="'ap.stockOf' | t: { name: p.name }"
                 (keydown.enter)="stockInput.blur()"
                 (blur)="saveStock(p, stockInput)"
               />
             </td>
             <td>
-              <span class="status" [class.off]="p.status === 'Inactive'">{{ p.status === 'Active' ? 'On sale' : 'Hidden' }}</span>
+              <span class="status" [class.off]="p.status === 'Inactive'">{{ (p.status === 'Active' ? 'ap.onSale' : 'ap.hidden') | t }}</span>
             </td>
             <td class="actions">
-              <a matIconButton [routerLink]="['/admin/products', p.id]" [attr.aria-label]="'Edit ' + p.name">
+              <a matIconButton [routerLink]="['/admin/products', p.id]" [attr.aria-label]="'ap.edit' | t: { name: p.name }">
                 <mat-icon aria-hidden="true">edit</mat-icon>
               </a>
             </td>
           </tr>
         } @empty {
-          <tr><td colspan="7" class="empty">No products match "{{ search() }}".</td></tr>
+          <tr><td colspan="7" class="empty">{{ 'ap.noMatch' | t: { term: search() } }}</td></tr>
         }
       } @else {
-        <tr><td colspan="7" class="empty">Loading…</td></tr>
+        <tr><td colspan="7" class="empty">{{ 'ap.loading' | t }}</td></tr>
       }
     </tbody>
   </table>
@@ -81,10 +81,10 @@
 
 @if (result(); as r) {
   @if (r.totalPages > 1) {
-    <nav class="pager" aria-label="Pages">
-      <button matButton="outlined" [disabled]="r.page <= 1" (click)="page.set(r.page - 1)">Previous</button>
-      <span>Page {{ r.page }} of {{ r.totalPages }}</span>
-      <button matButton="outlined" [disabled]="r.page >= r.totalPages" (click)="page.set(r.page + 1)">Next</button>
+    <nav class="pager" [attr.aria-label]="'orders.pages' | t">
+      <button matButton="outlined" [disabled]="r.page <= 1" (click)="page.set(r.page - 1)">{{ 'orders.previous' | t }}</button>
+      <span>{{ 'orders.pageOf' | t: { page: r.page, total: r.totalPages } }}</span>
+      <button matButton="outlined" [disabled]="r.page >= r.totalPages" (click)="page.set(r.page + 1)">{{ 'orders.next' | t }}</button>
     </nav>
   }
 }

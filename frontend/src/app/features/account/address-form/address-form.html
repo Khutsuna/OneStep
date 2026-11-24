@@ -4,63 +4,63 @@
   }
 
   <mat-form-field class="wide">
-    <mat-label>Recipient's full name</mat-label>
+    <mat-label>{{ 'address.recipient' | t }}</mat-label>
     <input matInput formControlName="recipientName" autocomplete="name" />
     @if (form.controls.recipientName.hasError('required')) {
-      <mat-error>Enter who will receive the parcel.</mat-error>
+      <mat-error>{{ 'address.recipientRequired' | t }}</mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Phone</mat-label>
+    <mat-label>{{ 'address.phone' | t }}</mat-label>
     <input matInput type="tel" formControlName="phone" autocomplete="tel" placeholder="+995 555 12 34 56" />
     @if (form.controls.phone.hasError('required')) {
-      <mat-error>The courier needs a phone number.</mat-error>
+      <mat-error>{{ 'address.phoneRequired' | t }}</mat-error>
     } @else if (form.controls.phone.invalid) {
-      <mat-error>Use digits, spaces and +, e.g. +995 555 12 34 56.</mat-error>
+      <mat-error>{{ 'address.phoneInvalid' | t }}</mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Label</mat-label>
-    <input matInput formControlName="label" placeholder="Home, Work…" />
+    <mat-label>{{ 'address.label' | t }}</mat-label>
+    <input matInput formControlName="label" [placeholder]="'address.labelPlaceholder' | t" />
     @if (form.controls.label.hasError('required')) {
-      <mat-error>Give the address a short name.</mat-error>
+      <mat-error>{{ 'address.labelRequired' | t }}</mat-error>
     }
   </mat-form-field>
 
   <mat-form-field class="wide">
-    <mat-label>Street and house number</mat-label>
+    <mat-label>{{ 'address.line1' | t }}</mat-label>
     <input matInput formControlName="line1" autocomplete="address-line1" />
     @if (form.controls.line1.hasError('required')) {
-      <mat-error>Enter the street and house number.</mat-error>
+      <mat-error>{{ 'address.line1Required' | t }}</mat-error>
     }
   </mat-form-field>
 
   <mat-form-field class="wide">
-    <mat-label>Apartment, floor, entrance (optional)</mat-label>
+    <mat-label>{{ 'address.line2' | t }}</mat-label>
     <input matInput formControlName="line2" autocomplete="address-line2" />
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>City</mat-label>
+    <mat-label>{{ 'address.city' | t }}</mat-label>
     <input matInput formControlName="city" autocomplete="address-level2" />
     @if (form.controls.city.hasError('required')) {
-      <mat-error>Enter the city.</mat-error>
+      <mat-error>{{ 'address.cityRequired' | t }}</mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Postal code (optional)</mat-label>
+    <mat-label>{{ 'address.postal' | t }}</mat-label>
     <input matInput formControlName="postalCode" autocomplete="postal-code" />
   </mat-form-field>
 
-  <mat-checkbox class="wide" formControlName="isDefault">Use as my default address</mat-checkbox>
+  <mat-checkbox class="wide" formControlName="isDefault">{{ 'address.makeDefault' | t }}</mat-checkbox>
 
   <div class="actions">
     <button matButton="filled" type="submit" [disabled]="saving()">
-      {{ saving() ? 'Saving…' : 'Save address' }}
+      {{ (saving() ? 'address.saving' : 'address.save') | t }}
     </button>
-    <button matButton="outlined" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button matButton="outlined" type="button" (click)="cancelled.emit()">{{ 'common.cancel' | t }}</button>
   </div>
 </form>

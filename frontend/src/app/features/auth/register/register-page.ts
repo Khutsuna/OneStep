@@ -7,10 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { applyServerErrors } from '../../../core/util/form-errors';
+import { I18N } from '../../../core/i18n/translate.pipes';
+import { LanguageStore } from '../../../core/i18n/language.store';
 
 @Component({
   selector: 'app-register-page',
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [I18N, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './register-page.html',
   styleUrl: '../auth-page.scss',
 })
@@ -19,6 +21,7 @@ export class RegisterPage {
 
   private readonly auth = inject(AuthStore);
   private readonly router = inject(Router);
+  private readonly i18n = inject(LanguageStore);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
@@ -47,7 +50,7 @@ export class RegisterPage {
       next: () => void this.router.navigateByUrl(this.returnUrl() || '/'),
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
-        this.errorMessage.set(applyServerErrors(this.form, error));
+        this.errorMessage.set(applyServerErrors(this.form, error, this.i18n));
       },
     });
   }

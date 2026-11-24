@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../core/auth/auth.store';
 import { WishlistStore } from '../../../core/shop/wishlist.store';
+import { I18N } from '../../../core/i18n/translate.pipes';
 
 /**
  * The heart button. It reads and changes the global WishlistStore itself, so any page can drop it in
@@ -10,7 +11,7 @@ import { WishlistStore } from '../../../core/shop/wishlist.store';
  */
 @Component({
   selector: 'app-wishlist-button',
-  imports: [MatIconModule],
+  imports: [I18N, MatIconModule],
   template: `
     @if (!auth.isStaff()) {
       <button
@@ -18,12 +19,12 @@ import { WishlistStore } from '../../../core/shop/wishlist.store';
         [class.saved]="saved()"
         [class.labelled]="showLabel()"
         [attr.aria-pressed]="saved()"
-        [attr.aria-label]="showLabel() ? null : (saved() ? 'Remove from wishlist' : 'Save to wishlist')"
+        [attr.aria-label]="showLabel() ? null : ((saved() ? 'wishlist.remove' : 'wishlist.add') | t)"
         (click)="toggle($event)"
       >
         <mat-icon aria-hidden="true" [class.icon-filled]="saved()">favorite</mat-icon>
         @if (showLabel()) {
-          <span>{{ saved() ? 'Saved' : 'Save' }}</span>
+          <span>{{ (saved() ? 'wishlist.saved' : 'wishlist.save') | t }}</span>
         }
       </button>
     }
