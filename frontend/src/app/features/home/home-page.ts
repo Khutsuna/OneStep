@@ -8,11 +8,12 @@ import { ProductsApi } from '../../core/catalog/products.api';
 import { I18N } from '../../core/i18n/translate.pipes';
 import { ProductListItem } from '../../core/models/catalog.models';
 import { ProductCard } from '../../shared/ui/product-card/product-card';
+import { ProductCarousel } from '../../shared/ui/product-carousel/product-carousel';
 import { EMPTY_QUERY } from '../catalog/product-query';
 
 @Component({
   selector: 'app-home-page',
-  imports: [I18N, RouterLink, MatIconModule, ProductCard],
+  imports: [I18N, RouterLink, MatIconModule, ProductCard, ProductCarousel],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
@@ -27,7 +28,7 @@ export class HomePage {
 
   /** Products with a running campaign discount. The API has no "on sale" filter, so we pick them from a larger page. */
   protected readonly deals = toSignal(
-    this.load('Newest', 40).pipe(map((items) => (items ?? []).filter((p) => p.discount > 0).slice(0, 5))),
+    this.load('Newest', 40).pipe(map((items) => (items ?? []).filter((p) => p.discount > 0).slice(0, 12))),
     { initialValue: null },
   );
 

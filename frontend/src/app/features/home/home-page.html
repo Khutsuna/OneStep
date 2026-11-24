@@ -31,18 +31,15 @@
 
 <section class="deals" #dealsSection aria-labelledby="deals-title" [hidden]="!deals()?.length">
   <div class="band">
-    <div class="section-head">
+    <div class="section-head deals-head">
       <div>
         <h2 id="deals-title" class="section-title">{{ 'home.deals' | t }}</h2>
         <p class="section-note">{{ 'home.dealsNote' | t }}</p>
       </div>
-      <a routerLink="/products">{{ 'home.seeAll' | t }}</a>
     </div>
-    <div class="product-grid">
-      @for (product of deals(); track product.id) {
-        <app-product-card [product]="product" />
-      }
-    </div>
+    @if (deals(); as products) {
+      <app-product-carousel [products]="products" [label]="'home.deals' | t" />
+    }
   </div>
 </section>
 

@@ -133,6 +133,19 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/register/register-page').then((m) => m.RegisterPage),
       },
       {
+        path: 'forgot-password',
+        title: 'title.forgotPassword',
+        loadComponent: () =>
+          import('./features/auth/forgot-password/forgot-password-page').then((m) => m.ForgotPasswordPage),
+      },
+      {
+        // Opened from the link in the email: /reset-password?token=...
+        path: 'reset-password',
+        title: 'title.resetPassword',
+        loadComponent: () =>
+          import('./features/auth/reset-password/reset-password-page').then((m) => m.ResetPasswordPage),
+      },
+      {
         path: '**',
         title: 'title.notFound',
         loadComponent: () => import('./features/not-found/not-found-page').then((m) => m.NotFoundPage),

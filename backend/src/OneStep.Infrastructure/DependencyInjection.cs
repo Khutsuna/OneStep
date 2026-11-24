@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using OneStep.Application.Abstractions;
 using OneStep.Application.Common;
 using OneStep.Infrastructure.Auth;
+using OneStep.Infrastructure.Email;
 using OneStep.Infrastructure.Persistence;
 using OneStep.Infrastructure.Persistence.Queries;
 using OneStep.Infrastructure.Storage;
@@ -39,6 +40,10 @@ public static class DependencyInjection
 
         // ---------- File storage (product images) ----------
         services.AddSingleton<IFileStorage, LocalFileStorage>();
+
+        // ---------- Email (password reset links) ----------
+        // Development: the email is written to the log. Swap this line for a real sender in production.
+        services.AddSingleton<IEmailSender, LogEmailSender>();
 
         // ---------- Authentication (who are you?) ----------
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();

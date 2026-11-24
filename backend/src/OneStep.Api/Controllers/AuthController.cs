@@ -6,7 +6,7 @@ using OneStep.Application.Features.Auth;
 
 namespace OneStep.Api.Controllers;
 
-/// <summary>Registration, login and the current user's details.</summary>
+/// <summary>Registration, login, password reset and the current user's details.</summary>
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
@@ -56,5 +56,31 @@ public class AuthController : ControllerBase
     {
         // The user id comes from the validated token, never from the request body.
         return await _authService.GetUserAsync(_currentUser.UserId!.Value, cancellationToken);
+    }
+
+    /// <summary>Step 1 of password reset: emails a reset link (in development, writes it to the API log).</summary>
+    /// <remarks>Always returns 204, even for an unknown email, so it cannot be used to find out who has an account.</remarks>
+    /// <response code="204">If the email belongs to an account, a reset link was sent.</response>
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request, CancellationToken cancellationToken)
+    {
+        await _authService.RequestPasswordResetAsync(request, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Step 2 of password reset: sets a new password using the token from the link.</summary>
+    /// <response code="204">Password changed. The user can log in with the new password.</response>
+    /// <response code="400">The token is invalid, expired or already used, or the new password is too weak.</response>
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword(ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        await _authService.ResetPasswordAsync(request, cancellationToken);
+        return NoContent();
     }
 }

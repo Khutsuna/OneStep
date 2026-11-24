@@ -40,3 +40,24 @@ public class LoginRequest
 public record UserDto(int Id, string Email, string FirstName, string LastName, string Role);
 
 public record AuthResponse(string AccessToken, DateTime ExpiresAt, UserDto User);
+// Step 1 of password reset: "send me a link".
+public class ForgotPasswordRequest
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+
+// Step 2: "here is the token from the link and my new password".
+public class ResetPasswordRequest
+{
+    [Required]
+    public string Token { get; set; } = string.Empty;
+
+    // Same rules as registration.
+    [Required]
+    [StringLength(100, MinimumLength = 8)]
+    [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d).+$",
+        ErrorMessage = "Password must contain at least one letter and one digit.")]
+    public string NewPassword { get; set; } = string.Empty;
+}

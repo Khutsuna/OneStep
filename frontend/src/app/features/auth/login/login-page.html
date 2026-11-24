@@ -25,6 +25,8 @@
       }
     </mat-form-field>
 
+    <a class="forgot" routerLink="/forgot-password">{{ 'auth.forgotLink' | t }}</a>
+
     <button matButton="filled" class="submit" type="submit" [disabled]="submitting()">
       {{ (submitting() ? 'auth.loggingIn' : 'auth.loginTitle') | t }}
     </button>
