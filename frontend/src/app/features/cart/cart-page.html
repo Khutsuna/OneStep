@@ -54,6 +54,23 @@
 
       <aside class="summary" aria-labelledby="summary-title">
         <h2 id="summary-title">{{ 'cart.summary' | t }}</h2>
+
+        @if (freeDelivery(); as delivery) {
+          <div class="free-delivery" [class.done]="delivery.left === 0">
+            <p>
+              <mat-icon aria-hidden="true">{{ delivery.left === 0 ? 'check_circle' : 'local_shipping' }}</mat-icon>
+              @if (delivery.left > 0) {
+                {{ 'cart.freeDeliveryLeft' | t: { amount: (delivery.left | currency: 'GEL' : 'symbol-narrow') } }}
+              } @else {
+                {{ 'cart.freeDeliveryDone' | t }}
+              }
+            </p>
+            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                 [attr.aria-valuenow]="delivery.percent" [attr.aria-label]="'cart.freeDeliveryLabel' | t">
+              <span [style.width.%]="delivery.percent"></span>
+            </div>
+          </div>
+        }
         <dl>
           <div><dt>{{ 'cart.itemsCount' | t: { count: cart.itemCount() } }}</dt><dd>{{ cart.cart()!.subtotal | currency: 'GEL' : 'symbol-narrow' }}</dd></div>
           @if (cart.cart()!.discountTotal > 0) {

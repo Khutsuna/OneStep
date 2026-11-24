@@ -1,13 +1,15 @@
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { Cart, CartItem } from '../../core/models/shop.models';
 import { CartStore } from '../../core/shop/cart.store';
+import { DeliveryMethodsApi } from '../../core/shop/delivery-methods.api';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { ProductImage } from '../../shared/ui/product-image/product-image';
 import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepper';
@@ -24,6 +26,34 @@ export class CartPage {
   protected readonly cart = inject(CartStore);
   private readonly snackBar = inject(MatSnackBar);
   private readonly i18n = inject(LanguageStore);
+
+  /** The lowest "free delivery from" amount of the delivery methods (₾200 for the standard courier). */
+  private readonly freeFrom = toSignal(
+    inject(DeliveryMethodsApi)
+      .getAll()
+      .pipe(
+        map((methods) => methods.map((m) => m.freeOverAmount).filter((amount): amount is number => amount !== null)),
+        map((amounts) => (amounts.length ? Math.min(...amounts) : null)),
+        catchError(() => of(null)),
+      ),
+    { initialValue: null },
+  );
+
+  /**
+   * How far the cart is from free delivery. Uses the total after discounts,
+   * the same amount the API's CheckoutCalculator compares with the threshold.
+   */
+  protected readonly freeDelivery = computed(() => {
+    const from = this.freeFrom();
+    const cart = this.cart.cart();
+    if (!from || !cart) {
+      return null;
+    }
+    return {
+      left: Math.max(from - cart.total, 0),
+      percent: Math.min(100, Math.round((cart.total / from) * 100)),
+    };
+  });
 
   /** The item that is being saved right now, so its buttons can be disabled. */
   protected readonly busyItemId = signal<number | null>(null);

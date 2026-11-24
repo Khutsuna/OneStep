@@ -195,3 +195,56 @@
   border-radius: var(--os-radius-lg);
   background: var(--os-photo);
 }
+
+// "Add ₾35 more for free delivery" with a bar that fills up.
+.free-delivery {
+  background: #fff7e0;
+  border-radius: var(--os-radius-sm);
+  padding: 12px 14px;
+  margin: 4px 0 14px;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  mat-icon {
+    color: #b07800;
+    flex: none;
+  }
+
+  .bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #f1e2b4;
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f5b82e, #e89a0c);
+      transition: width 300ms ease;
+    }
+  }
+
+  &.done {
+    background: #e8f5ee;
+
+    mat-icon {
+      color: var(--os-stock);
+    }
+
+    .bar {
+      background: #cfe9da;
+
+      span {
+        background: var(--os-stock);
+      }
+    }
+  }
+}

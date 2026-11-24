@@ -157,8 +157,9 @@ Then open SSMS, connect to your server, and run these files from the `database` 
 | `04_procedures.sql` | sales analytics stored procedures for the dashboard |
 | `05_triggers.sql` | `trg_Products_PriceHistory`, records every price change |
 | `06_seed.sql` | demo data: users, 40 products, campaigns, 60 orders, reviews |
+| `07_demo_price_history.sql` | a few past price changes, so the price chart on the product page has data |
 
-Prefer pure SQL? Run `01_create_database.sql` and `02_schema.sql` (generated from the migrations) instead of `dotnet ef database update`, then the four scripts above.
+Prefer pure SQL? Run `01_create_database.sql` and `02_schema.sql` (generated from the migrations) instead of `dotnet ef database update`, then the five scripts above.
 
 ### 5. Run the API
 
