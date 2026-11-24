@@ -36,6 +36,13 @@
         <h2 id="deals-title" class="section-title">{{ 'home.deals' | t }}</h2>
         <p class="section-note">{{ 'home.dealsNote' | t }}</p>
       </div>
+      @if (endingSoonest(); as deal) {
+        <app-countdown
+          class="countdown"
+          [endsAt]="deal.campaignEndsAt!"
+          [label]="'home.endsIn' | t: { name: deal.campaignName }"
+        />
+      }
     </div>
     @if (deals(); as products) {
       <app-product-carousel [products]="products" [label]="'home.deals' | t" />

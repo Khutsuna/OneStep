@@ -351,7 +351,7 @@ public class ProductService : IProductService
             var price = prices[r.ProductId];
             return new ProductListItemDto(
                 r.ProductId, r.Name, r.Slug, price.Price, price.FinalPrice, price.Discount, price.CampaignName,
-                r.BrandName, r.CategoryName, MediaUrl.From(r.MainImagePath), r.AverageRating, r.ReviewCount,
+                price.CampaignEndsAt, r.BrandName, r.CategoryName, MediaUrl.From(r.MainImagePath), r.AverageRating, r.ReviewCount,
                 r.StockQuantity, r.StockQuantity > 0, r.Status);
         }).ToList();
     }

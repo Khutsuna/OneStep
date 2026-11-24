@@ -61,6 +61,7 @@ public record ProductListItemDto(
     decimal FinalPrice,
     decimal Discount,
     string? CampaignName,
+    DateTime? CampaignEndsAt,
     string? BrandName,
     string CategoryName,
     string? MainImageUrl,

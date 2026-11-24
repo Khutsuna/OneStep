@@ -29,6 +29,7 @@ public class PricingService : IPricingService
             .Select(c => new
             {
                 c.Name,
+                c.EndsAt,
                 c.DiscountType,
                 c.DiscountValue,
                 c.AppliesToAllProducts,
@@ -48,6 +49,7 @@ public class PricingService : IPricingService
             var categoryChain = GetCategoryChain(product.CategoryId, parentOf);
             decimal bestDiscount = 0m;
             string? bestCampaign = null;
+            DateTime? bestCampaignEndsAt = null;
 
             foreach (var campaign in campaigns)
             {
@@ -65,10 +67,11 @@ public class PricingService : IPricingService
                 {
                     bestDiscount = discount;
                     bestCampaign = campaign.Name;
+                    bestCampaignEndsAt = campaign.EndsAt;
                 }
             }
 
-            result[product.ProductId] = new ProductPrice(product.Price, bestDiscount, bestCampaign);
+            result[product.ProductId] = new ProductPrice(product.Price, bestDiscount, bestCampaign, bestCampaignEndsAt);
         }
 
         return result;
