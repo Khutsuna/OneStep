@@ -1,0 +1,45 @@
+<h1>Campaigns</h1>
+<p class="lead">A campaign's discount is applied automatically between its start and end dates. Switch one off to stop it at once.</p>
+
+@if (campaigns(); as list) {
+  <div class="list">
+    @for (c of list; track c.id) {
+      <article class="campaign" [class.dim]="c.state === 'Ended' || c.state === 'Disabled'">
+        <div class="main">
+          <div class="title-row">
+            <h2>{{ c.name }}</h2>
+            <span class="state" [class]="'state ' + c.state.toLowerCase()">{{ stateLabels[c.state] }}</span>
+          </div>
+          @if (c.description) {
+            <p class="description">{{ c.description }}</p>
+          }
+          <dl>
+            <div>
+              <dt>Discount</dt>
+              <dd>
+                {{ c.discountType === 'Percentage' ? c.discountValue + '%' : (c.discountValue | currency: 'GEL' : 'symbol-narrow' : '1.0-2') }}
+                off
+              </dd>
+            </div>
+            <div>
+              <dt>Applies to</dt>
+              <dd>{{ target(c) }}</dd>
+            </div>
+            <div>
+              <dt>Runs</dt>
+              <dd>{{ c.startsAt | date: 'd MMM, HH:mm' }} – {{ c.endsAt | date: 'd MMM y, HH:mm' }}</dd>
+            </div>
+          </dl>
+        </div>
+        <mat-slide-toggle [checked]="c.isEnabled" (change)="toggle(c, $event.checked)"
+                          [attr.aria-label]="(c.isEnabled ? 'Switch off ' : 'Switch on ') + c.name">
+          {{ c.isEnabled ? 'On' : 'Off' }}
+        </mat-slide-toggle>
+      </article>
+    } @empty {
+      <p class="lead">No campaigns yet.</p>
+    }
+  </div>
+} @else {
+  <div class="loading" aria-busy="true" aria-label="Loading campaigns"></div>
+}

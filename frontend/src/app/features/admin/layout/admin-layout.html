@@ -1,0 +1,77 @@
+<header class="topbar">
+  <a class="logo" routerLink="/admin" aria-label="OneStep admin home">
+    <span class="mark" aria-hidden="true"><span></span><span></span></span>
+    <span class="wordmark">OneStep</span>
+    <span class="area">Admin</span>
+  </a>
+
+  <div class="tools">
+    <a matButton class="shop-link" routerLink="/">
+      <mat-icon aria-hidden="true">storefront</mat-icon>
+      <span class="label">View shop</span>
+    </a>
+
+    <button matIconButton [matMenuTriggerFor]="alerts"
+            [attr.aria-label]="'Alerts, ' + notifications.unreadCount() + ' unread'">
+      <mat-icon aria-hidden="true" [matBadge]="notifications.unreadCount()"
+                [matBadgeHidden]="!notifications.hasUnread()">notifications</mat-icon>
+    </button>
+    <mat-menu #alerts="matMenu" xPosition="before" class="alerts-menu">
+      <div class="alerts-head" (click)="$event.stopPropagation()">
+        <strong>Alerts</strong>
+        @if (notifications.hasUnread()) {
+          <button matButton (click)="notifications.markAllRead()">Mark all as read</button>
+        }
+      </div>
+      @for (item of notifications.items(); track item.id) {
+        <button mat-menu-item class="alert" [class.unread]="!item.isRead" (click)="open(item)">
+          <mat-icon aria-hidden="true">{{ icons[item.type] }}</mat-icon>
+          <span class="alert-text">
+            <span>{{ item.message }}</span>
+            <small>{{ item.createdAt | date: 'd MMM, HH:mm' }}</small>
+          </span>
+        </button>
+      } @empty {
+        <p class="alerts-empty">No alerts yet.</p>
+      }
+    </mat-menu>
+
+    <button matButton class="user" [matMenuTriggerFor]="userMenu">
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+      <span class="label">{{ auth.firstName() }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <p class="role">{{ auth.isAdmin() ? 'Admin' : 'Store manager' }}</p>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        Log out
+      </button>
+    </mat-menu>
+  </div>
+</header>
+
+<div class="body">
+  <nav class="side" aria-label="Admin sections">
+    <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <mat-icon aria-hidden="true">dashboard</mat-icon> Dashboard
+    </a>
+    <a routerLink="/admin/orders" routerLinkActive="active">
+      <mat-icon aria-hidden="true">receipt_long</mat-icon> Orders
+    </a>
+    <a routerLink="/admin/products" routerLinkActive="active">
+      <mat-icon aria-hidden="true">inventory_2</mat-icon> Products
+    </a>
+    <a routerLink="/admin/campaigns" routerLinkActive="active">
+      <mat-icon aria-hidden="true">campaign</mat-icon> Campaigns
+    </a>
+    @if (auth.isAdmin()) {
+      <a routerLink="/admin/users" routerLinkActive="active">
+        <mat-icon aria-hidden="true">group</mat-icon> Users
+      </a>
+    }
+  </nav>
+
+  <main class="content" id="main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

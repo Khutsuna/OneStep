@@ -1,0 +1,191 @@
+<a class="back" routerLink="/admin/products">
+  <mat-icon aria-hidden="true">arrow_back</mat-icon>
+  Products
+</a>
+
+<div class="head">
+  <h1>{{ isNew() ? 'New product' : (product()?.name ?? 'Edit product') }}</h1>
+  @if (product(); as p) {
+    <a matButton="outlined" [routerLink]="['/products', p.id]" target="_blank">
+      <mat-icon aria-hidden="true">open_in_new</mat-icon>
+      View in shop
+    </a>
+  }
+</div>
+
+@if (errorMessage(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+<div class="layout">
+  <form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <h2>Details</h2>
+
+    <mat-form-field class="wide">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Enter a name.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>SKU (product code)</mat-label>
+      <input matInput formControlName="sku" placeholder="PHN-APP-001" />
+      @if (form.controls.sku.hasError('required')) {
+        <mat-error>Enter a product code.</mat-error>
+      } @else if (form.controls.sku.hasError('server')) {
+        <mat-error>{{ form.controls.sku.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="Active">On sale</mat-option>
+        <mat-option value="Inactive">Hidden from the shop</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="categoryId">
+        @for (parent of categories.tree(); track parent.id) {
+          <mat-optgroup [label]="parent.name">
+            @for (child of parent.children; track child.id) {
+              <mat-option [value]="child.id">{{ child.name }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+      </mat-select>
+      @if (form.controls.categoryId.invalid) {
+        <mat-error>Choose a category.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Brand</mat-label>
+      <mat-select formControlName="brandId">
+        <mat-option [value]="null">No brand</mat-option>
+        @for (brand of brands(); track brand.id) {
+          <mat-option [value]="brand.id">{{ brand.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Price (₾, before VAT)</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="price" />
+      @if (form.controls.price.invalid) {
+        <mat-error>Enter a price of 0 or more.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="pair">
+      <mat-form-field>
+        <mat-label>In stock</mat-label>
+        <input matInput type="number" min="0" step="1" formControlName="stockQuantity" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Alert below</mat-label>
+        <input matInput type="number" min="0" step="1" formControlName="lowStockThreshold" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="wide">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="5" formControlName="description"></textarea>
+      @if (form.controls.description.hasError('required')) {
+        <mat-error>Write a short description.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="wide attributes" formArrayName="attributes">
+      <h3>Specifications</h3>
+      @for (row of attributes.controls; track row; let i = $index) {
+        <div class="attribute" [formGroupName]="i">
+          <mat-form-field>
+            <mat-label>Attribute</mat-label>
+            <mat-select formControlName="attributeId">
+              @for (option of attributeOptions(); track option.id) {
+                <mat-option [value]="option.id">{{ option.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Value</mat-label>
+            <input matInput formControlName="value" placeholder="Black, 256 GB…" />
+          </mat-form-field>
+          <button matIconButton type="button" (click)="removeAttribute(i)" aria-label="Remove this specification">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+      }
+      <button matButton type="button" (click)="addAttribute()">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        Add specification
+      </button>
+    </div>
+
+    <div class="wide actions">
+      <button matButton="filled" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : isNew() ? 'Create product' : 'Save changes' }}
+      </button>
+      <a matButton="outlined" routerLink="/admin/products">Cancel</a>
+    </div>
+  </form>
+
+  <aside class="side">
+    <section class="card" aria-labelledby="photos-title">
+      <h2 id="photos-title">Photos</h2>
+      @if (product(); as p) {
+        <div class="photos">
+          @for (image of p.images; track image.id) {
+            <figure [class.main]="image.isMain">
+              <img [src]="mediaUrl(image.url)" [alt]="image.altText ?? p.name" />
+              @if (image.isMain) {
+                <figcaption>Main photo</figcaption>
+              }
+              <div class="photo-actions">
+                @if (!image.isMain) {
+                  <button matButton (click)="setMain(image.id)">Make main</button>
+                }
+                <button matIconButton (click)="deleteImage(image.id)" aria-label="Delete this photo">
+                  <mat-icon aria-hidden="true">delete</mat-icon>
+                </button>
+              </div>
+            </figure>
+          } @empty {
+            <p class="muted">No photos yet. The shop shows a category icon instead.</p>
+          }
+        </div>
+
+        <label class="upload" [class.busy]="uploading()">
+          <mat-icon aria-hidden="true">upload</mat-icon>
+          {{ uploading() ? 'Uploading…' : 'Upload photos' }}
+          <input #fileInput type="file" accept=".jpg,.jpeg,.png,.webp" multiple [disabled]="uploading()"
+                 (change)="upload(fileInput)" />
+        </label>
+        <p class="muted small">JPG, PNG or WebP, up to 5 MB each. The first photo becomes the main one.</p>
+      } @else {
+        <p class="muted">Create the product first, then add photos here.</p>
+      }
+    </section>
+
+    @if (product()) {
+      <section class="card danger-zone" aria-labelledby="delete-title">
+        <h2 id="delete-title">Delete product</h2>
+        @if (confirmingDelete()) {
+          <p>It disappears from the shop. Old orders keep their copy of it.</p>
+          <div class="actions">
+            <button matButton="filled" class="danger" (click)="deleteProduct()">Yes, delete</button>
+            <button matButton="outlined" (click)="confirmingDelete.set(false)">Keep it</button>
+          </div>
+        } @else {
+          <p class="muted">To only hide it for a while, set the status to "Hidden" instead.</p>
+          <button matButton="outlined" (click)="confirmingDelete.set(true)">Delete product</button>
+        }
+      </section>
+    }
+  </aside>
+</div>

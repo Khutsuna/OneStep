@@ -1,0 +1,76 @@
+<h1>Users</h1>
+
+<div class="toolbar">
+  <label class="search">
+    <mat-icon aria-hidden="true">search</mat-icon>
+    <span class="visually-hidden">Search users</span>
+    <input type="search" placeholder="Search by name or email" [ngModel]="search()" (ngModelChange)="onSearch($event)" />
+  </label>
+  <label class="filter">
+    <span class="visually-hidden">Role</span>
+    <select [ngModel]="role() ?? ''" (ngModelChange)="onRoleFilter($event)">
+      <option value="">All roles</option>
+      @for (r of roles; track r) {
+        <option [value]="r">{{ roleLabels[r] }}</option>
+      }
+    </select>
+  </label>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Role</th>
+        <th scope="col">Can log in</th>
+        <th scope="col" class="num">Orders</th>
+        <th scope="col" class="hide-sm">Joined</th>
+        <th scope="col" class="hide-sm">Last login</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (result(); as r) {
+        @for (u of r.items; track u.id) {
+          <tr [class.inactive]="!u.isActive">
+            <td>
+              <span class="name">{{ u.firstName }} {{ u.lastName }} @if (isMe(u)) {<span class="you">you</span>}</span>
+              <span class="sub">{{ u.email }}</span>
+            </td>
+            <td>
+              <!-- Admins can't change their own role, so they can't lock themselves out. The API checks this too. -->
+              <select [ngModel]="u.role" [disabled]="isMe(u)" (ngModelChange)="update(u, $event, u.isActive)"
+                      [attr.aria-label]="'Role of ' + u.firstName">
+                @for (r of roles; track r) {
+                  <option [value]="r">{{ roleLabels[r] }}</option>
+                }
+              </select>
+            </td>
+            <td>
+              <mat-slide-toggle [checked]="u.isActive" [disabled]="isMe(u)" (change)="update(u, u.role, $event.checked)"
+                                [attr.aria-label]="(u.isActive ? 'Block ' : 'Allow ') + u.firstName">
+              </mat-slide-toggle>
+            </td>
+            <td class="num">{{ u.orderCount }}</td>
+            <td class="hide-sm">{{ u.createdAt | date: 'd MMM y' }}</td>
+            <td class="hide-sm">{{ u.lastLoginAt ? (u.lastLoginAt | date: 'd MMM, HH:mm') : 'Never' }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="empty">No users found.</td></tr>
+        }
+      } @else {
+        <tr><td colspan="6" class="empty">Loading…</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (result(); as r) {
+  @if (r.totalPages > 1) {
+    <nav class="pager" aria-label="Pages">
+      <button matButton="outlined" [disabled]="r.page <= 1" (click)="page.set(r.page - 1)">Previous</button>
+      <span>Page {{ r.page }} of {{ r.totalPages }}</span>
+      <button matButton="outlined" [disabled]="r.page >= r.totalPages" (click)="page.set(r.page + 1)">Next</button>
+    </nav>
+  }
+}

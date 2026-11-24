@@ -38,6 +38,8 @@ export class OrderDetailPage {
   readonly id = input.required<string>();
   /** ?placed=true right after checkout, to say thank you. */
   readonly placed = input<string | undefined>();
+  /** true inside the admin panel (from the route's data). */
+  readonly admin = input(false);
 
   protected readonly auth = inject(AuthStore);
   private readonly api = inject(OrdersApi);

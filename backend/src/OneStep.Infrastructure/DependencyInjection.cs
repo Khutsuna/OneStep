@@ -9,6 +9,7 @@ using OneStep.Application.Abstractions;
 using OneStep.Application.Common;
 using OneStep.Infrastructure.Auth;
 using OneStep.Infrastructure.Persistence;
+using OneStep.Infrastructure.Persistence.Queries;
 using OneStep.Infrastructure.Storage;
 
 namespace OneStep.Infrastructure;
@@ -32,6 +33,9 @@ public static class DependencyInjection
 
         // When a service asks for IAppDbContext, give it the AppDbContext of the current request.
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
+        // Sales reports run as stored procedures (database/04_procedures.sql).
+        services.AddScoped<IAnalyticsQueries, SqlAnalyticsQueries>();
 
         // ---------- File storage (product images) ----------
         services.AddSingleton<IFileStorage, LocalFileStorage>();

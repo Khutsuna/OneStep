@@ -1,0 +1,90 @@
+<div class="head">
+  <h1>Products</h1>
+  <a matButton="filled" routerLink="/admin/products/new">
+    <mat-icon aria-hidden="true">add</mat-icon>
+    New product
+  </a>
+</div>
+
+<div class="toolbar">
+  <label class="search">
+    <mat-icon aria-hidden="true">search</mat-icon>
+    <span class="visually-hidden">Search products</span>
+    <input type="search" placeholder="Search by name, brand or category" [ngModel]="search()" (ngModelChange)="onSearch($event)" />
+  </label>
+  @if (result(); as r) {
+    <span class="count">{{ r.totalCount }} products</span>
+  }
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col" class="photo-col"><span class="visually-hidden">Photo</span></th>
+        <th scope="col">Product</th>
+        <th scope="col" class="hide-sm">Category</th>
+        <th scope="col" class="num">Price</th>
+        <th scope="col" class="num">Stock</th>
+        <th scope="col">Status</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (result(); as r) {
+        @for (p of r.items; track p.id) {
+          <tr [class.inactive]="p.status === 'Inactive'">
+            <td class="photo-col"><app-product-image [url]="p.mainImageUrl" [alt]="p.name" /></td>
+            <td>
+              <a class="name" [routerLink]="['/admin/products', p.id]">{{ p.name }}</a>
+              <span class="sub">{{ p.brandName ?? 'No brand' }}</span>
+            </td>
+            <td class="hide-sm">{{ p.categoryName }}</td>
+            <td class="num">
+              {{ p.price | currency: 'GEL' : 'symbol-narrow' }}
+              @if (p.discount > 0) {
+                <span class="sub sale">{{ p.finalPrice | currency: 'GEL' : 'symbol-narrow' }} now</span>
+              }
+            </td>
+            <td class="num">
+              <input
+                #stockInput
+                class="stock"
+                [class.low]="p.stockQuantity > 0 && p.stockQuantity <= 5"
+                [class.out]="p.stockQuantity === 0"
+                type="number"
+                min="0"
+                [value]="p.stockQuantity"
+                [attr.aria-label]="'Stock of ' + p.name"
+                (keydown.enter)="stockInput.blur()"
+                (blur)="saveStock(p, stockInput)"
+              />
+            </td>
+            <td>
+              <span class="status" [class.off]="p.status === 'Inactive'">{{ p.status === 'Active' ? 'On sale' : 'Hidden' }}</span>
+            </td>
+            <td class="actions">
+              <a matIconButton [routerLink]="['/admin/products', p.id]" [attr.aria-label]="'Edit ' + p.name">
+                <mat-icon aria-hidden="true">edit</mat-icon>
+              </a>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="empty">No products match "{{ search() }}".</td></tr>
+        }
+      } @else {
+        <tr><td colspan="7" class="empty">Loading…</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (result(); as r) {
+  @if (r.totalPages > 1) {
+    <nav class="pager" aria-label="Pages">
+      <button matButton="outlined" [disabled]="r.page <= 1" (click)="page.set(r.page - 1)">Previous</button>
+      <span>Page {{ r.page }} of {{ r.totalPages }}</span>
+      <button matButton="outlined" [disabled]="r.page >= r.totalPages" (click)="page.set(r.page + 1)">Next</button>
+    </nav>
+  }
+}
