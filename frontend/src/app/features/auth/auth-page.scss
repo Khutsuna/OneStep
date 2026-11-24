@@ -67,3 +67,39 @@ form {
   color: var(--os-muted);
   text-align: center;
 }
+
+// "Forgot password?" under the password field on the login page.
+.forgot {
+  align-self: flex-end;
+  margin: -4px 0 4px;
+  color: var(--os-ink);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+// Shown after a step succeeds (link sent, password changed).
+.success {
+  background: #e8f5ee;
+  color: #0f6b3f;
+  border-radius: var(--os-radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: var(--os-muted);
+  margin: 0 0 12px;
+}
+
+.full {
+  width: 100%;
+}
+
+.error a {
+  display: block;
+  margin-top: 6px;
+  color: inherit;
+  font-weight: 600;
+}
