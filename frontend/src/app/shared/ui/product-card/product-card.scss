@@ -10,6 +10,7 @@
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -19,10 +20,15 @@
   padding: 10px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 120ms ease;
+  transition:
+    border-color 120ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
 
   &:hover {
     border-color: var(--os-ink);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgb(16 26 51 / 0.12);
   }
 }
 
@@ -30,16 +36,46 @@
   position: relative;
 }
 
-.campaign {
+// Campaign ribbon, flush with the card's top-left corner.
+.ribbon {
   position: absolute;
-  left: 8px;
-  top: 8px;
+  left: -1px;
+  top: -1px;
+  z-index: 1;
+  max-width: 70%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   background: var(--os-step);
   color: var(--os-ink);
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: var(--os-radius-sm);
+  padding: 4px 10px;
+  border-radius: var(--os-radius-lg) 0 var(--os-radius-sm) 0;
+}
+
+// Round discount badge, half over the photo.
+.off {
+  position: absolute;
+  right: 10px;
+  bottom: -22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--os-sale);
+  color: #fff;
+  font-family: var(--os-display);
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  box-shadow: 0 6px 16px rgb(200 36 59 / 0.35);
+
+  small {
+    font-size: 0.7em;
+  }
 }
 
 .body {

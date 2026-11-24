@@ -31,6 +31,8 @@ export interface ProductListItem {
   finalPrice: number;
   discount: number;
   campaignName: string | null;
+  /** When the campaign's discount ends (UTC), for the deals countdown. */
+  campaignEndsAt: string | null;
   brandName: string | null;
   categoryName: string;
   mainImageUrl: string | null;

@@ -21,6 +21,12 @@ import { I18N } from '../../../core/i18n/translate.pipes';
 export class ProductCard {
   readonly product = input.required<ProductListItem>();
 
+  /** Whole-number percent saved, for the round badge (0 = no discount, no badge). */
+  protected readonly percentOff = computed(() => {
+    const { price, finalPrice } = this.product();
+    return finalPrice < price ? Math.round((1 - finalPrice / price) * 100) : 0;
+  });
+
   /** Placeholder icon based on the category, e.g. "Chargers & Cables" -> "chargers-cables" -> cable. */
   protected readonly icon = computed(() =>
     categoryIcon(this.product().categoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')),

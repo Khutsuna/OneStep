@@ -17,7 +17,7 @@ import { I18N } from '../../../core/i18n/translate.pipes';
     }
   `,
   styles: `
-    :host { display: block; aspect-ratio: 1 / 1; background: var(--os-photo); border-radius: var(--os-radius-sm); overflow: hidden; }
+    :host { display: block; aspect-ratio: 1 / 1; background: radial-gradient(120% 90% at 50% 15%, #f7f8fb 0%, var(--os-photo) 70%); border-radius: var(--os-radius-sm); overflow: hidden; }
     img { width: 100%; height: 100%; object-fit: contain; padding: 8%; }
     .placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: #b4bccb; }
     .placeholder mat-icon { font-size: 56px; width: 56px; height: 56px; }

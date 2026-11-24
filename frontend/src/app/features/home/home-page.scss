@@ -2,9 +2,26 @@
 
 // ---------- Hero: full-width navy, big type, category stairs ----------
 .hero {
-  background: var(--os-ink);
+  position: relative;
+  isolation: isolate; // the dot grid below stays inside the hero
+  background:
+    radial-gradient(45% 70% at 78% 62%, rgb(86 128 230 / 0.28), rgb(86 128 230 / 0) 70%), // light behind the stairs
+    radial-gradient(55% 75% at 0% 0%, rgb(58 92 170 / 0.45), rgb(58 92 170 / 0) 60%), // cool light from the top left
+    linear-gradient(180deg, #0b1326 0%, var(--os-ink) 100%);
   color: #fff;
   overflow: hidden;
+
+  // A faint dot grid that fades out towards the bottom: texture without noise.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1.5px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(180deg, #000 0%, transparent 80%);
+    pointer-events: none;
+  }
 }
 
 .hero-inner {
@@ -177,9 +194,11 @@
   font-family: var(--os-display);
   font-stretch: 110%;
   font-weight: 700;
-  font-size: clamp(0.9375rem, 1.4vw, 1.125rem);
+  // Small enough that long Georgian words ("აქსესუარები") fit on one line of a step.
+  font-size: clamp(0.8125rem, 1vw, 0.9375rem);
   line-height: 1.15;
-  overflow-wrap: anywhere;
+  // Break a word only if it really can't fit (long Georgian words like "ტელეფონები").
+  overflow-wrap: break-word;
 }
 
 .step-count {
@@ -189,8 +208,23 @@
 
 // ---------- Deals band ----------
 .deals {
-  background: #fff4d6;
-  border-bottom: 1px solid #f2dc9c;
+  // Dark "deals zone": deep navy with a soft marigold glow rising from the bottom.
+  background:
+    radial-gradient(900px 300px at 50% 115%, rgb(245 184 46 / 0.22), rgb(245 184 46 / 0) 70%),
+    linear-gradient(180deg, #0b1326, var(--os-ink));
+  color: #fff;
+
+  .section-title {
+    color: #fff;
+  }
+
+  .section-note {
+    color: #b9c2d6;
+  }
+}
+
+.countdown {
+  color: #fff;
 }
 
 .band {
@@ -217,7 +251,10 @@
 }
 
 .deals-head {
+  flex-wrap: wrap;
+  align-items: center;
   padding-right: 48px; // room for the carousel's pause button
+  margin-bottom: 26px;
 }
 
 .section-note {
