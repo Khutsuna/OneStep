@@ -31,6 +31,7 @@ public class Product : BaseEntity
     public byte[] RowVersion { get; set; } = [];
 
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+    public ICollection<ProductDocument> Documents { get; set; } = new List<ProductDocument>();
     public ICollection<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

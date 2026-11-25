@@ -20,6 +20,7 @@ public class AppDbContext : DbContext, IAppDbContext
     public DbSet<Brand> Brands => Set<Brand>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    public DbSet<ProductDocument> ProductDocuments => Set<ProductDocument>();
     public DbSet<ProductAttribute> ProductAttributes => Set<ProductAttribute>();
     public DbSet<ProductAttributeValue> ProductAttributeValues => Set<ProductAttributeValue>();
     public DbSet<ProductPriceHistory> ProductPriceHistory => Set<ProductPriceHistory>();
@@ -41,7 +42,7 @@ public class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Loads all 22 configuration classes from this project automatically.
+        // Loads all 23 configuration classes from this project automatically.
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         // Give every CreatedAt column a database default, so rows inserted

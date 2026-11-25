@@ -76,6 +76,9 @@ public record PricePointDto(DateTime Date, decimal Price);
 
 public record ProductImageDto(int Id, string Url, string? AltText, int SortOrder, bool IsMain);
 
+/// <summary>A downloadable PDF (manual, warranty card). Url is where the browser downloads it from.</summary>
+public record ProductDocumentDto(int Id, string Title, string FileName, long SizeBytes, string Url, DateTime CreatedAt);
+
 public record ProductAttributeValueDto(int AttributeId, string Name, string Value);
 
 /// <summary>The product page.</summary>

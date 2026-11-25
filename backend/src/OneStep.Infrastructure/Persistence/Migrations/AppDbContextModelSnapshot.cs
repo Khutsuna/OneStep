@@ -907,6 +907,53 @@ namespace OneStep.Infrastructure.Persistence.Migrations
                     b.ToTable("ProductAttributeValues", (string)null);
                 });
 
+            modelBuilder.Entity("OneStep.Domain.Entities.ProductDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "ProductId" }, "IX_ProductDocuments_ProductId");
+
+                    b.ToTable("ProductDocuments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ProductDocuments_SizeBytes", "[SizeBytes] > 0");
+                        });
+                });
+
             modelBuilder.Entity("OneStep.Domain.Entities.ProductImage", b =>
                 {
                     b.Property<int>("Id")
@@ -1385,6 +1432,17 @@ namespace OneStep.Infrastructure.Persistence.Migrations
                     b.Navigation("ProductAttribute");
                 });
 
+            modelBuilder.Entity("OneStep.Domain.Entities.ProductDocument", b =>
+                {
+                    b.HasOne("OneStep.Domain.Entities.Product", "Product")
+                        .WithMany("Documents")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("OneStep.Domain.Entities.ProductImage", b =>
                 {
                     b.HasOne("OneStep.Domain.Entities.Product", "Product")
@@ -1479,6 +1537,8 @@ namespace OneStep.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("OneStep.Domain.Entities.Product", b =>
                 {
                     b.Navigation("AttributeValues");
+
+                    b.Navigation("Documents");
 
                     b.Navigation("Images");
 
