@@ -2,7 +2,7 @@
 !include <C4/C4_Component>
 !include onestep-theme.puml
 
-title OneStep — Level 3: Components of the Angular app\n<size:12>Standalone components, lazy-loaded pages, signal-based state</size>
+title Technica — Level 3: Components of the Angular app\n<size:12>Standalone components, lazy-loaded pages, signal-based state</size>
 
 Person(user, "Customer or staff member")
 Container(api, "Web API", "ASP.NET Core 10")

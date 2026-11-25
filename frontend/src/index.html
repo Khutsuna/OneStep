@@ -2,13 +2,19 @@
 <html lang="ka">
   <head>
     <meta charset="utf-8" />
-    <title>OneStep — electronics in Georgia</title>
+    <title>Technica — electronics in Georgia</title>
     <meta name="description" content="Phones, laptops, audio and accessories with delivery across Georgia." />
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#101a33" />
+    <!-- Night mode before Angular starts, so a dark page never flashes white. ThemeStore takes over after. -->
+    <script>
+      try {
+        if (localStorage.getItem('onestep.theme') === 'dark') document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
     <!-- Fonts and icons are installed with npm (see angular.json "styles"), so the site works offline. -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   </head>
   <body>
     <app-root></app-root>

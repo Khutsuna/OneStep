@@ -145,7 +145,7 @@ figure {
     top: 6px;
     left: 6px;
     background: var(--os-step);
-    color: var(--os-ink);
+    color: var(--os-on-step);
     font-size: 0.75rem;
     font-weight: 700;
     padding: 1px 8px;
@@ -226,7 +226,7 @@ figure {
 }
 
 .error {
-  background: #fdecee;
+  background: var(--os-tint-sale);
   color: var(--os-sale);
   border-radius: var(--os-radius-sm);
   padding: 10px 12px;

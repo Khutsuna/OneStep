@@ -19,7 +19,7 @@ import { I18N } from '../../i18n/translate.pipes';
   styles: `
     :host { display: flex; flex-direction: column; min-height: 100vh; }
     main { flex: 1; outline: none; }
-    .skip-link { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--os-step); color: var(--os-ink); padding: 8px 12px; border-radius: var(--os-radius-sm); font-weight: 600; }
+    .skip-link { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--os-step); color: var(--os-on-step); padding: 8px 12px; border-radius: var(--os-radius-sm); font-weight: 600; }
     .skip-link:focus { left: 8px; }
   `,
 })

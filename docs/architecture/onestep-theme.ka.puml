@@ -1,0 +1,26 @@
+' Technica colours for the Georgian C4 diagrams (same as onestep-theme.puml), with Georgian legend labels.
+' DejaVu Sans has Georgian letters (Arial does not), so the text renders on any machine.
+!$ink = "#14213d"
+!$inkSoft = "#2d4373"
+!$step = "#f2b632"
+!$grey = "#8a93a6"
+
+UpdateElementStyle("person", $bgColor=$ink, $fontColor="#ffffff", $borderColor=$ink, $legendText="ადამიანი")
+UpdateElementStyle("system", $bgColor=$inkSoft, $fontColor="#ffffff", $borderColor=$inkSoft, $legendText="სისტემა")
+UpdateElementStyle("external_system", $bgColor=$grey, $fontColor="#ffffff", $borderColor=$grey, $legendText="გარე სისტემა")
+UpdateElementStyle("container", $bgColor=$inkSoft, $fontColor="#ffffff", $borderColor=$inkSoft, $legendText="კონტეინერი")
+UpdateElementStyle("component", $bgColor="#ffffff", $fontColor=$ink, $borderColor=$inkSoft, $legendText="კომპონენტი")
+' The general boundary style first: it resets the system and container boundaries, which are set right after it.
+UpdateBoundaryStyle($fontColor=$ink, $borderColor=$grey, $legendText="საზღვარი")
+UpdateBoundaryStyle($elementName="system", $fontColor=$ink, $borderColor=$ink, $type="სისტემა", $legendText="სისტემის საზღვარი")
+UpdateBoundaryStyle($elementName="container", $fontColor=$ink, $borderColor=$ink, $type="კონტეინერი", $legendText="კონტეინერის საზღვარი")
+UpdateRelStyle($lineColor="#5b6478", $textColor="#3b4458")
+
+AddElementTag("db", $bgColor=$ink, $borderColor=$step, $fontColor="#ffffff", $legendText="მონაცემთა ბაზა")
+AddElementTag("store", $bgColor="#fff4d6", $borderColor=$step, $fontColor=$ink, $legendText="გლობალური state (Signal Store)")
+AddElementTag("planned", $bgColor="#ffffff", $fontColor=$grey, $borderColor=$grey, $borderStyle=DashedLine(), $legendText="დაგეგმილი, ჯერ არ არის აშენებული")
+AddRelTag("planned", $lineColor=$grey, $textColor=$grey, $lineStyle=DashedLine(), $legendText="დაგეგმილი")
+UpdateLegendTitle("ლეგენდა")
+
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #ffffff

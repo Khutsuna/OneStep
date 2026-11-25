@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 8px var(--os-gutter);
-  background: var(--os-ink);
+  background: var(--os-navy);
   color: #fff;
 
   @include mat.button-overrides(
@@ -38,31 +38,16 @@
 
 .logo {
   display: inline-flex;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: center;
+  gap: 9px;
   color: #fff;
   text-decoration: none;
 }
 
+// The logo mark: a "T" on a marigold tile (shared/ui/logo-mark).
 .mark {
-  display: inline-grid;
-  grid-template-columns: 9px 9px;
-  align-items: end;
-  gap: 2px;
-  height: 22px;
-
-  span {
-    background: var(--os-step);
-    border-radius: 2px;
-  }
-
-  span:first-child {
-    height: 11px;
-  }
-
-  span:last-child {
-    height: 22px;
-  }
+  width: 28px;
+  height: 28px;
 }
 
 .wordmark {
@@ -138,7 +123,7 @@
 
     &.active {
       background: var(--os-ink);
-      color: #fff;
+      color: var(--os-on-ink);
     }
 
     mat-icon {
@@ -177,7 +162,7 @@
   white-space: normal;
 
   &.unread {
-    background: #fff8e6;
+    background: var(--os-tint-step);
   }
 }
 
@@ -223,7 +208,7 @@
 
     &.active {
       background: var(--os-step);
-      color: var(--os-ink);
+      color: var(--os-on-step);
     }
   }
 }

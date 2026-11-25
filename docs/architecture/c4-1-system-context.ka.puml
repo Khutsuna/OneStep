@@ -1,0 +1,22 @@
+@startuml c4-1-system-context.ka
+!include <C4/C4_Context>
+!include onestep-theme.ka.puml
+' Georgian version of c4-1-system-context.puml, for the Georgian presentation.
+
+title Technica — დონე 1: სისტემური კონტექსტი\n<size:12>ვინ იყენებს სისტემას და რას უკავშირდება</size>
+
+Person(customer, "მომხმარებელი", "პოულობს, ადარებს და ყიდულობს ტექნიკას; ადევნებს თვალს შეკვეთებს; ინახავს სურვილების სიას; წერს შეფასებებს")
+Person(manager, "მენეჯერი", "მართავს კატალოგს, მარაგს, შეკვეთებს და ფასდაკლებებს")
+Person(admin, "ადმინისტრატორი", "ყველაფერი, რასაც მენეჯერი აკეთებს, პლუს მომხმარებლები და როლები")
+
+System(onestep, "Technica", "ელექტრონიკის ონლაინ მაღაზია: კატალოგი, შეკვეთის გაფორმება, შეკვეთის სტატუსი და ადმინის პანელი")
+
+System_Ext(payment, "ბარათით გადახდის პროვაიდერი", $tags="planned")
+
+Rel_Down(customer, onestep, "ყიდულობს, იხდის და ადევნებს თვალს შეკვეთებს", "ბრაუზერი, HTTPS")
+Rel_Down(manager, onestep, "მართავს პროდუქტებს, მარაგს, შეკვეთებს, ფასდაკლებებს", "ბრაუზერი, HTTPS")
+Rel_Down(admin, onestep, "მართავს მაღაზიას და მომხმარებლებს", "ბრაუზერი, HTTPS")
+Rel_Right(onestep, payment, "მიიღებდა რეალურ გადახდებს ბარათით", $tags="planned")
+
+SHOW_LEGEND()
+@enduml

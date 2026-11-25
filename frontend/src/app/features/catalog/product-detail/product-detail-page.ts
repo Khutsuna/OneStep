@@ -109,7 +109,7 @@ export class ProductDetailPage {
     // Keep the browser tab title in sync, and show the first photo of each new product.
     effect(() => {
       const product = this.product();
-      this.titleService.setTitle(product ? `${product.name} — OneStep` : 'OneStep');
+      this.titleService.setTitle(product ? `${product.name} — Technica` : 'Technica');
     });
     effect(() => {
       this.id();

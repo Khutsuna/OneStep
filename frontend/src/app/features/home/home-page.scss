@@ -7,7 +7,7 @@
   background:
     radial-gradient(45% 70% at 78% 62%, rgb(86 128 230 / 0.28), rgb(86 128 230 / 0) 70%), // light behind the stairs
     radial-gradient(55% 75% at 0% 0%, rgb(58 92 170 / 0.45), rgb(58 92 170 / 0) 60%), // cool light from the top left
-    linear-gradient(180deg, #0b1326 0%, var(--os-ink) 100%);
+    linear-gradient(180deg, #0b1326 0%, var(--os-navy) 100%);
   color: #fff;
   overflow: hidden;
 
@@ -76,7 +76,7 @@
   border: 2px solid var(--os-step);
   border-radius: var(--os-radius-sm);
   background: var(--os-step);
-  color: var(--os-ink);
+  color: var(--os-on-step);
   font: inherit;
   font-weight: 700;
   font-size: 1rem;
@@ -161,10 +161,10 @@
 
   &:nth-child(4) {
     background: var(--os-step);
-    color: var(--os-ink);
+    color: var(--os-on-step);
 
     .step-count {
-      color: rgb(16 26 51 / 0.7);
+      color: rgb(16 26 51 / 0.7); // dark text on marigold, same in night mode
     }
   }
 
@@ -211,7 +211,7 @@
   // Dark "deals zone": deep navy with a soft marigold glow rising from the bottom.
   background:
     radial-gradient(900px 300px at 50% 115%, rgb(245 184 46 / 0.22), rgb(245 184 46 / 0) 70%),
-    linear-gradient(180deg, #0b1326, var(--os-ink));
+    linear-gradient(180deg, #0b1326, var(--os-navy));
   color: #fff;
 
   .section-title {

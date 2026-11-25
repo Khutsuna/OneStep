@@ -22,7 +22,7 @@ import { LanguageStore } from '../../../core/i18n/language.store';
   styles: `
     form { display: grid; gap: 4px 12px; grid-template-columns: 1fr 1fr; }
     .wide { grid-column: 1 / -1; }
-    .error { grid-column: 1 / -1; background: #fdecee; color: var(--os-sale); border-radius: var(--os-radius-sm); padding: 10px 12px; margin: 0 0 8px; }
+    .error { grid-column: 1 / -1; background: var(--os-tint-sale); color: var(--os-sale); border-radius: var(--os-radius-sm); padding: 10px 12px; margin: 0 0 8px; }
     .actions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
     @media (max-width: 599px) { form { grid-template-columns: 1fr; } }
   `,

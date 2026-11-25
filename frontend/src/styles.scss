@@ -1,4 +1,4 @@
-// Global styles: the Angular Material theme, OneStep's design tokens and a few utilities.
+// Global styles: the Angular Material theme, Technica's design tokens and a few utilities.
 @use '@angular/material' as mat;
 
 // ---------- Design tokens (one place for every colour, radius and width) ----------
@@ -9,10 +9,32 @@
   --os-surface: #ffffff;      // cards, panels
   --os-line: #dde1e8;         // borders and dividers
   --os-muted: #5b6476;        // secondary text
-  --os-step: #f5b82e;         // marigold accent: the "step" in OneStep
+  --os-step: #f5b82e;         // marigold accent: the logo tile, deals and highlights
   --os-sale: #c8243b;         // discounts only
   --os-stock: #12805c;        // "in stock"
   --os-photo: #eceff3;        // background behind product photos
+
+  // Colours that must stay the same in night mode, or flip in a specific way.
+  --os-navy: #101a33;         // header, footer and admin bar: always deep navy
+  --os-on-ink: #ffffff;       // text on a navy (--os-ink) fill, e.g. selected chips
+  --os-on-ink-muted: #c3cad8; // secondary text on a navy fill
+  --os-on-step: #101a33;      // text on the marigold accent: always dark
+
+  // Soft status backgrounds and their text colours (alerts, chips, banners).
+  --os-tint-sale: #fdecee;    // errors
+  --os-line-sale: #e9a2ad;
+  --os-tint-stock: #e3f4ec;   // success, "delivered"
+  --os-tint-stock-strong: #cfe9da;
+  --os-text-stock: #0b5e43;
+  --os-tint-step: #fff6e0;    // warnings, low stock, free-delivery bar
+  --os-tint-step-strong: #f1e2b4;
+  --os-line-step: #e9c46a;
+  --os-text-warn: #8a5a00;
+  --os-tint-info: #dceefe;    // "shipped", scheduled campaigns
+  --os-text-info: #0b4f8a;
+  --os-tint-ink: #e3e8f3;     // "paid"
+  --os-tint-neutral: #eceff3; // "cancelled", inactive
+  --os-page-glow: #e8ecf3;    // the soft tint at the top of every page
 
   // Onest for text, Archivo (wide) for headlines. Georgian letters fall back to Noto Sans Georgian.
   --os-font: 'Onest Variable', 'Noto Sans Georgian Variable', system-ui, sans-serif;
@@ -24,8 +46,56 @@
   --os-gutter: 16px;
 }
 
+// ---------- Night mode ----------
+// ThemeStore puts class="dark" on <html>. Only the tokens change; every component reads them,
+// so the whole site switches at once. color-scheme: dark also switches Angular Material
+// (its colours are light-dark() values) and the browser's own scrollbars and form controls.
+html.dark {
+  color-scheme: dark;
+
+  --os-ink: #e7ebf4;          // main text becomes light
+  --os-ink-soft: #c3cde2;
+  --os-paper: #0b1120;
+  --os-surface: #141d33;
+  --os-line: #2a3654;
+  --os-muted: #9aa6bf;
+  --os-sale: #ef5b6e;
+  --os-stock: #3cc492;
+  --os-photo: #dfe4ec;        // photos keep a light tile: most product shots have white backgrounds
+
+  --os-navy: #0e172d;
+  --os-on-ink: #0b1120;       // selected chips turn light with dark text
+  --os-on-ink-muted: #3a4663;
+
+  --os-tint-sale: rgb(239 91 110 / 0.16);
+  --os-line-sale: rgb(239 91 110 / 0.5);
+  --os-tint-stock: rgb(60 196 146 / 0.14);
+  --os-tint-stock-strong: rgb(60 196 146 / 0.3);
+  --os-text-stock: #6fd6ab;
+  --os-tint-step: rgb(245 184 46 / 0.12);
+  --os-tint-step-strong: rgb(245 184 46 / 0.26);
+  --os-line-step: rgb(245 184 46 / 0.45);
+  --os-text-warn: #f2c45c;
+  --os-tint-info: rgb(96 165 240 / 0.16);
+  --os-text-info: #93c5f7;
+  --os-tint-ink: #24314f;
+  --os-tint-neutral: #1f2944;
+  --os-page-glow: #111a2e;
+}
+
+// Plain HTML inputs (price range, admin search, checkout radios) follow the night colours too.
+// :where() keeps the specificity at zero, so any component style still wins.
+html.dark :where(input:not([type='radio'], [type='checkbox']), textarea, select) {
+  background-color: var(--os-surface);
+  color: var(--os-ink);
+}
+html.dark :where(input[type='radio'], input[type='checkbox']) {
+  accent-color: var(--os-step);
+}
+
 html {
   height: 100%;
+  color-scheme: light;
   @include mat.theme(
     (
       color: (
@@ -43,20 +113,22 @@ html {
     )
   );
 
-  // Pull Material's colours towards OneStep's navy so buttons and inputs match the brand.
+  // Pull Material's colours towards Technica's navy so buttons and inputs match the brand.
+  // Material's own palette already has a day and a night version (theme-type defaults to color-scheme).
   @include mat.theme-overrides(
     (
-      primary: #101a33,
-      on-primary: #ffffff,
-      primary-container: #e3e8f3,
-      on-primary-container: #101a33,
-      surface: #f5f6f8,
-      surface-container-lowest: #ffffff,
-      outline-variant: #dde1e8,
+      // light-dark(day, night): the browser picks one from color-scheme (see html.dark above).
+      primary: light-dark(#101a33, #c9d6f2),
+      on-primary: light-dark(#ffffff, #0b1120),
+      primary-container: light-dark(#e3e8f3, #24314f),
+      on-primary-container: light-dark(#101a33, #e7ebf4),
+      surface: light-dark(#f5f6f8, #0b1120),
+      surface-container-lowest: light-dark(#ffffff, #141d33),
+      outline-variant: light-dark(#dde1e8, #2a3654),
     )
   );
 
-  // Same corner radius as the rest of OneStep, instead of Material's round "pill" buttons.
+  // Same corner radius as the rest of Technica, instead of Material's round "pill" buttons.
   @include mat.button-overrides(
     (
       filled-container-shape: 6px,
@@ -74,11 +146,10 @@ html {
 }
 
 body {
-  color-scheme: light;
   margin: 0;
   min-height: 100%;
   // A soft cool tint at the top of every page, fading into the plain page colour.
-  background: linear-gradient(180deg, #e8ecf3 0, var(--os-paper) 480px) no-repeat var(--os-paper);
+  background: linear-gradient(180deg, var(--os-page-glow) 0, var(--os-paper) 480px) no-repeat var(--os-paper);
   color: var(--os-ink);
   font-family: var(--os-font);
   font-size: 15px;

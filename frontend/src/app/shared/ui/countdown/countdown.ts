@@ -27,7 +27,7 @@ import { I18N } from '../../../core/i18n/translate.pipes';
     .clock { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
     .box {
       min-width: 2.2em; padding: 6px 8px; border-radius: var(--os-radius-sm);
-      background: var(--os-step); color: var(--os-ink);
+      background: var(--os-step); color: var(--os-on-step);
       font-family: var(--os-display); font-weight: 800; text-align: center;
     }
     .box.days { margin-right: 4px; }

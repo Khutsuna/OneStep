@@ -2,12 +2,12 @@
 !include <C4/C4_Container>
 !include onestep-theme.puml
 
-title OneStep — Level 2: Containers\n<size:12>The separately running parts and how they talk to each other</size>
+title Technica — Level 2: Containers\n<size:12>The separately running parts and how they talk to each other</size>
 
 Person(customer, "Customer")
 Person(staff, "Store Manager / Administrator")
 
-System_Boundary(onestep, "OneStep") {
+System_Boundary(onestep, "Technica") {
   Container(spa, "Single-page application", "Angular 22, TypeScript, Angular Material, NgRx Signal Store", "Shop, cart and checkout, customer account, and the admin panel. Runs in the browser")
   Container(api, "Web API", "ASP.NET Core 10, C#", "REST/JSON API: business rules, JWT login and roles, validation, Swagger docs, error handling and logging")
   ContainerDb(db, "Database", "Microsoft SQL Server 2025", "22 tables (EF Core migrations), plus hand-written SQL: catalogue view, analytics procedures, price-history trigger, seed data", $tags="db")

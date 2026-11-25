@@ -30,7 +30,20 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Enums travel as text in JSON ("role": "Admin" instead of "role": 2).
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+
+    // The store's name in Swagger (the code itself keeps the project name OneStep).
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        if (document.Info is not null)
+        {
+            document.Info.Title = "Technica API";
+        }
+        return Task.CompletedTask;
+    });
+});
 builder.Services.AddHealthChecks();
 
 // CORS: the Angular app runs on another port (a different "origin"), so the browser
@@ -55,8 +68,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();                // /openapi/v1.json
     app.UseSwaggerUI(options =>      // /swagger
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "OneStep API v1");
-        options.DocumentTitle = "OneStep API";
+        options.SwaggerEndpoint("/openapi/v1.json", "Technica API v1");
+        options.DocumentTitle = "Technica API";
         options.EnablePersistAuthorization();   // keep the token after a page refresh
     });
 }

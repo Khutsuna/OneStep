@@ -1,4 +1,4 @@
-' OneStep colours for the C4 diagrams: navy ink, marigold accent (same as the website).
+' Technica colours for the C4 diagrams: navy ink, marigold accent (same as the website).
 ' Included by every c4-*.puml file in this folder.
 !$ink = "#14213d"
 !$inkSoft = "#2d4373"

@@ -1,8 +1,8 @@
 <header class="bar">
   <div class="bar-inner">
     <a class="logo" routerLink="/" [attr.aria-label]="'common.home' | t">
-      <span class="mark" aria-hidden="true"><span></span><span></span></span>
-      <span class="wordmark">OneStep</span>
+      <app-logo-mark class="mark" />
+      <span class="wordmark">Technica</span>
     </a>
 
     <form class="search" role="search" (ngSubmit)="search()">
@@ -22,6 +22,8 @@
     </form>
 
     <nav class="account" [attr.aria-label]="'header.account' | t">
+      <app-theme-toggle />
+
       <!-- Language switch: Georgian / English, changes every text at once. -->
       <div class="lang" role="group" [attr.aria-label]="'header.language' | t">
         <button type="button" [class.active]="language.lang() === 'ka'" [attr.aria-pressed]="language.lang() === 'ka'"
@@ -41,7 +43,7 @@
       @if (auth.isLoggedIn()) {
         <button matButton class="account-button" [matMenuTriggerFor]="accountMenu">
           <mat-icon aria-hidden="true">person</mat-icon>
-          {{ auth.firstName() }}
+          <span class="login-text">{{ auth.firstName() }}</span>
         </button>
         <mat-menu #accountMenu="matMenu" xPosition="before">
           @if (auth.isStaff()) {
@@ -71,7 +73,7 @@
       } @else {
         <a matButton class="account-button" routerLink="/login">
           <mat-icon aria-hidden="true">login</mat-icon>
-          {{ 'header.login' | t }}
+          <span class="login-text">{{ 'header.login' | t }}</span>
         </a>
       }
     </nav>

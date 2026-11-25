@@ -1,5 +1,5 @@
 @startuml database-er
-title OneStep — Database design (SQL Server)\n<size:12>22 tables. PK = primary key, FK = foreign key, UQ = unique. Created by EF Core migrations; views, procedures and trigger in /database</size>
+title Technica — Database design (SQL Server)\n<size:12>22 tables. PK = primary key, FK = foreign key, UQ = unique. Created by EF Core migrations; views, procedures and trigger in /database</size>
 
 skinparam defaultFontName "Arial"
 skinparam backgroundColor #ffffff

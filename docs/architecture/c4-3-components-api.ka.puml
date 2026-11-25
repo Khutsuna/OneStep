@@ -1,0 +1,57 @@
+@startuml c4-3-components-api.ka
+!include <C4/C4_Component>
+!include onestep-theme.ka.puml
+' Georgian version of c4-3-components-api.puml, for the Georgian presentation. Class names stay in English: they are code.
+
+title Technica — დონე 3: Web API-ს კომპონენტები\n<size:12>სუფთა არქიტექტურა: Api → Application → Domain, Infrastructure კი ახორციელებს Application-ის ინტერფეისებს</size>
+
+Container(spa, "ერთგვერდიანი აპლიკაცია", "Angular")
+ContainerDb(db, "მონაცემთა ბაზა", "SQL Server 2025", $tags="db")
+Container(files, "სურათების საცავი", "wwwroot/uploads")
+
+Container_Boundary(api, "Web API (ASP.NET Core 10)") {
+
+  Boundary(apiLayer, "OneStep.Api — HTTP ფენა") {
+    Component(pipeline, "მოთხოვნის pipeline", "Middleware", "Serilog ლოგირება, GlobalExceptionHandler (შეცდომა → ProblemDetails), CORS, JWT ავთენტიფიკაცია, როლების პოლიტიკები")
+    Component(controllers, "კონტროლერები", "ASP.NET Core [ApiController]", "Auth, Products, Categories, Brands, Cart, Orders, Addresses, Wishlist, Reviews, Account, Users, Analytics, Notifications, Campaigns. Swagger: /swagger")
+  }
+
+  Boundary(appLayer, "OneStep.Application — ბიზნეს ლოგიკა") {
+    Component(catalog, "კატალოგის სერვისები", "C#", "ProductService (ძიება, ფილტრები), CategoryService, PricingService (ფასდაკლებები)")
+    Component(shopping, "შოპინგის სერვისები", "C#", "CartService, OrderService, CheckoutCalculator (მიწოდება + 18% დღგ), AddressService, WishlistService, ReviewService")
+    Component(admin, "ადმინის სერვისები", "C#", "AnalyticsService, NotificationService, CampaignService (ფასდაკლებები), UserService")
+    Component(auth, "ავტორიზაცია და ანგარიში", "C#", "AuthService (რეგისტრაცია, შესვლა, პაროლის აღდგენა), AccountService (პროფილი, პაროლი)")
+    Component(abstractions, "ინტერფეისები", "C#", "IAppDbContext, IAnalyticsQueries, ITokenService, IPasswordHasher, IFileStorage, ICurrentUser")
+  }
+
+  Component(domain, "OneStep.Domain", "C#", "22 ენტიტი, enum-ები, OrderStatusTransitions (სტატუსების წესები), ShippingAddress value object")
+
+  Boundary(infraLayer, "OneStep.Infrastructure — კავშირი გარე სამყაროსთან") {
+    Component(dbContext, "AppDbContext", "EF Core 10", "ენტიტების კონფიგურაცია, მიგრაციები, soft-delete ფილტრი, კონკურენტულობა (RowVersion)")
+    Component(analyticsSql, "SqlAnalyticsQueries", "EF Core raw SQL", "უშვებს ანალიტიკის stored procedure-ებს პარამეტრებით")
+    Component(security, "JwtTokenService, IdentityPasswordHasher", "JWT, PBKDF2", "ქმნის ხელმოწერილ ტოკენებს; ჰეშავს და ამოწმებს პაროლებს")
+    Component(storage, "LocalFileStorage", "File I/O", "ინახავს ფოტოებს შემთხვევითი სახელით; ბლოკავს არასწორ გზებს")
+  }
+}
+
+Rel_Down(spa, pipeline, "JSON/HTTPS + JWT")
+Rel_Right(pipeline, controllers, "გადასცემს შემოწმებულ მოთხოვნებს")
+Rel_Down(controllers, catalog, "იძახებს")
+Rel_Down(controllers, shopping, "იძახებს")
+Rel_Down(controllers, admin, "იძახებს")
+Rel_Down(controllers, auth, "იძახებს")
+Rel(catalog, abstractions, "იყენებს")
+Rel(shopping, abstractions, "იყენებს")
+Rel(admin, abstractions, "იყენებს")
+Rel(auth, abstractions, "იყენებს")
+Rel(shopping, domain, "იცავს წესებს")
+Rel_Up(dbContext, abstractions, "ახორციელებს")
+Rel_Up(analyticsSql, abstractions, "ახორციელებს")
+Rel_Up(security, abstractions, "ახორციელებს")
+Rel_Up(storage, abstractions, "ახორციელებს")
+Rel_Down(dbContext, db, "SQL")
+Rel_Down(analyticsSql, db, "EXEC პროცედურები")
+Rel_Down(storage, files, "კითხულობს / წერს")
+
+SHOW_LEGEND()
+@enduml
