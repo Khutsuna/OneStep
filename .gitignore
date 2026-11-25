@@ -487,3 +487,6 @@ logs/
 # Uploaded images (keep the folder itself)
 backend/src/OneStep.Api/wwwroot/uploads/*
 !backend/src/OneStep.Api/wwwroot/uploads/.gitkeep
+
+# Product photos waiting for tools/import-product-photos.ps1 (manufacturer images, not committed)
+product-photos/

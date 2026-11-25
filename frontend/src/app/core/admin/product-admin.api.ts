@@ -3,10 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NamedOption, ProductRequest } from '../models/admin.models';
-import { ProductDetails, ProductImage, ProductListItem } from '../models/catalog.models';
+import { ProductDetails, ProductDocument, ProductImage, ProductListItem } from '../models/catalog.models';
 import { PagedResult } from '../models/common.models';
 
-/** Product management for staff: list (including inactive), create, edit, stock, images. */
+/** Product management for staff: list (including inactive), create, edit, stock, images, documents. */
 @Injectable({ providedIn: 'root' })
 export class ProductAdminApi {
   private readonly http = inject(HttpClient);
@@ -56,6 +56,22 @@ export class ProductAdminApi {
 
   deleteImage(productId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(`${this.products}/${productId}/images/${imageId}`);
+  }
+
+  getDocuments(productId: number): Observable<ProductDocument[]> {
+    return this.http.get<ProductDocument[]>(`${this.products}/${productId}/documents`);
+  }
+
+  /** A PDF plus an optional title, as multipart/form-data (the API reads "file" and "title"). */
+  uploadDocument(productId: number, file: File, title: string): Observable<ProductDocument> {
+    const form = new FormData();
+    form.append('file', file);
+    if (title.trim()) form.append('title', title.trim());
+    return this.http.post<ProductDocument>(`${this.products}/${productId}/documents`, form);
+  }
+
+  deleteDocument(productId: number, documentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.products}/${productId}/documents/${documentId}`);
   }
 
   getBrands(): Observable<NamedOption[]> {

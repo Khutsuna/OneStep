@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PagedResult } from '../models/common.models';
-import { PricePoint, ProductDetails, ProductFilters, ProductListItem, ProductQuery } from '../models/catalog.models';
+import { PricePoint, ProductDetails, ProductDocument, ProductFilters, ProductListItem, ProductQuery } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsApi {
@@ -26,6 +26,11 @@ export class ProductsApi {
   /** The base price over time (written by the SQL trigger trg_Products_PriceHistory). */
   getPriceHistory(id: number): Observable<PricePoint[]> {
     return this.http.get<PricePoint[]>(`${this.baseUrl}/${id}/price-history`);
+  }
+
+  /** PDF manuals and other documents staff uploaded for this product. */
+  getDocuments(id: number): Observable<ProductDocument[]> {
+    return this.http.get<ProductDocument[]>(`${this.baseUrl}/${id}/documents`);
   }
 
   getSimilar(id: number, count = 4): Observable<ProductListItem[]> {

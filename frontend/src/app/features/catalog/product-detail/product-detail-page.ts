@@ -24,6 +24,7 @@ import { RatingStars } from '../../../shared/ui/rating-stars/rating-stars';
 import { I18N } from '../../../core/i18n/translate.pipes';
 import { LanguageStore } from '../../../core/i18n/language.store';
 import { PriceHistoryChart } from './price-history-chart';
+import { ProductDocuments } from './product-documents';
 
 interface DetailState {
   product: ProductDetails | null;
@@ -34,7 +35,7 @@ interface DetailState {
 @Component({
   selector: 'app-product-detail-page',
   imports: [I18N, RouterLink, MatButtonModule, MatIconModule,
-    EmptyState, PriceHistoryChart, PriceTag, ProductCard, ProductImage, ProductReviewsSection, QuantityStepper, RatingStars, WishlistButton,
+    EmptyState, PriceHistoryChart, PriceTag, ProductDocuments, ProductCard, ProductImage, ProductReviewsSection, QuantityStepper, RatingStars, WishlistButton,
   ],
   templateUrl: './product-detail-page.html',
   styleUrl: './product-detail-page.scss',

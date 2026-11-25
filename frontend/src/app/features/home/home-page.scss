@@ -139,11 +139,13 @@
 }
 
 .step {
+  // The step is a size container: the name's font size below follows the step's own width.
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   gap: 2px;
-  padding: 16px;
+  padding: 16px 14px;
   min-height: 128px;
   border-radius: var(--os-radius-lg);
   background: #22335a;
@@ -194,11 +196,12 @@
   font-family: var(--os-display);
   font-stretch: 110%;
   font-weight: 700;
-  // Small enough that long Georgian words ("აქსესუარები") fit on one line of a step.
-  font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+  // 12cqi = 12% of the step's width, so the longest Georgian word ("კომპიუტერები") always fits
+  // on one line; words are never split in the middle.
+  font-size: clamp(0.75rem, 12cqi, 1rem);
   line-height: 1.15;
-  // Break a word only if it really can't fit (long Georgian words like "ტელეფონები").
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .step-count {
@@ -208,11 +211,47 @@
 
 // ---------- Deals band ----------
 .deals {
-  // Dark "deals zone": deep navy with a soft marigold glow rising from the bottom.
+  // Dark "deals zone": the hero turned upside down, so the two meet without a seam.
+  // The top starts with the hero's last colour; light, dots and glow all come from the bottom.
+  position: relative;
+  isolation: isolate; // the dot grid below stays inside the band
   background:
-    radial-gradient(900px 300px at 50% 115%, rgb(245 184 46 / 0.22), rgb(245 184 46 / 0) 70%),
-    linear-gradient(180deg, #0b1326, var(--os-navy));
+    radial-gradient(900px 300px at 50% 115%, rgb(245 184 46 / 0.22), rgb(245 184 46 / 0) 70%), // marigold glow from below
+    radial-gradient(55% 75% at 0% 100%, rgb(58 92 170 / 0.35), rgb(58 92 170 / 0) 60%), // cool light from the bottom left
+    linear-gradient(180deg, var(--os-navy) 0%, #0b1326 100%);
   color: #fff;
+  overflow: hidden;
+
+  // The hero's dot grid in marigold, the colour of deals, fading in from the bottom.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    // A bright dot with a soft halo around it, so the dots glow slightly.
+    background-image:
+      radial-gradient(rgb(245 184 46 / 0.45) 1.2px, transparent 1.8px),
+      radial-gradient(rgb(245 184 46 / 0.18) 0, rgb(245 184 46 / 0) 7px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(0deg, #000 0%, transparent 80%);
+    pointer-events: none;
+  }
+
+  // A thin marigold line where the hero ends: it separates the two without a hard edge,
+  // because it runs the full width and only fades out at the very edges and glows softly downwards.
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: -1;
+    width: 100%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, rgb(245 184 46 / 0), rgb(245 184 46 / 0.7) 20%, rgb(245 184 46 / 0.7) 80%, rgb(245 184 46 / 0));
+    box-shadow: 0 0 18px 1px rgb(245 184 46 / 0.25);
+    pointer-events: none;
+  }
 
   .section-title {
     color: #fff;

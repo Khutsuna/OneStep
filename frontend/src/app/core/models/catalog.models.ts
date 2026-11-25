@@ -57,6 +57,16 @@ export interface ProductImage {
   isMain: boolean;
 }
 
+/** A downloadable PDF for a product: a user manual, a warranty card... */
+export interface ProductDocument {
+  id: number;
+  title: string;
+  fileName: string;
+  sizeBytes: number;
+  url: string;
+  createdAt: string;
+}
+
 export interface ProductAttributeValue {
   attributeId: number;
   name: string;

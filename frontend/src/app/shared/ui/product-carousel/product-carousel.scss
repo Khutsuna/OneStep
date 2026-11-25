@@ -8,7 +8,10 @@
 .viewport {
   overflow: hidden;
   container-type: inline-size; // lets the cards size themselves by the viewport's width (cqw units)
-  padding: 4px 0 8px;
+  // Extra room above and below, so a hovered card can grow and cast its shadow without being cut off.
+  // The negative margin cancels the extra room, so the section keeps its size.
+  padding: 16px 0 32px;
+  margin: -12px 0 -24px;
   // Cards fade in and out at the edges instead of being cut off sharply.
   mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
 }
@@ -43,9 +46,20 @@
   // 100cqw = the viewport's width, so exactly --per-view cards fit.
   flex: 0 0 calc((100cqw - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
   min-width: 0;
+  transition: transform 200ms ease;
 
   app-product-card {
     height: 100%;
+  }
+
+  // Hovered card grows a little (the card itself also lifts and gets a shadow).
+  &:hover,
+  &:focus-within {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 

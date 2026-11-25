@@ -12,11 +12,14 @@ public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
     private readonly IProductImageService _imageService;
+    private readonly IProductDocumentService _documentService;
 
-    public ProductsController(IProductService productService, IProductImageService imageService)
+    public ProductsController(
+        IProductService productService, IProductImageService imageService, IProductDocumentService documentService)
     {
         _productService = productService;
         _imageService = imageService;
+        _documentService = documentService;
     }
 
     /// <summary>Searches products with filters, sorting and paging.</summary>
@@ -161,6 +164,43 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> DeleteImage(int id, int imageId, CancellationToken cancellationToken)
     {
         await _imageService.DeleteAsync(id, imageId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Lists the product's downloadable documents (PDF manuals, warranty cards).</summary>
+    [HttpGet("{id:int}/documents")]
+    [AllowAnonymous]
+    [ProducesResponseType<IReadOnlyList<ProductDocumentDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IReadOnlyList<ProductDocumentDto>> GetDocuments(int id, CancellationToken cancellationToken)
+    {
+        return await _documentService.ListAsync(id, cancellationToken);
+    }
+
+    /// <summary>Uploads a PDF document for the product (max 20 MB, 10 per product). Staff only.</summary>
+    [HttpPost("{id:int}/documents")]
+    [Authorize(Policy = Policies.StaffOnly)]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(ProductDocumentRules.MaxFileSize + 100_000)]
+    [ProducesResponseType<ProductDocumentDto>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ProductDocumentDto>> UploadDocument(
+        int id, IFormFile file, [FromForm] string? title, CancellationToken cancellationToken)
+    {
+        await using var stream = file.OpenReadStream();
+        var document = await _documentService.UploadAsync(id, stream, file.FileName, file.Length, title, cancellationToken);
+        return CreatedAtAction(nameof(GetDocuments), new { id }, document);
+    }
+
+    /// <summary>Deletes a product document. Staff only.</summary>
+    [HttpDelete("{id:int}/documents/{documentId:int}")]
+    [Authorize(Policy = Policies.StaffOnly)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteDocument(int id, int documentId, CancellationToken cancellationToken)
+    {
+        await _documentService.DeleteAsync(id, documentId, cancellationToken);
         return NoContent();
     }
 }

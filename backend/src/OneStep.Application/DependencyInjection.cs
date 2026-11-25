@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IAttributeService, AttributeService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductImageService, ProductImageService>();
+        services.AddScoped<IProductDocumentService, ProductDocumentService>();
 
         // Shopping
         services.AddScoped<ICartService, CartService>();

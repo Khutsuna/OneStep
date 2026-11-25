@@ -19,6 +19,7 @@ public interface IAppDbContext
     DbSet<Brand> Brands { get; }
     DbSet<Product> Products { get; }
     DbSet<ProductImage> ProductImages { get; }
+    DbSet<ProductDocument> ProductDocuments { get; }
     DbSet<ProductAttribute> ProductAttributes { get; }
     DbSet<ProductAttributeValue> ProductAttributeValues { get; }
     DbSet<ProductPriceHistory> ProductPriceHistory { get; }

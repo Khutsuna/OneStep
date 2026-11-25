@@ -18,6 +18,7 @@ import { applyServerErrors } from '../../../core/util/form-errors';
 import { mediaUrl } from '../../../core/util/media';
 import { I18N } from '../../../core/i18n/translate.pipes';
 import { LanguageStore } from '../../../core/i18n/language.store';
+import { ProductDocumentsPanel } from './product-documents-panel';
 
 /** One "Color = Black" row of the specifications list. */
 type AttributeRow = FormGroup<{ attributeId: FormControl<number>; value: FormControl<string> }>;
@@ -26,6 +27,7 @@ type AttributeRow = FormGroup<{ attributeId: FormControl<number>; value: FormCon
 @Component({
   selector: 'app-product-edit-page',
   imports: [I18N, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule,
+    ProductDocumentsPanel,
   ],
   templateUrl: './product-edit-page.html',
   styleUrl: './product-edit-page.scss',
