@@ -228,7 +228,10 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background-image: radial-gradient(rgb(245 184 46 / 0.18) 1px, transparent 1.5px);
+    // A bright dot with a soft halo around it, so the dots glow slightly.
+    background-image:
+      radial-gradient(rgb(245 184 46 / 0.45) 1.2px, transparent 1.8px),
+      radial-gradient(rgb(245 184 46 / 0.18) 0, rgb(245 184 46 / 0) 7px);
     background-size: 22px 22px;
     mask-image: linear-gradient(0deg, #000 0%, transparent 80%);
     pointer-events: none;
