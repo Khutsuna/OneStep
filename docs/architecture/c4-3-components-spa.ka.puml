@@ -1,0 +1,49 @@
+@startuml c4-3-components-spa.ka
+!include <C4/C4_Component>
+!include onestep-theme.ka.puml
+' Georgian version of c4-3-components-spa.puml, for the Georgian presentation. Class names stay in English: they are code.
+
+title Technica — დონე 3: Angular აპლიკაციის კომპონენტები\n<size:12>Standalone კომპონენტები, lazy-loaded გვერდები, სიგნალებზე აგებული state</size>
+
+Person(user, "მომხმარებელი ან თანამშრომელი")
+Container(api, "Web API", "ASP.NET Core 10")
+
+Container_Boundary(spa, "ერთგვერდიანი აპლიკაცია (Angular 22)") {
+  Component(router, "როუტერი და guard-ები", "Angular Router", "Lazy-loaded გვერდები; authGuard, customerGuard, staffGuard, adminGuard")
+
+  Boundary(pages, "გვერდები") {
+    Component(shopPages, "მაღაზიის გვერდები", "Standalone კომპონენტები", "მთავარი, კატალოგი ფილტრებით (state URL-ში), პროდუქტის გვერდი შეფასებებით")
+    Component(checkoutPages, "კალათა და შეკვეთა", "Standalone კომპონენტები", "კალათა, შეკვეთის გაფორმება ცოცხალი ჯამით, შეკვეთების ისტორია და სტატუსი")
+    Component(accountPages, "ანგარიშის გვერდები", "Standalone კომპონენტები", "პროფილი, პაროლი, მისამართები, სურვილების სია")
+    Component(adminPages, "ადმინის პანელი", "Standalone კომპონენტები", "დაფა და გაყიდვების გრაფიკი, პროდუქტები და ფოტოები, შეკვეთები, მომხმარებლები, ფასდაკლებები")
+  }
+
+  Boundary(state, "გლობალური state — NgRx Signal Store") {
+    Component(authStore, "AuthStore", "signalStore", "შესული მომხმარებელი და JWT; ინახება localStorage-ში", $tags="store")
+    Component(cartStore, "CartStore", "signalStore", "კალათა; რიცხვი ჰედერში; ახლდება შესვლისას", $tags="store")
+    Component(wishlistStore, "WishlistStore", "signalStore", "შენახული პროდუქტები; გული მაშინვე ივსება", $tags="store")
+    Component(categoryStore, "CategoryStore", "signalStore", "კატეგორიების ხე, იტვირთება ერთხელ", $tags="store")
+  }
+
+  Component(apiServices, "API სერვისები", "HttpClient", "თითო სერვისი API-ს თითო ნაწილზე: ProductsApi, CartApi, OrdersApi, AdminApi...")
+  Component(interceptors, "HTTP interceptor-ები", "ფუნქციური interceptor-ები", "ამატებს JWT-ს მოთხოვნებს; ამუშავებს 401-ს (გამოსვლა) და შეცდომებს")
+  Component(shared, "საერთო UI", "Standalone კომპონენტები", "პროდუქტის ბარათი, ფასი, რეიტინგი, რაოდენობის ღილაკები, სურვილების გული, სტატუსის ჩიპი")
+}
+
+Rel_Down(user, router, "ხსნის გვერდებს ბრაუზერში")
+Rel_Down(router, shopPages, "ტვირთავს")
+Rel_Down(router, checkoutPages, "ტვირთავს")
+Rel_Down(router, accountPages, "ტვირთავს")
+Rel_Down(router, adminPages, "ტვირთავს")
+Rel(shopPages, shared, "იყენებს")
+Rel(checkoutPages, cartStore, "კითხულობს / ცვლის")
+Rel(shopPages, wishlistStore, "კითხულობს / ცვლის")
+Rel(router, authStore, "ეკითხება: შესულია? რა როლი?")
+Rel_Down(cartStore, apiServices, "იძახებს")
+Rel_Down(wishlistStore, apiServices, "იძახებს")
+Rel_Down(adminPages, apiServices, "იძახებს")
+Rel_Right(apiServices, interceptors, "ყველა მოთხოვნა გადის")
+Rel_Down(interceptors, api, "JSON/HTTPS + JWT")
+
+SHOW_LEGEND()
+@enduml

@@ -38,11 +38,11 @@ const PAD = 8;
             </linearGradient>
           </defs>
           <path [attr.d]="c.area" fill="url(#price-history-fill)" />
-          <path [attr.d]="c.line" fill="none" stroke="#101a33" stroke-width="2.5" stroke-linejoin="round" />
+          <path [attr.d]="c.line" fill="none" style="stroke: var(--os-ink)" stroke-width="2.5" stroke-linejoin="round" />
           @for (dot of c.dots; track $index) {
-            <circle [attr.cx]="dot.x" [attr.cy]="dot.y" r="4" fill="#fff" stroke="#101a33" stroke-width="2" />
+            <circle [attr.cx]="dot.x" [attr.cy]="dot.y" r="4" style="fill: var(--os-surface); stroke: var(--os-ink)" stroke-width="2" />
           }
-          <circle [attr.cx]="c.endX" [attr.cy]="c.endY" r="5" fill="#f5b82e" stroke="#101a33" stroke-width="2" />
+          <circle [attr.cx]="c.endX" [attr.cy]="c.endY" r="5" fill="#f5b82e" style="stroke: var(--os-ink)" stroke-width="2" />
         </svg>
 
         <div class="axis">

@@ -100,7 +100,7 @@
   display: block;
   width: fit-content;
   background: var(--os-step);
-  color: var(--os-ink);
+  color: var(--os-on-step);
   font-weight: 700;
   font-size: 0.8125rem;
   padding: 2px 10px;
@@ -123,7 +123,7 @@
   color: var(--os-stock);
 
   &.low {
-    color: #9a6400;
+    color: var(--os-text-warn);
   }
 
   &.out {

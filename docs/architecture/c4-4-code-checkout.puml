@@ -1,5 +1,5 @@
 @startuml c4-4-code-checkout
-title OneStep — Level 4: Code of the checkout and order component\n<size:12>The classes behind "Place order" and order tracking</size>
+title Technica — Level 4: Code of the checkout and order component\n<size:12>The classes behind "Place order" and order tracking</size>
 
 skinparam defaultFontName "Arial"
 skinparam backgroundColor #ffffff

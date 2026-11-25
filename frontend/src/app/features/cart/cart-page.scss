@@ -94,7 +94,7 @@
 .low {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #9a6400;
+  color: var(--os-text-warn);
 }
 
 .controls {
@@ -198,7 +198,7 @@
 
 // "Add ₾35 more for free delivery" with a bar that fills up.
 .free-delivery {
-  background: #fff7e0;
+  background: var(--os-tint-step);
   border-radius: var(--os-radius-sm);
   padding: 12px 14px;
   margin: 4px 0 14px;
@@ -213,14 +213,14 @@
   }
 
   mat-icon {
-    color: #b07800;
+    color: var(--os-text-warn);
     flex: none;
   }
 
   .bar {
     height: 8px;
     border-radius: 999px;
-    background: #f1e2b4;
+    background: var(--os-tint-step-strong);
     overflow: hidden;
 
     span {
@@ -233,14 +233,14 @@
   }
 
   &.done {
-    background: #e8f5ee;
+    background: var(--os-tint-stock);
 
     mat-icon {
       color: var(--os-stock);
     }
 
     .bar {
-      background: #cfe9da;
+      background: var(--os-tint-stock-strong);
 
       span {
         background: var(--os-stock);

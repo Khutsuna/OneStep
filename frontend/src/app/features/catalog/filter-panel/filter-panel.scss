@@ -65,10 +65,10 @@
 
   &.active {
     background: var(--os-ink);
-    color: #fff;
+    color: var(--os-on-ink);
 
     .count {
-      color: #c9d1e3;
+      color: var(--os-on-ink-muted);
     }
   }
 }
@@ -120,6 +120,6 @@
   &.selected {
     background: var(--os-ink);
     border-color: var(--os-ink);
-    color: #fff;
+    color: var(--os-on-ink);
   }
 }

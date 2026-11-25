@@ -2,7 +2,7 @@
 !include <C4/C4_Component>
 !include onestep-theme.puml
 
-title OneStep — Level 3: Components of the Web API\n<size:12>Clean architecture: Api → Application → Domain, and Infrastructure implements Application's interfaces</size>
+title Technica — Level 3: Components of the Web API\n<size:12>Clean architecture: Api → Application → Domain, and Infrastructure implements Application's interfaces</size>
 
 Container(spa, "Single-page application", "Angular")
 ContainerDb(db, "Database", "SQL Server 2025", $tags="db")

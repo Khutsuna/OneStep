@@ -37,7 +37,7 @@ form {
 }
 
 .error {
-  background: #fdecee;
+  background: var(--os-tint-sale);
   color: var(--os-sale);
   border-radius: var(--os-radius-sm);
   padding: 10px 12px;
@@ -79,8 +79,8 @@ form {
 
 // Shown after a step succeeds (link sent, password changed).
 .success {
-  background: #e8f5ee;
-  color: #0f6b3f;
+  background: var(--os-tint-stock);
+  color: var(--os-text-stock);
   border-radius: var(--os-radius-sm);
   padding: 12px 14px;
   margin-bottom: 12px;

@@ -3,16 +3,17 @@ import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../auth/auth.store';
 import { CategoryStore } from '../../catalog/category.store';
 import { I18N } from '../../i18n/translate.pipes';
+import { LogoMark } from '../../../shared/ui/logo-mark/logo-mark';
 
 @Component({
   selector: 'app-footer',
-  imports: [I18N, RouterLink],
+  imports: [I18N, RouterLink, LogoMark],
   template: `
     <div class="inner">
       <div class="brand">
         <a class="logo" routerLink="/">
-          <span class="mark" aria-hidden="true"><span></span><span></span></span>
-          OneStep
+          <app-logo-mark class="mark" />
+          Technica
         </a>
         <p>{{ 'footer.tagline' | t }}</p>
       </div>
@@ -45,16 +46,13 @@ import { I18N } from '../../i18n/translate.pipes';
     <p class="note">{{ 'footer.note' | t }}</p>
   `,
   styles: `
-    :host { display: block; background: var(--os-ink); color: #aeb8cf; margin-top: 48px; }
+    :host { display: block; background: var(--os-navy); color: #aeb8cf; margin-top: 48px; }
     .inner { max-width: var(--os-page-width); margin: 0 auto; padding: 44px var(--os-gutter) 28px;
              display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
     .brand { min-width: 220px; }
-    .logo { display: inline-flex; align-items: flex-end; gap: 8px; color: #fff; text-decoration: none;
+    .logo { display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none;
             font-family: var(--os-display); font-stretch: 115%; font-weight: 800; font-size: 1.75rem; letter-spacing: -0.03em; line-height: 1; }
-    .mark { display: inline-grid; grid-template-columns: 10px 10px; align-items: end; gap: 3px; height: 26px; }
-    .mark span { background: var(--os-step); border-radius: 2px; }
-    .mark span:first-child { height: 13px; }
-    .mark span:last-child { height: 26px; }
+    .mark { width: 30px; height: 30px; }
     h2 { color: #fff; font-size: 0.9375rem; font-weight: 700; margin-bottom: 10px; }
     nav { display: flex; flex-direction: column; gap: 6px; }
     a { color: #c3cbdd; text-decoration: none; }

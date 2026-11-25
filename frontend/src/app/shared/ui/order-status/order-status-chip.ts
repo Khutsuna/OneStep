@@ -17,11 +17,11 @@ export const stepKey = (status: OrderStatus): TranslationKey => `step.${status}`
   host: { '[class]': 'status().toLowerCase()' },
   styles: `
     :host { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; white-space: nowrap; }
-    :host(.pending) { background: #fff4d6; color: #7a5300; }
-    :host(.paid) { background: #e3e8f3; color: var(--os-ink); }
-    :host(.shipped) { background: #dceefe; color: #0b4f8a; }
-    :host(.delivered) { background: #dcf3e9; color: #0b5e43; }
-    :host(.cancelled) { background: #eceff3; color: var(--os-muted); }
+    :host(.pending) { background: var(--os-tint-step); color: var(--os-text-warn); }
+    :host(.paid) { background: var(--os-tint-ink); color: var(--os-ink); }
+    :host(.shipped) { background: var(--os-tint-info); color: var(--os-text-info); }
+    :host(.delivered) { background: var(--os-tint-stock); color: var(--os-text-stock); }
+    :host(.cancelled) { background: var(--os-tint-neutral); color: var(--os-muted); }
   `,
 })
 export class OrderStatusChip {

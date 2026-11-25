@@ -56,17 +56,17 @@ h1 {
 
   &.active {
     background: var(--os-step);
-    color: var(--os-ink);
+    color: var(--os-on-step);
   }
 
   &.scheduled {
-    background: #dceefe;
-    color: #0b4f8a;
+    background: var(--os-tint-info);
+    color: var(--os-text-info);
   }
 
   &.ended,
   &.disabled {
-    background: #eceff3;
+    background: var(--os-tint-neutral);
     color: var(--os-muted);
   }
 }

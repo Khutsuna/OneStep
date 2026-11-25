@@ -6,7 +6,7 @@ import { LanguageStore } from './language.store';
 
 /**
  * Route titles are translation keys (title: 'title.cart'). This turns them into
- * "Your cart · OneStep" in the current language, and updates the tab when the language changes.
+ * "Your cart · Technica" in the current language, and updates the tab when the language changes.
  */
 @Injectable({ providedIn: 'root' })
 export class TranslatedTitleStrategy extends TitleStrategy {
@@ -19,7 +19,7 @@ export class TranslatedTitleStrategy extends TitleStrategy {
     effect(() => {
       const key = this.key();
       const name = key ? this.language.t(key) : null;
-      this.title.setTitle(name ? `${name} · OneStep` : `OneStep · ${this.language.t('title.default')}`);
+      this.title.setTitle(name ? `${name} · Technica` : `Technica · ${this.language.t('title.default')}`);
     });
   }
 

@@ -32,7 +32,7 @@ const STEPS: OrderStatus[] = ['Pending', 'Paid', 'Shipped', 'Delivered'];
     li + li::before { content: ''; position: absolute; top: 13px; right: 50%; width: 100%; height: 3px; background: var(--os-line); z-index: 0; }
     li.done + li.done::before { background: var(--os-ink); }
     .dot { position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--os-surface); border: 3px solid var(--os-line); }
-    li.done .dot { background: var(--os-ink); border-color: var(--os-ink); color: #fff; }
+    li.done .dot { background: var(--os-ink); border-color: var(--os-ink); color: var(--os-on-ink); }
     li.current .dot { box-shadow: 0 0 0 4px var(--os-step); }
     .dot mat-icon { font-size: 16px; width: 16px; height: 16px; }
     .label { font-weight: 600; font-size: 0.875rem; }

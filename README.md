@@ -1,6 +1,8 @@
-# OneStep
+# Technica
 
-OneStep is a full-stack online electronics store, built as an IT Step Academy diploma project (project #2, e-commerce platform). Customers find products with search and filters, buy them through a cart and checkout with automatic delivery and VAT, pay (test mode) and track their orders. Store managers and administrators run the catalogue, stock, orders, campaigns, users and sales analytics from an admin panel.
+Technica is a full-stack online electronics store, built as an IT Step Academy diploma project (project #2, e-commerce platform). Customers find products with search and filters, buy them through a cart and checkout with automatic delivery and VAT, pay (test mode) and track their orders. Store managers and administrators run the catalogue, stock, orders, campaigns, users and sales analytics from an admin panel.
+
+> **Name:** the store is called **Technica**. The code keeps the project's working name **OneStep** (solution `OneStep.slnx`, the `OneStep.*` projects and namespaces, and the `OneStep` database), so the setup commands below use that name.
 
 ![Containers: Angular app, ASP.NET Core API, SQL Server, image storage](docs/architecture/c4-2-containers.png)
 

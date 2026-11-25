@@ -145,13 +145,13 @@ tr.inactive td {
   background: var(--os-surface);
 
   &.low {
-    border-color: #e0b44a;
-    background: #fff8e6;
+    border-color: var(--os-line-step);
+    background: var(--os-tint-step);
   }
 
   &.out {
-    border-color: #e9a2ad;
-    background: #fdecee;
+    border-color: var(--os-line-sale);
+    background: var(--os-tint-sale);
   }
 }
 
@@ -161,12 +161,12 @@ tr.inactive td {
   border-radius: 999px;
   font-size: 0.8125rem;
   font-weight: 600;
-  background: #dcf3e9;
-  color: #0b5e43;
+  background: var(--os-tint-stock);
+  color: var(--os-text-stock);
   white-space: nowrap;
 
   &.off {
-    background: #eceff3;
+    background: var(--os-tint-neutral);
     color: var(--os-muted);
   }
 }

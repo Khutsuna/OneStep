@@ -10,10 +10,12 @@ import { CategoryStore, categoryIcon } from '../../catalog/category.store';
 import { CartStore } from '../../shop/cart.store';
 import { LanguageStore } from '../../i18n/language.store';
 import { I18N } from '../../i18n/translate.pipes';
+import { LogoMark } from '../../../shared/ui/logo-mark/logo-mark';
+import { ThemeToggle } from '../../../shared/ui/theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-header',
-  imports: [I18N, FormsModule, RouterLink, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [I18N, FormsModule, RouterLink, LogoMark, ThemeToggle, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

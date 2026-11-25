@@ -1,11 +1,12 @@
 <header class="topbar">
   <a class="logo" routerLink="/admin" [attr.aria-label]="'admin.home' | t">
-    <span class="mark" aria-hidden="true"><span></span><span></span></span>
-    <span class="wordmark">OneStep</span>
+    <app-logo-mark class="mark" />
+    <span class="wordmark">Technica</span>
     <span class="area">{{ 'admin.area' | t }}</span>
   </a>
 
   <div class="tools">
+    <app-theme-toggle />
     <div class="lang" role="group" [attr.aria-label]="'header.language' | t">
       <button type="button" [class.active]="language.lang() === 'ka'" [attr.aria-pressed]="language.lang() === 'ka'"
               lang="ka" (click)="language.setLanguage('ka')">ქარ</button>

@@ -25,8 +25,8 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: #dcf3e9;
-  color: #0b5e43;
+  background: var(--os-tint-stock);
+  color: var(--os-text-stock);
   border-radius: var(--os-radius-lg);
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -134,7 +134,7 @@ address {
   margin-bottom: 14px;
   border-radius: var(--os-radius-sm);
   background: var(--os-ink);
-  color: #fff;
+  color: var(--os-on-ink);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
@@ -222,7 +222,7 @@ address {
 }
 
 .confirm {
-  background: #fdecee;
+  background: var(--os-tint-sale);
   border-radius: var(--os-radius-lg);
   padding: 16px;
 

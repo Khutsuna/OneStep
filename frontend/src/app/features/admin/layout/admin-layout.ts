@@ -9,11 +9,13 @@ import { StaffNotification } from '../../../core/models/admin.models';
 import { NotificationsStore } from './notifications.store';
 import { I18N } from '../../../core/i18n/translate.pipes';
 import { LanguageStore } from '../../../core/i18n/language.store';
+import { LogoMark } from '../../../shared/ui/logo-mark/logo-mark';
+import { ThemeToggle } from '../../../shared/ui/theme-toggle/theme-toggle';
 
 /** The frame of the admin panel: top bar with alerts, side navigation, and the current admin page. */
 @Component({
   selector: 'app-admin-layout',
-  imports: [I18N, RouterLink, RouterLinkActive, RouterOutlet, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [I18N, RouterLink, RouterLinkActive, RouterOutlet, LogoMark, ThemeToggle, MatBadgeModule, MatButtonModule, MatIconModule, MatMenuModule],
   providers: [NotificationsStore],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',
