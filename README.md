@@ -200,7 +200,7 @@ The seed data includes products on low stock and one out of stock, an inactive p
 
 ## Database
 
-22 tables, designed in third normal form with deliberate exceptions. Full diagram: [database-er.png](docs/architecture/database-er.png).
+23 tables, designed in third normal form with deliberate exceptions. Full diagram: [database-er.png](docs/architecture/database-er.png).
 
 - **Keys and constraints:** every table has a primary key; link tables (`CampaignProducts`, `CampaignCategories`, `ProductAttributeValues`, `WishlistItems`) use composite keys. Unique indexes protect e-mails, SKUs, slugs and "one review per customer per product". CHECK constraints protect prices, stock (never below 0), ratings (1–5), campaign dates and order totals.
 - **Filtered unique indexes:** at most one main photo per product and one default address per customer.
@@ -226,8 +226,8 @@ REST over JSON. Interactive documentation: http://localhost:5091/swagger (log in
 | Area | Endpoints | Access |
 | --- | --- | --- |
 | Auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` | public / logged in |
-| Products | `GET /api/products` (search, filters, paging), `GET /api/products/{id}`, `GET /api/products/filters`, `GET /api/products/{id}/similar` | public |
-| Product management | `POST/PUT/DELETE /api/products…`, `PATCH /api/products/{id}/stock`, `POST/PUT/DELETE /api/products/{id}/images…`, `GET /api/products/low-stock` | staff |
+| Products | `GET /api/products` (search, filters, paging), `GET /api/products/{id}`, `GET /api/products/filters`, `GET /api/products/{id}/similar`, `GET /api/products/{id}/documents` (PDF manuals) | public |
+| Product management | `POST/PUT/DELETE /api/products…`, `PATCH /api/products/{id}/stock`, `POST/PUT/DELETE /api/products/{id}/images…`, `POST/DELETE /api/products/{id}/documents…` (PDF only, checked by its first bytes), `GET /api/products/low-stock` | staff |
 | Categories, brands, attributes | `GET /api/categories`, `/api/brands`, `/api/attributes`; create/edit/delete | public / staff |
 | Delivery methods | `GET /api/delivery-methods` | public |
 | Cart | `GET/DELETE /api/cart`, `POST /api/cart/items`, `PUT /api/cart/items/{id}/quantity`, `DELETE /api/cart/items/{id}` | customer |

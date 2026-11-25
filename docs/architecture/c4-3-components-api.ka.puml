@@ -24,7 +24,7 @@ Container_Boundary(api, "Web API (ASP.NET Core 10)") {
     Component(abstractions, "ინტერფეისები", "C#", "IAppDbContext, IAnalyticsQueries, ITokenService, IPasswordHasher, IFileStorage, ICurrentUser")
   }
 
-  Component(domain, "OneStep.Domain", "C#", "22 ენტიტი, enum-ები, OrderStatusTransitions (სტატუსების წესები), ShippingAddress value object")
+  Component(domain, "OneStep.Domain", "C#", "23 ენტიტი, enum-ები, OrderStatusTransitions (სტატუსების წესები), ShippingAddress value object")
 
   Boundary(infraLayer, "OneStep.Infrastructure — კავშირი გარე სამყაროსთან") {
     Component(dbContext, "AppDbContext", "EF Core 10", "ენტიტების კონფიგურაცია, მიგრაციები, soft-delete ფილტრი, კონკურენტულობა (RowVersion)")

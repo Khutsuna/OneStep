@@ -23,7 +23,7 @@ Container_Boundary(api, "Web API (ASP.NET Core 10)") {
     Component(abstractions, "Interfaces", "C#", "IAppDbContext, IAnalyticsQueries, ITokenService, IPasswordHasher, IFileStorage, ICurrentUser")
   }
 
-  Component(domain, "OneStep.Domain", "C#", "22 entities, enums, OrderStatusTransitions (state machine), ShippingAddress value object")
+  Component(domain, "OneStep.Domain", "C#", "23 entities, enums, OrderStatusTransitions (state machine), ShippingAddress value object")
 
   Boundary(infraLayer, "OneStep.Infrastructure — talks to the outside world") {
     Component(dbContext, "AppDbContext", "EF Core 10", "Entity configurations, migrations, soft-delete filter, concurrency (RowVersion)")

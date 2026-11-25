@@ -42,7 +42,7 @@ public class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Loads all 23 configuration classes from this project automatically.
+        // Loads all 24 configuration classes from this project automatically (23 tables + the catalogue view).
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         // Give every CreatedAt column a database default, so rows inserted

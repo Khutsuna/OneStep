@@ -23,6 +23,17 @@ export class HomePage {
   private readonly api = inject(ProductsApi);
   protected readonly categoryIcon = categoryIcon;
 
+  /** The hero stairs, lowest step first. A category not in this list goes at the end. */
+  private static readonly stepOrder = ['accessories', 'audio', 'phones-tablets', 'computers'];
+
+  protected readonly steps = computed(() => {
+    const rank = (slug: string) => {
+      const index = HomePage.stepOrder.indexOf(slug);
+      return index === -1 ? HomePage.stepOrder.length : index;
+    };
+    return [...this.categories.tree()].sort((a, b) => rank(a.slug) - rank(b.slug));
+  });
+
   // null = still loading; [] = loaded but empty (or failed).
   protected readonly newest = toSignal(this.load('Newest', 10), { initialValue: null });
   protected readonly topRated = toSignal(this.load('Rating', 5), { initialValue: null });

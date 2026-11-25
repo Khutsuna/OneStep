@@ -172,6 +172,10 @@
       }
     </section>
 
+    @if (product(); as p) {
+      <app-product-documents-panel [productId]="p.id" />
+    }
+
     @if (product()) {
       <section class="card danger-zone" aria-labelledby="delete-title">
         <h2 id="delete-title">{{ 'pe.deleteTitle' | t }}</h2>

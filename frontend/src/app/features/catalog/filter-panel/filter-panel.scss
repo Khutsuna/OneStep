@@ -79,21 +79,32 @@
 }
 
 .price {
-  display: flex;
+  // Two price fields side by side, the Apply button full width below them.
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
-
-  label {
-    flex: 1;
-    min-width: 0;
-  }
+  gap: 8px;
 
   input {
     width: 100%;
-    padding: 8px;
+    padding: 10px 12px;
     border: 1px solid var(--os-line);
     border-radius: var(--os-radius-sm);
     font: inherit;
+    font-variant-numeric: tabular-nums;
+    // No up/down arrows: they took half of the narrow field.
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  button {
+    grid-column: 1 / -1;
   }
 }
 

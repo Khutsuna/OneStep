@@ -10,7 +10,7 @@ Person(staff, "Store Manager / Administrator")
 System_Boundary(onestep, "Technica") {
   Container(spa, "Single-page application", "Angular 22, TypeScript, Angular Material, NgRx Signal Store", "Shop, cart and checkout, customer account, and the admin panel. Runs in the browser")
   Container(api, "Web API", "ASP.NET Core 10, C#", "REST/JSON API: business rules, JWT login and roles, validation, Swagger docs, error handling and logging")
-  ContainerDb(db, "Database", "Microsoft SQL Server 2025", "22 tables (EF Core migrations), plus hand-written SQL: catalogue view, analytics procedures, price-history trigger, seed data", $tags="db")
+  ContainerDb(db, "Database", "Microsoft SQL Server 2025", "23 tables (EF Core migrations), plus hand-written SQL: catalogue view, analytics procedures, price-history trigger, seed data", $tags="db")
   Container(files, "Image storage", "Folder wwwroot/uploads", "Product photos, served to the browser as static files")
   Container(logs, "Log files", "Serilog", "One file per day: requests, warnings and errors")
 }

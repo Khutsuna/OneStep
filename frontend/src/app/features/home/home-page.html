@@ -18,7 +18,7 @@
 
     <!-- The four main categories rise like stairs: one step to each part of the shop. -->
     <nav class="steps" [attr.aria-label]="'home.shopByCategory' | t">
-      @for (category of categories.tree(); track category.id) {
+      @for (category of steps(); track category.id) {
         <a class="step" routerLink="/products" [queryParams]="{ categoryId: category.id }">
           <mat-icon aria-hidden="true">{{ categoryIcon(category.slug) }}</mat-icon>
           <span class="step-name">{{ category.name | term }}</span>
